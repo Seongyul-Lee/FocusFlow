@@ -1,65 +1,39 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# GitHub README.md
+- Live: https://pomobox.app
+- Status: 🟢 Production
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Cloudflare Proxy 재활성화
+```
+성능 향상 원하면:
+DNS → Records
+→ A/CNAME Proxy ON (주황색)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+혜택:
+✅ CDN 캐싱
+✅ DDoS 방어
+✅ 속도 향상
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
-# FocusFlow
-
-Minimal Pomodoro timer for focused work sessions.
-
-## Features
-
-- Customizable focus/break times
-- Daily session tracking
-- Sound & notification alerts
-- No login required
-
-## Tech Stack
-
-Next.js 14 · TypeScript · Tailwind CSS · shadcn/ui
-
-## Quick Start
-```bash
-npm install
-npm run dev
+주의:
+⚠️ Vercel Analytics 영향 가능
+→ 일단 OFF 유지 추천
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+### 3. 마케팅 준비
+```
+준비 완료:
+✅ Product Hunt 런칭
+✅ Reddit 포스팅
+✅ Twitter 공유
+```
 
-## License
+---
 
-MIT
->>>>>>> 9927638dff64a1583cfa60d8f4f6f4727af573ed
+## 💰 비용 요약
+```
+도메인: $12.18/년 (Cloudflare)
+호스팅: $0 (Vercel 무료)
+SSL: $0 (자동)
+CDN: $0 (Vercel 포함)
+
+총: $12.18/년 = 월 $1

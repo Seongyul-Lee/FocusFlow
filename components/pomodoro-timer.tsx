@@ -28,7 +28,14 @@ export function PomodoroTimer() {
 
   const progress = ((duration - timeLeft) / duration) * 100
   const circumference = 2 * Math.PI * 140
+  const [totalMinutes, setTotalMinutes] = useState(0)
 
+
+  useEffect(() => {
+    const savedMinutes = localStorage.getItem("pomodoro-total-minutes")
+    // ... 날짜별 집계 로직
+  }, [])
+  
   // 설정 불러오기
   useEffect(() => {
     const savedSettings = localStorage.getItem("pomodoro-settings")
@@ -152,7 +159,7 @@ export function PomodoroTimer() {
 
       <div className="relative flex items-center justify-center">
         <svg className="w-72 h-72 -rotate-90" viewBox="0 0 300 300">
-          <circle cx="150" cy="150" r="140" fill="none" stroke="currentColor" strokeWidth="8" className="text-muted" />
+          <circle cx="150" cy="150" r="140" fill="none" stroke="currentColor" strokeWidth="STROKE_WIDTH" className="text-muted" />
           <circle
             cx="150"
             cy="150"
