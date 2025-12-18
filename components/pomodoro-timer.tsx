@@ -5,14 +5,17 @@ import { Button } from "@/components/ui/button"
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
 import { SettingsDialog, TimerSettings } from "./settings-dialog"
 
-type TimerType = 'focus' | 'break'
+type TimerType = 'focus' | 'break' | 'longBreak'
+
+const TIMER_RADIUS = 140
+const TIMER_CIRCUMFERENCE = 2 * Math.PI * TIMER_RADIUS
 
 const DEFAULT_SETTINGS: TimerSettings = {
   focusDuration: 25,
   breakDuration: 5,
   notificationsEnabled: false,
   soundEnabled: false,
-  volume: 0,  // 0으로 변경
+  volume: 0,
 }
 
 export function PomodoroTimer() {
@@ -21,22 +24,30 @@ export function PomodoroTimer() {
   const [timeLeft, setTimeLeft] = useState(settings.focusDuration * 60)
   const [isRunning, setIsRunning] = useState(false)
   const [sessions, setSessions] = useState(0)
+  const [completedSessions, setCompletedSessions] = useState(0)
+  const [totalFocusMinutes, setTotalFocusMinutes] = useState(0)
 
-  const duration = (type === 'focus' ? settings.focusDuration : settings.breakDuration) * 60
+  const getDuration = () => {
+    if (type === 'focus') return settings.focusDuration * 60
+    if (type === 'longBreak') return 15 * 60
+    return settings.breakDuration * 60
+  }
+
+  const duration = getDuration()
   const minutes = Math.floor(timeLeft / 60)
   const seconds = timeLeft % 60
-
   const progress = ((duration - timeLeft) / duration) * 100
-  const circumference = 2 * Math.PI * 140
-  const [totalMinutes, setTotalMinutes] = useState(0)
+  const circumference = TIMER_CIRCUMFERENCE
 
-
+  // Browser title update
   useEffect(() => {
-    const savedMinutes = localStorage.getItem("pomodoro-total-minutes")
-    // ... 날짜별 집계 로직
-  }, [])
-  
-  // 설정 불러오기
+    if (typeof window !== 'undefined') {
+      const title = type === 'focus' ? 'Focus' : type === 'longBreak' ? 'Long Break' : 'Break'
+      document.title = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} - ${title}`
+    }
+  }, [timeLeft, type, minutes, seconds])
+
+  // Load settings
   useEffect(() => {
     const savedSettings = localStorage.getItem("pomodoro-settings")
     if (savedSettings) {
@@ -46,33 +57,41 @@ export function PomodoroTimer() {
     }
   }, [])
 
-  // 세션 불러오기
+  // Load sessions & total time
   useEffect(() => {
     const savedSessions = localStorage.getItem("pomodoro-sessions")
+    const savedMinutes = localStorage.getItem("pomodoro-total-minutes")
     const savedDate = localStorage.getItem("pomodoro-date")
     const today = new Date().toDateString()
 
-    if (savedDate === today && savedSessions) {
-      setSessions(parseInt(savedSessions))
+    if (savedDate === today) {
+      if (savedSessions) setSessions(parseInt(savedSessions))
+      if (savedMinutes) setTotalFocusMinutes(parseInt(savedMinutes))
     } else {
       localStorage.setItem("pomodoro-date", today)
       localStorage.setItem("pomodoro-sessions", "0")
+      localStorage.setItem("pomodoro-total-minutes", "0")
     }
   }, [])
 
-  // 세션 저장
+  // Save sessions
   useEffect(() => {
     localStorage.setItem("pomodoro-sessions", sessions.toString())
   }, [sessions])
 
-  // 설정 변경 시 알림 권한 요청
+  // Save total time
+  useEffect(() => {
+    localStorage.setItem("pomodoro-total-minutes", totalFocusMinutes.toString())
+  }, [totalFocusMinutes])
+
+  // Request notification permission
   useEffect(() => {
     if (settings.notificationsEnabled && Notification.permission === "default") {
       Notification.requestPermission()
     }
   }, [settings.notificationsEnabled])
 
-  // 타이머 로직
+  // Timer logic
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null
 
@@ -83,23 +102,40 @@ export function PomodoroTimer() {
     } else if (timeLeft === 0 && isRunning) {
       setIsRunning(false)
 
-      // 알림 및 사운드
+      // Notifications and sound
       if (settings.notificationsEnabled && Notification.permission === "granted") {
-        new Notification(type === 'focus' ? "Focus session complete!" : "Break time over!", {
-          body: type === 'focus' ? "Time for a break" : "Ready for another session?",
-          icon: "/icon.png"
-        })
+        const message = type === 'focus' 
+          ? "Time for a break" 
+          : "Ready for another session?"
+        new Notification(
+          type === 'focus' ? "Focus session complete!" : "Break time over!",
+          { body: message, icon: "/icon.png" }
+        )
       }
 
       if (settings.soundEnabled) {
         const audio = new Audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGS57OihUhELTKXh8bllHAU2jdXyz3YnBSp+zPDajzsIEViy6OyrWBUIQ5zd8sFuJAUwhM/x1YU5CBZnvezno1QTCkml4PG6aB4EOIzU8dF0KAYAAAA=")
+        audio.volume = settings.volume / 100
         audio.play()
       }
       
       if (type === 'focus') {
+        const newCompleted = completedSessions + 1
+        setCompletedSessions(newCompleted)
         setSessions((prev) => prev + 1)
-        setType('break')
-        setTimeLeft(settings.breakDuration * 60)
+        
+        // Accumulate total focus time
+        const newTotal = totalFocusMinutes + settings.focusDuration
+        setTotalFocusMinutes(newTotal)
+        
+        // Long Break every 4 sessions
+        if (newCompleted % 4 === 0) {
+          setType('longBreak')
+          setTimeLeft(15 * 60)
+        } else {
+          setType('break')
+          setTimeLeft(settings.breakDuration * 60)
+        }
       } else {
         setType('focus')
         setTimeLeft(settings.focusDuration * 60)
@@ -109,7 +145,35 @@ export function PomodoroTimer() {
     return () => {
       if (interval) clearInterval(interval)
     }
-  }, [isRunning, timeLeft, type, settings])
+  }, [isRunning, timeLeft, type, settings, completedSessions, totalFocusMinutes])
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Ignore shortcuts in Input, Textarea, Dialog
+      const target = e.target as HTMLElement
+      if (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.closest('[role="dialog"]')
+      ) {
+        return
+      }
+
+      if (e.code === 'Space') {
+        e.preventDefault()
+        isRunning ? handlePause() : handleStart()
+      } else if (e.code === 'KeyR') {
+        e.preventDefault()
+        handleReset()
+      } else if (e.code === 'Escape') {
+        handlePause()
+      }
+    }
+    
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [isRunning])
 
   const handleStart = useCallback(() => setIsRunning(true), [])
   const handlePause = useCallback(() => setIsRunning(false), [])
@@ -122,26 +186,45 @@ export function PomodoroTimer() {
   const handleSkip = useCallback(() => {
     setIsRunning(false)
     if (type === 'focus') {
-      setType('break')
-      setTimeLeft(settings.breakDuration * 60)
+      const newCompleted = completedSessions + 1
+      setCompletedSessions(newCompleted)
+      
+      if (newCompleted % 4 === 0) {
+        setType('longBreak')
+        setTimeLeft(15 * 60)
+      } else {
+        setType('break')
+        setTimeLeft(settings.breakDuration * 60)
+      }
     } else {
       setType('focus')
       setTimeLeft(settings.focusDuration * 60)
     }
-  }, [type, settings])
+  }, [type, settings, completedSessions])
 
   const handleSettingsChange = (newSettings: TimerSettings) => {
     setSettings(newSettings)
     localStorage.setItem("pomodoro-settings", JSON.stringify(newSettings))
     
-    // 현재 타이머가 실행 중이 아니면 시간 초기화
     if (!isRunning) {
       if (type === 'focus') {
         setTimeLeft(newSettings.focusDuration * 60)
-      } else {
+      } else if (type === 'break') {
         setTimeLeft(newSettings.breakDuration * 60)
       }
     }
+  }
+
+  const getTypeLabel = () => {
+    if (type === 'focus') return 'Focus Session'
+    if (type === 'longBreak') return 'Long Break'
+    return 'Break Time'
+  }
+
+  const getTypeDescription = () => {
+    if (type === 'focus') return 'Stay focused on your work'
+    if (type === 'longBreak') return 'Take a longer break - you earned it!'
+    return 'Take a short break'
   }
 
   return (
@@ -150,27 +233,29 @@ export function PomodoroTimer() {
 
       <div className="text-center">
         <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
-          {type === 'focus' ? 'Focus Session' : 'Break Time'}
+          {getTypeLabel()}
         </p>
         <p className="text-xs text-muted-foreground">
-          {type === 'focus' ? 'Stay focused on your work' : 'Take a short break'}
+          {getTypeDescription()}
         </p>
       </div>
 
       <div className="relative flex items-center justify-center">
-        <svg className="w-72 h-72 -rotate-90" viewBox="0 0 300 300">
-          <circle cx="150" cy="150" r="140" fill="none" stroke="currentColor" strokeWidth="STROKE_WIDTH" className="text-muted" />
+        <svg className="w-64 h-64 sm:w-72 sm:h-72 -rotate-90" viewBox="0 0 300 300">
+          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-muted" />
           <circle
             cx="150"
             cy="150"
-            r="140"
+            r={TIMER_RADIUS}
             fill="none"
             stroke="currentColor"
             strokeWidth="8"
             strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={circumference - (progress / 100) * circumference}
-            className={`transition-all duration-1000 ease-linear ${type === 'focus' ? 'text-primary' : 'text-green-500'}`}
+            strokeDasharray={TIMER_CIRCUMFERENCE}
+            strokeDashoffset={TIMER_CIRCUMFERENCE - (progress / 100) * TIMER_CIRCUMFERENCE}
+            className={`transition-all duration-1000 ease-linear ${
+              type === 'focus' ? 'text-primary' : type === 'longBreak' ? 'text-blue-500' : 'text-green-500'
+            }`}
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
@@ -205,7 +290,7 @@ export function PomodoroTimer() {
       </div>
 
       <div className="text-muted-foreground text-sm font-medium">
-        Today: <span className="text-foreground">{sessions} sessions</span>
+        Today: <span className="text-foreground">{sessions} sessions ({totalFocusMinutes} min)</span>
       </div>
     </div>
   )
