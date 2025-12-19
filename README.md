@@ -1,4 +1,4 @@
-# FocusFlow
+# pomobox
 
 A minimal Pomodoro timer for focused studying.
 
