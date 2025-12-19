@@ -26,6 +26,7 @@ export function PomodoroTimer() {
   const [sessions, setSessions] = useState(0)
   const [completedSessions, setCompletedSessions] = useState(0)
   const [totalFocusMinutes, setTotalFocusMinutes] = useState(0)
+  const [targetEndAtMs, setTargetEndAtMs] = useState<number | null>(null)
 
   const getDuration = () => {
     if (type === 'focus') return settings.focusDuration * 60
@@ -91,61 +92,98 @@ export function PomodoroTimer() {
     }
   }, [settings.notificationsEnabled])
 
-  // Timer logic
+  // Initialize / clear target end time for time-based timer
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null
-
-    if (isRunning && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft((prev) => prev - 1)
-      }, 1000)
-    } else if (timeLeft === 0 && isRunning) {
-      setIsRunning(false)
-
-      // Notifications and sound
-      if (settings.notificationsEnabled && Notification.permission === "granted") {
-        const message = type === 'focus' 
-          ? "Time for a break" 
-          : "Ready for another session?"
-        new Notification(
-          type === 'focus' ? "Focus session complete!" : "Break time over!",
-          { body: message, icon: "/icon.png" }
-        )
-      }
-
-      if (settings.soundEnabled) {
-        const audio = new Audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGS57OihUhELTKXh8bllHAU2jdXyz3YnBSp+zPDajzsIEViy6OyrWBUIQ5zd8sFuJAUwhM/x1YU5CBZnvezno1QTCkml4PG6aB4EOIzU8dF0KAYAAAA=")
-        audio.volume = settings.volume / 100
-        audio.play()
-      }
-      
-      if (type === 'focus') {
-        const newCompleted = completedSessions + 1
-        setCompletedSessions(newCompleted)
-        setSessions((prev) => prev + 1)
-        
-        // Accumulate total focus time
-        const newTotal = totalFocusMinutes + settings.focusDuration
-        setTotalFocusMinutes(newTotal)
-        
-        // Long Break every 4 sessions
-        if (newCompleted % 4 === 0) {
-          setType('longBreak')
-          setTimeLeft(15 * 60)
-        } else {
-          setType('break')
-          setTimeLeft(settings.breakDuration * 60)
-        }
-      } else {
-        setType('focus')
-        setTimeLeft(settings.focusDuration * 60)
-      }
+    if (isRunning && targetEndAtMs === null) {
+      setTargetEndAtMs(Date.now() + timeLeft * 1000)
+      return
     }
+    if (!isRunning && targetEndAtMs !== null) {
+      setTargetEndAtMs(null)
+    }
+  }, [isRunning, targetEndAtMs])
+
+  // Tick: recompute remaining time from wall-clock (prevents background drift)
+  useEffect(() => {
+    if (!isRunning || targetEndAtMs === null) return
+
+    const updateTimeLeft = () => {
+      const remainingSeconds = Math.max(0, Math.ceil((targetEndAtMs - Date.now()) / 1000))
+      setTimeLeft(remainingSeconds)
+    }
+
+    updateTimeLeft()
+    const id = window.setInterval(updateTimeLeft, 1000)
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) updateTimeLeft()
+    }
+    document.addEventListener("visibilitychange", handleVisibilityChange)
 
     return () => {
-      if (interval) clearInterval(interval)
+      window.clearInterval(id)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
     }
-  }, [isRunning, timeLeft, type, settings, completedSessions, totalFocusMinutes])
+  }, [isRunning, targetEndAtMs])
+
+  // Phase transition when timer hits 0
+  useEffect(() => {
+    if (!(timeLeft === 0 && isRunning)) return
+
+    setIsRunning(false)
+    setTargetEndAtMs(null)
+
+    // Notifications and sound
+    if (settings.notificationsEnabled && Notification.permission === "granted") {
+      const message = type === 'focus'
+        ? "Time for a break"
+        : "Ready for another session?"
+      new Notification(
+        type === 'focus' ? "Focus session complete!" : "Break time over!",
+        { body: message, icon: "/icon.png" }
+      )
+    }
+
+    if (settings.soundEnabled) {
+      const audio = new Audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGS57OihUhELTKXh8bllHAU2jdXyz3YnBSp+zPDajzsIEViy6OyrWBUIQ5zd8sFuJAUwhM/x1YU5CBZnvezno1QTCkml4PG6aB4EOIzU8dF0KAYAAAA=")
+      audio.volume = settings.volume / 100
+      audio.play()
+    }
+
+    if (type === 'focus') {
+      const newCompleted = completedSessions + 1
+      setCompletedSessions(newCompleted)
+      setSessions((prev) => prev + 1)
+
+      // Accumulate total focus time
+      const newTotal = totalFocusMinutes + settings.focusDuration
+      setTotalFocusMinutes(newTotal)
+
+      // Long Break every 4 sessions
+      if (newCompleted % 4 === 0) {
+        setType('longBreak')
+        setTimeLeft(15 * 60)
+      } else {
+        setType('break')
+        setTimeLeft(settings.breakDuration * 60)
+      }
+    } else {
+      setType('focus')
+      setTimeLeft(settings.focusDuration * 60)
+    }
+  }, [timeLeft, isRunning, type, settings, completedSessions, totalFocusMinutes])
+
+  const handleStart = useCallback(() => setIsRunning(true), [])
+  const handlePause = useCallback(() => {
+    setIsRunning(false)
+    setTargetEndAtMs(null)
+  }, [])
+  const handleReset = useCallback(() => {
+    setIsRunning(false)
+    setTargetEndAtMs(null)
+    setType('focus')
+    setTimeLeft(settings.focusDuration * 60)
+  }, [settings.focusDuration])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -170,25 +208,18 @@ export function PomodoroTimer() {
         handlePause()
       }
     }
-    
+
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [isRunning])
-
-  const handleStart = useCallback(() => setIsRunning(true), [])
-  const handlePause = useCallback(() => setIsRunning(false), [])
-  const handleReset = useCallback(() => {
-    setIsRunning(false)
-    setType('focus')
-    setTimeLeft(settings.focusDuration * 60)
-  }, [settings.focusDuration])
+  }, [isRunning, handlePause, handleStart, handleReset])
 
   const handleSkip = useCallback(() => {
     setIsRunning(false)
+    setTargetEndAtMs(null)
     if (type === 'focus') {
       const newCompleted = completedSessions + 1
       setCompletedSessions(newCompleted)
-      
+
       if (newCompleted % 4 === 0) {
         setType('longBreak')
         setTimeLeft(15 * 60)
@@ -205,7 +236,7 @@ export function PomodoroTimer() {
   const handleSettingsChange = (newSettings: TimerSettings) => {
     setSettings(newSettings)
     localStorage.setItem("pomodoro-settings", JSON.stringify(newSettings))
-    
+
     if (!isRunning) {
       if (type === 'focus') {
         setTimeLeft(newSettings.focusDuration * 60)
@@ -282,7 +313,7 @@ export function PomodoroTimer() {
             <RotateCcw className="h-5 w-5" />
           </Button>
         </div>
-        
+
         <Button size="sm" variant="ghost" onClick={handleSkip} className="gap-2 text-muted-foreground hover:text-foreground">
           <SkipForward className="h-4 w-4" />
           {type === 'focus' ? 'Skip to Break' : 'Skip Break'}
