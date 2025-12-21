@@ -32,10 +32,11 @@ const BREAK_OPTIONS = [
 
 interface SettingsDialogProps {
   settings: TimerSettings
+  isRunning: boolean
   onSettingsChange: (settings: TimerSettings) => void
 }
 
-export function SettingsDialog({ settings, onSettingsChange }: SettingsDialogProps) {
+export function SettingsDialog({ settings, isRunning, onSettingsChange }: SettingsDialogProps) {
   const [localSettings, setLocalSettings] = useState<TimerSettings>(settings)
   const [isSaved, setIsSaved] = useState(false)
   const { toast } = useToast()
@@ -45,6 +46,7 @@ export function SettingsDialog({ settings, onSettingsChange }: SettingsDialogPro
   }, [settings])
 
   const handleSave = () => {
+    if (isRunning) return
     onSettingsChange(localSettings)
     setIsSaved(true)
     
@@ -162,6 +164,7 @@ export function SettingsDialog({ settings, onSettingsChange }: SettingsDialogPro
                   key={option.value}
                   variant={localSettings.focusDuration === option.value ? "default" : "outline"}
                   size="sm"
+                  disabled={isRunning}
                   onClick={() => setLocalSettings({ ...localSettings, focusDuration: option.value })}
                 >
                   {option.label}
@@ -179,6 +182,7 @@ export function SettingsDialog({ settings, onSettingsChange }: SettingsDialogPro
                   key={option.value}
                   variant={localSettings.breakDuration === option.value ? "default" : "outline"}
                   size="sm"
+                  disabled={isRunning}
                   onClick={() => setLocalSettings({ ...localSettings, breakDuration: option.value })}
                 >
                   {option.label}
@@ -190,7 +194,7 @@ export function SettingsDialog({ settings, onSettingsChange }: SettingsDialogPro
           <Button 
             onClick={handleSave} 
             className="w-full"
-            disabled={isSaved}
+            disabled={isSaved || isRunning}
           >
             {isSaved ? (
               <>
@@ -201,6 +205,11 @@ export function SettingsDialog({ settings, onSettingsChange }: SettingsDialogPro
               "Save Changes"
             )}
           </Button>
+          {isRunning && (
+            <p className="text-sm text-muted-foreground">
+              Stop the timer to change durations.
+            </p>
+          )}
         </div>
       </DialogContent>
     </Dialog>

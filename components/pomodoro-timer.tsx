@@ -260,7 +260,11 @@ export function PomodoroTimer() {
 
   return (
     <div className="relative flex flex-col items-center gap-8">
-      <SettingsDialog settings={settings} onSettingsChange={handleSettingsChange} />
+      <SettingsDialog
+        settings={settings}
+        isRunning={isRunning}
+        onSettingsChange={handleSettingsChange}
+      />
 
       <div className="text-center">
         <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
