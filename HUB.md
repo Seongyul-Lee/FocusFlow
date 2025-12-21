@@ -1,15 +1,16 @@
 # HUB (SSOT)
 
 ## Snapshot
-Revision: 7
-Last updated (KST): 2025-12-21 23:56
+Revision: 10
+Last updated (KST): 2025-12-22 01:39
 
 ## Current
-- State: Traceability(Preview baseline + immutable deploy) 고정 완료. P0 잔여(Reset/Skip 정합) 오픈. (Repo: Seongyul-Lee/pomobox / Prod: https://pomobox.app)
-- Branch/Commit: preview @ 83c8c61
-- Preview baseline (commit): 83c8c61
-- Preview deploy (immutable): pomobox-3ow8b9boq-tjddbfzsd66-9025s-projects.vercel.app
-- QA status: IN-PROGRESS — Background drift scenario PASS (2025-12-19, recorded in chat(6), evidence anchored to the immutable deploy above)
+- State: Traceability(Preview baseline + immutable deploy) 고정 완료. P0 오픈: Break phase에서 Reset 시 breakDuration이 아닌 focusDuration으로 리셋되는 버그(정의-구현-UI 정합). (Repo: Seongyul-Lee/pomobox / Prod: https://pomobox.app)
+- Branch: preview
+- Anchor baseline (commit, last verified): 83c8c61
+- Anchor deploy (immutable, for baseline): https://pomobox-3ow8b9boq-tjddbfzsd66-9025s-projects.vercel.app
+- Note: 위 baseline/deploy는 '검증 앵커'이며, 문서 커밋으로 생성되는 최신 deploy를 추적하지 않는다.
+- QA status: IN-PROGRESS — Gate-P0-A PASS (2025-12-22, video evidence) / Background drift PASS (2025-12-19, chat(6))
 
 
 ## Done (last 3)
@@ -18,19 +19,19 @@ Last updated (KST): 2025-12-21 23:56
 - QA: Background drift scenario PASS 기록 유지 (chat(6) / 2025-12-19)
 
 ## Now (exactly 1)
-- P0 잔여 해결 준비: Reset/Skip 정합(정의-구현-UI) 이슈 Patch Room(#3) 티켓으로 분리/위임
+- P0 처리: 위 Reset(Break) 버그를 Patch Room(#3) 티켓으로 분리/위임
 
 ## Blockers/Risks (P0 only)
 - P0: Reset/Skip 정합(정의-구현-UI) — 통계/phase 전환 규칙 단일화 필요
 
 ## Decision log (last 3)
 - [2025-12-21] Decision: Timer running 중 duration 변경은 Save 비활성으로 차단.
-- [2025-12-21] Decision: Traceability locked (preview baseline=0dff7fe, deploy=immutable URL).
+- [2025-12-21] Decision: Traceability locked (anchor: preview baseline commit + immutable deploy URL; see ## Current).
 - [2025-12-19] Decision: 문서 정합으로 README 프로젝트명 pomobox로 정리 (commit: 0dff7fe).
 
 ## Next candidates (top 3)
-- P0 잔여 해결: running 중 duration 변경 시 진행/통계 불일치, Reset/Skip 정합(정의-구현-UI) → Patch Room(#3) 티켓화 및 처리
-- QA 게이트 정리: 회귀 테스트 시나리오를 Preview(immutable)에서 실행/기록(체크리스트/링크 포함) (anchor: immutable deploy URL)
+- P0 잔여 해결: Reset(Break) 리셋 시간 오동작 버그 → Patch Room(#3) 티켓화 및 처리
+- QA 게이트 정리: 회귀 테스트 시나리오를 Preview(immutable)에서 실행/기록(체크리스트/링크 포함) (anchor: see ## Current)
 - 승격 준비: QA PASS 증빙 정리 후 PR로 preview → main merge (Gate 충족 후)
 
 ## Gate (Release/Exit)
