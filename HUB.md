@@ -1,8 +1,8 @@
 # HUB (SSOT)
 
 ## Snapshot
-Revision: 6
-Last updated (KST): 2025-12-21 21:37
+Revision: 7
+Last updated (KST): 2025-12-21 23:56
 
 ## Current
 - State: Traceability(Preview baseline + immutable deploy) 고정 완료. P0 잔여(Reset/Skip 정합) 오픈. (Repo: Seongyul-Lee/pomobox / Prod: https://pomobox.app)
@@ -24,9 +24,9 @@ Last updated (KST): 2025-12-21 21:37
 - P0: Reset/Skip 정합(정의-구현-UI) — 통계/phase 전환 규칙 단일화 필요
 
 ## Decision log (last 3)
-- [2025-12-21] Decision (MVP): Reset/Skip never count as completion (no stats increment); Reset = restart same phase to full duration, Skip = advance to next phase; stats increment only on natural timer reaching 0.
 - [2025-12-21] Decision: Timer running 중 duration 변경은 Save 비활성으로 차단.
 - [2025-12-21] Decision: Traceability locked (preview baseline=0dff7fe, deploy=immutable URL).
+- [2025-12-19] Decision: 문서 정합으로 README 프로젝트명 pomobox로 정리 (commit: 0dff7fe).
 
 ## Next candidates (top 3)
 - P0 잔여 해결: running 중 duration 변경 시 진행/통계 불일치, Reset/Skip 정합(정의-구현-UI) → Patch Room(#3) 티켓화 및 처리
@@ -35,4 +35,5 @@ Last updated (KST): 2025-12-21 21:37
 
 ## Gate (Release/Exit)
 - Promote rule: P0 해결 + QA PASS 기록(immutable Preview deploy + preview baseline commit 고정) 완료
+- Gate-P0-A: In Settings, while the timer is RUNNING, duration controls and Save must be disabled, the helper text “Stop the timer to change durations.” must be shown, and no duration value or countdown may change; once not RUNNING (paused/stopped), controls and Save must re-enable and saving must update idle durations.
 - Current gate decision: BLOCK (QA: IN-PROGRESS; P0 open)
