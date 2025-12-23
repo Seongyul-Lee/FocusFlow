@@ -1,0 +1,32 @@
+[
+  {
+    "topicName": "nextjs-app-router-metadata",
+    "context7CompatibleLibraryID": "/vercel/next.js",
+    "topic": "app router metadata",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-23T00:00:00Z",
+    "keyAPIs": [
+      "Metadata type export from 'next'",
+      "metadata object export (static)",
+      "generateMetadata async function (dynamic)",
+      "MetadataRoute.Manifest for PWA",
+      "headers() and cookies() from 'next/headers'",
+      "openGraph, twitter, appLinks, appleWebApp, itunes properties"
+    ],
+    "constraints": [
+      "metadata must be exported from layout.tsx or page.tsx",
+      "generateMetadata is async and receives params/searchParams",
+      "headers() and cookies() are read-only in Server Components",
+      "Child page metadata merges with parent layout metadata",
+      "Replace next/head with metadata exports in App Router",
+      "Manifest file should be app/manifest.ts or app/manifest.json",
+      "Icons referenced in manifest must exist in public folder"
+    ],
+    "appliesToFiles": [
+      "app/layout.tsx",
+      "app/[...path]/page.tsx",
+      "app/manifest.ts",
+      "app/opengraph-image.tsx"
+    ]
+  }
+]

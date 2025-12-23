@@ -1,0 +1,93 @@
+{
+	"meta": {
+		"generatedAt": "2025-12-23T14:03:39.169Z",
+		"tasksAnalyzed": 10,
+		"totalTasks": 10,
+		"analysisCount": 10,
+		"thresholdScore": 5,
+		"projectName": "Task Master",
+		"usedResearch": false
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 1,
+			"taskTitle": "현재 Pomobox 타이머 상태 관리 구조 분석 및 문서화",
+			"complexityScore": 3,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "타이머 상태 머신(focus/break/longBreak), 통계 계산 규칙(세션/완료/누적시간), localStorage 저장 정책, Skip/Reset 동작, 페이지 복구 로직을 각각 상세 분석하고 문서화하는 서브태스크로 확장하세요. 코드 검토와 동작 확인이 주 목적입니다.",
+			"reasoning": "이미 코드가 존재하고 분석 대상이 명확합니다. 타이머 로직은 wall-clock 기반으로 구현되어 있고, 상태 관리가 단순합니다(3가지 상태). 복잡한 구현보다는 이해와 문서화가 주 목적이므로 복잡도 3점입니다. 이미 5개 서브태스크가 적절하게 정의되어 있습니다."
+		},
+		{
+			"taskId": 2,
+			"taskTitle": "Pause 상태를 포함한 타이머 상태 머신 설계",
+			"complexityScore": 6,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "기존 3가지 상태에 Pause 상태를 추가하는 상태 머신 설계를 다음으로 나누세요: (1) 기존 상태 구조 분석 및 Pause 진입/복귀 경로 정의, (2) 상태 다이어그램 작성, (3) Pause 상태 고유 조건 및 Resume/Skip/Reset 동작 정의, (4) 통계 변경 금지 규칙 명확화, (5) 페이지 새로고침 시 복구 흐름 정의, (6) 설계 문서 완성 및 검토",
+			"reasoning": "상태 머신 설계는 아키텍처 레벨의 결정이 필요합니다. Pause 상태가 기존 3가지 상태 각각에서 진입 가능하고, 통계 정책(세션 카운트, 완료 세션, 누적 시간)을 유지하면서 상태 전환을 설계해야 합니다. Skip/Reset과의 상호작용, 페이지 새로고침 복구 등 여러 엣지 케이스를 고려해야 하므로 복잡도 6점입니다. 6개 서브태스크가 적절합니다."
+		},
+		{
+			"taskId": 3,
+			"taskTitle": "타이머 카운트다운 로직에서 Pause 상태 처리 구현",
+			"complexityScore": 7,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "카운트다운 로직 수정을 다음으로 세분화하세요: (1) 기존 wall-clock 기반 카운트다운 구조 파악, (2) Pause 시 remainingTime 저장 메커니즘, (3) 카운트다운 루프에 Pause 체크 조건 추가, (4) Resume 시 저장된 시간부터 재개, (5) 00:00 도달 직전 중복 완료 방지 플래그, (6) 기존 테스트 호환성 검증, (7) 빌드/린트 실행",
+			"reasoning": "현재 코드는 targetEndAtMs 기반의 wall-clock 방식이므로, Pause 구현 시 이 메커니즘을 유지하면서 남은 시간을 저장하고 재개하는 로직이 필요합니다. 00:00 도달 직전의 중복 완료 방지는 race condition 처리가 필요한 복잡한 케이스입니다. setInterval과 wall-clock 계산의 조합이 까다롭고, 기존 테스트 검증도 필요하므로 복잡도 7점입니다. 7개 서브태스크가 적절합니다."
+		},
+		{
+			"taskId": 4,
+			"taskTitle": "UI에서 Pause/Resume 버튼 노출 및 상태 표시",
+			"complexityScore": 5,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "UI 구현을 다음으로 나누세요: (1) Pause/Resume 버튼 조건부 렌더링(상태별), (2) Pause 상태 시각적 표시(배경색, 레이블), (3) 타이머 카운트다운 로직에 Pause 처리 추가, (4) Pause/Resume 버튼 클릭 핸들러, (5) 반응형 디자인 및 스타일 일관성 검증, (6) 통합 테스트 및 엣지 케이스 처리",
+			"reasoning": "이미 UI 컴포넌트가 존재하고 Pause/Resume 버튼도 있으나, 조건부 렌더링과 상태 표시가 추가로 필요합니다. React 컴포넌트 수정이므로 비교적 직관적이지만, Radix UI와 Tailwind CSS 스타일 일관성 유지, 반응형 디자인, 기존 UI와의 조화가 필요합니다. 복잡도 5점이며, 6개 서브태스크가 적절합니다."
+		},
+		{
+			"taskId": 5,
+			"taskTitle": "Pause/Resume 버튼 클릭 이벤트 핸들러 구현",
+			"complexityScore": 6,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "이벤트 핸들러 구현을 다음으로 세분화하세요: (1) Pause 버튼 클릭 핸들러(상태 전환, 시간 저장), (2) Resume 버튼 클릭 핸들러(상태 복구, 카운트다운 재개), (3) 상태 저장 로직 통합(localStorage), (4) 디바운싱/쓰로틀링으로 중복 클릭 방지, (5) 버튼 비활성화 상태 관리, (6) Skip/Reset 핸들러와의 상호작용 확인",
+			"reasoning": "핸들러는 상태 전환, localStorage 저장, targetEndAtMs 관리, 디바운싱 등 여러 책임을 가집니다. 특히 기존 Skip/Reset 핸들러와의 간섭을 방지하고, 중복 클릭 방지를 위한 추가 로직이 필요합니다. 상태 머신과 저장소 정책의 정확한 이해가 필요하므로 복잡도 6점입니다. 6개 서브태스크가 적절합니다."
+		},
+		{
+			"taskId": 6,
+			"taskTitle": "페이지 새로고침 시 Pause 상태 복구 로직 구현",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "페이지 복구 로직을 다음으로 나누세요: (1) 저장된 Pause 상태 데이터 읽기(localStorage), (2) isPaused 플래그 기반 Pause 상태 복구, (3) remainingTime UI 표시, (4) 타임스탬프 기반 경과 시간 검증(선택사항), (5) 저장 데이터 손상/부재 시 폴백, (6) 기존 세션 복구 로직과의 통합",
+			"reasoning": "현재 코드에는 페이지 새로고침 시 타이머 상태 복구가 없습니다(설정과 통계만 복구). Pause 상태 복구를 위해서는 isPaused 플래그, remainingTime, 이전 상태(focus/break) 등을 저장하고 복구해야 합니다. wall-clock 기반 타이머와의 통합이 까다롭고, 타임스탬프 검증, 데이터 손상 처리 등 엣지 케이스가 많아 복잡도 7점입니다. 6개 서브태스크가 적절합니다."
+		},
+		{
+			"taskId": 7,
+			"taskTitle": "Pause 상태에서 Skip/Reset 동작 구현 및 통계 정책 유지",
+			"complexityScore": 7,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Skip/Reset 동작을 다음으로 나누세요: (1) Pause 상태에서 Skip 로직(완료 처리 후 다음 세션), (2) Pause 상태에서 Reset 로직(세션 초기화), (3) Skip/Reset 시 Pause 상태 즉시 건너뛰기, (4) 00:00 중복 완료 방지 플래그 강화, (5) Pause 중 누적 포커스 시간 증가 방지 검증, (6) 통계 테이블에서 정책 적용 검증, (7) 빌드/린트/테스트 실행",
+			"reasoning": "Skip과 Reset은 통계 정책에 직접 영향을 미치는 중요한 기능입니다. Pause 상태에서 Skip 시 완료 세션 증가 여부, Reset 시 통계 미변경 등 정책을 정확히 구현해야 합니다. 00:00 도달 직전의 중복 완료 방지 플래그와의 통합, 누적 포커스 시간 계산 로직과의 호환성이 복잡하므로 복잡도 7점입니다. 7개 서브태스크가 적절합니다."
+		},
+		{
+			"taskId": 8,
+			"taskTitle": "00:00 도달 직전 Pause/Resume 연타 시 중복 완료 방지 로직 강화",
+			"complexityScore": 8,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "중복 완료 방지를 다음으로 세분화하세요: (1) isSessionComplete 플래그 추가 및 초기화, (2) 카운트다운 루프에서 00:00 도달 시 플래그 체크, (3) 완료 처리 후 플래그 true 설정, (4) Pause/Resume 중 플래그 수정 불가 규칙, (5) Resume 후 카운트다운 재개 시 플래그 검증, (6) 00:00 도달 시 타이머 인터벌 정지, (7) 00:01에서의 연타 테스트로 검증",
+			"reasoning": "이것은 race condition을 다루는 엣지 케이스로, 타이밍 이슈가 발생하기 쉽습니다. wall-clock 기반 카운트다운에서 Pause/Resume 연타 시 완료 로직이 중복 실행될 위험이 있습니다. isSessionComplete 플래그로 멱등성을 보장해야 하고, 여러 비동기 이벤트(setInterval, visibilitychange, Pause/Resume 클릭)의 상호작용을 정확히 제어해야 하므로 복잡도 8점입니다. 7개 서브태스크가 적절합니다."
+		},
+		{
+			"taskId": 9,
+			"taskTitle": "기존 통계 계산 로직 검증 및 Pause 통합 테스트",
+			"complexityScore": 7,
+			"recommendedSubtasks": 8,
+			"expansionPrompt": "통계 검증을 다음으로 나누세요: (1) 통계 계산 규칙 검증 테스트 환경 구성, (2) 세션 증가 규칙 검증(Focus 시작 시만), (3) 완료 세션 증가 규칙 검증(00:00 도달 시만), (4) 누적 포커스 시간 계산 검증(00:00 시만), (5) 5가지 주요 시나리오별 통계 자동 검증, (6) 통계 UI 검증(대시보드), (7) 기존 테스트 스위트 전체 통과, (8) 최종 통합 테스트 결과 정리 및 품질 게이트",
+			"reasoning": "통계 검증은 5가지 시나리오(Focus 완료, Pause→Resume 완료, Pause→Skip, Pause→Reset, 다중 Pause/Resume)를 모두 테스트해야 합니다. 세션 증가, 완료 세션, 누적 포커스 시간의 3가지 통계 각각에 대한 정책 준수를 확인하고, UI와 localStorage 데이터의 일관성을 검증해야 합니다. 회귀 테스트도 포함되므로 복잡도 7점입니다. 8개 서브태스크가 적절합니다."
+		},
+		{
+			"taskId": 10,
+			"taskTitle": "빌드/린트/테스트 실행 및 최종 검증",
+			"complexityScore": 5,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "최종 검증을 다음으로 나누세요: (1) pnpm lint 실행 및 오류 수정, (2) pnpm build 실행 및 빌드 오류 해결, (3) pnpm test 실행(테스트 존재 시), (4) E2E 테스트 추가(Pause/Resume UI 흐름), (5) 주요 브라우저 호환성 테스트, (6) 성능 프로파일링(메모리 누수/성능 저하), (7) 최종 코드 리뷰(주석/문서화)",
+			"reasoning": "빌드/린트는 자동화되어 있고 비교적 직관적이지만, E2E 테스트 추가, 브라우저 호환성, 성능 프로파일링은 추가 시간이 필요합니다. package.json을 보면 테스트 스크립트가 없어 유닛 테스트 추가가 필요할 수 있습니다. 여러 검증 단계를 포함하지만 개별 작업은 명확하므로 복잡도 5점입니다. 7개 서브태스크가 적절합니다."
+		}
+	]
+}
