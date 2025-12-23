@@ -53,3 +53,6 @@ node_modules/
 # Task files
 # tasks.json
 # tasks/ 
+
+# Claude Code per-machine settings
+.claude/settings.local.json
