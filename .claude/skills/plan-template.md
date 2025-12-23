@@ -5,6 +5,14 @@
 **Last Updated**: YYYY-MM-DD
 **Estimated Completion**: YYYY-MM-DD
 
+**Workdir**: `app/` | `lib/` | `components/` | `docs/`
+**Start Command**: `cd ~/pomobox/<workdir> && claude`
+**Scope Rule**: workdir는 “영향 범위(appliesToFiles/변경 파일)”가 가장 많이 속한 최상위 폴더로 고정한다.
+- 예) 타이머/통계/저장·복구 핵심 로직이면 `lib/` (PRD도 “통계 정책 유지”와 Pause/Resume 로직 안정성을 요구) :contentReference[oaicite:3]{index=3}
+- 예) 라우팅/레이아웃/페이지면 `app/`
+- 예) UI 컴포넌트면 `components/`
+- 예) 문서/플랜만 수정이면 `docs/`
+
 ---
 
 **⚠️ CRITICAL INSTRUCTIONS**: After completing each phase:

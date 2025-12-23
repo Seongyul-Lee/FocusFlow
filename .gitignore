@@ -56,3 +56,10 @@ node_modules/
 
 # Claude Code per-machine settings
 .claude/settings.local.json
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

@@ -19,18 +19,20 @@
 - 계획/작업쪼개기/다음 할 일 관리는 taskmaster-ai(MCP)를 우선 사용한다.
 - 외부 라이브러리/프레임워크(Next.js/React 등) API가 불확실하면 context7(MCP)로 문서를 확인한 뒤 답한다.
 - 로컬 코드(레포 내부 구현)는 context7로 묻지 말고, 현재 파일/변경 diff를 근거로 답한다.
+- 모든 작업은 Plan에 `Workdir`를 먼저 확정한다. (plan-template 기준)
+- 실행은 `cd ~/pomobox/<workdir> && claude`로 해당 폴더에서 시작한다.
 
 ---
 
 ## 2) Quality gates (finish conditions)
-- 작업 종료 전: 관련된 최소 명령을 실행한다: `pnpm lint`, `pnpm build` (테스트가 있으면 `pnpm test`)
+- 작업 종료 전: 관련된 최소 명령을 실행한다: pnpm lint, pnpm build (리스크 높은 변경은 pnpm e2e)
 - 커밋 메시지는 한국어로 작성한다.
 - UI 변경이 있으면 접근성(키보드 포커스/ARIA/대비) 확인을 포함한다.
 
 ### Lightweight Ops (low-maintenance)
 - Commands의 권위는 항상 `package.json` scripts이며, 문서에 명령을 “고정”하지 않는다. 필요 시 `pnpm -s run`으로 확인한다.
-- 기본 품질 게이트(권장): `pnpm lint` → `pnpm build` → (가능하면) `pnpm test` (실제 존재 여부는 scripts 기준).
-- 리스크 높은 변경(타이머 상태/통계/저장·복구/UI 플로우)은 구현 전에 `docs/plans/PLAN_<slug>.md`를 “초간단(3~7줄)”로 생성하는 것을 권장한다.
+- 기본 품질 게이트(권장): pnpm lint → pnpm build (리스크 높은 변경은 pnpm e2e).
+- Plan은 Section 8 준수
 - Plan에는 최소 3가지만 적는다: 변경 요약 / 영향 범위(파일) / 검증 명령(또는 체크).
 - 사소한 변경(문구/스타일/주석/리드미)은 Plan 생성을 생략해도 된다.
 
@@ -53,11 +55,13 @@
 - 기본 운영:
   - PRD/태스크 생성은 `.taskmaster/docs/`에서 관리
   - 태스크 실행은 “next → 구현 → quality gates → 커밋” 순서로 진행
+- 상태 확인(진행/완료/우선순위)은 task-master list/show/next 등 Task Master 출력만 SSOT로 신뢰한다.
+- docs/prd.txt의 체크박스는 참고용이며, 불일치 시 항상 Task Master 상태를 우선한다.
 
 ### 4.2 Context7 (Free 200/day 최적화) — 강제 규칙
 - “코드 작성/수정/리뷰 시작 시” topic별 Context7 1회만 조회한다.
 - 동일 topic 재호출 금지. 첫 조회 결과는 반드시 baseline에 기록하고 작업 내내 재사용한다.
-- baseline 경로: `pomobox/docs/context7-baseline.json`
+- baseline 경로: docs/context7-baseline.json
 
 #### Topic 정의(고정)
 - `주제(topic) = (context7CompatibleLibraryID) + (topic) + (결정 지점/변경셋)`
@@ -95,12 +99,25 @@
 ---
 
 ## 6) Commands & Scripts (레포 기준으로만 확정)
-- 패키지 매니저: pnpm (품질 게이트 명령에 pnpm 사용)
+- 패키지 매니저: pnpm
 - 스크립트 목록 확정: `pnpm -s run`
-- 기본 품질 게이트:
-  - `pnpm lint`
+
+### 현재 유효 스크립트(스냅샷, package.json 기준)
+- 현재 `package.json`에 정의된 pnpm scripts는 아래뿐이다:
+  - `pnpm dev`
   - `pnpm build`
-  - (있다면) `pnpm test`
+  - `pnpm start`
+  - `pnpm lint`
+  - `pnpm e2e`
+  - `pnpm e2e:ui`
+  - `pnpm e2e:report`
+- pnpm lint, pnpm build (리스크 높은 변경은 pnpm e2e)
+- 스크립트가 변경될 수 있으므로 실행 전에는 항상 `pnpm -s run`으로 재확인한다.
+
+### E2E (Playwright) 운영 규칙
+- E2E는 Playwright 기반이며 기본 경로는 `tests/e2e/`, 설정은 `playwright.config.ts`를 사용한다.
+- 기본 실행: `pnpm e2e` (필요 시 `pnpm e2e:ui`, `pnpm e2e:report`)
+- 리스크 높은 변경(라우팅/인증/상태관리/타이머 핵심 로직/배포 설정 등) 시 필수 게이트: 기본 게이트 + `pnpm e2e`
 
 > NOTE: dev 서버/테스트 러너/포맷터 명령은 `package.json` 확인 후 이 섹션을 업데이트한다.
 

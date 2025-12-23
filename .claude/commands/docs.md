@@ -1,3 +1,6 @@
+- Canonical paths: docs/context7-baseline.json
+- Lookup key: topicName
+
 $ARGUMENTS
 
 목표: 외부 라이브러리/프레임워크 문서 확인이 필요할 때만 context7을 사용한다.
