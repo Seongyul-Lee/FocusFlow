@@ -57,5 +57,29 @@
       "components/settings-dialog.tsx",
       "components/ui/select.tsx"
     ]
+  },
+  {
+    "topicName": "tailwindcss-responsive-breakpoints",
+    "context7CompatibleLibraryID": "/websites/tailwindcss",
+    "topic": "responsive design media queries breakpoints",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-25T00:00:00Z",
+    "keyAPIs": [
+      "Responsive utility variants: sm:, md:, lg:, xl:, 2xl:",
+      "Default breakpoints: sm (640px), md (768px), lg (1024px), xl (1280px), 2xl (1536px)",
+      "Arbitrary breakpoint values: min-[475px], max-[960px]",
+      "Container queries: @container, @min-[475px], @max-[960px]",
+      "Mobile-first approach: utilities apply at min-width"
+    ],
+    "constraints": [
+      "Breakpoints use min-width media queries (mobile-first)",
+      "Apply md: prefix for tablet/desktop (768px and above)",
+      "Responsive variants only affect the specific utility they prefix",
+      "rem-based utilities scale with root font-size",
+      "px-based values (like SVG viewBox) are not affected by font-size changes"
+    ],
+    "appliesToFiles": [
+      "app/globals.css"
+    ]
   }
 ]
