@@ -112,12 +112,22 @@ describe('State Machine', () => {
       })
 
       it('should always go to Short Break (never Long Break)', () => {
-        // 4번째 Focus를 Skip해도 Long Break가 아닌 Short Break
+        // Focus를 Skip하면 항상 Short Break (Long Break 안 됨)
         let currentState = state
+
+        // 4번의 Focus Skip (각 Skip 후 Break도 Skip하여 다시 Focus로)
         for (let i = 0; i < 4; i++) {
+          // Focus Skip → Short Break
           currentState = transition(currentState, { type: 'SKIP' }, settings).state
+          expect(currentState.phase).toBe('break') // 항상 Short Break
+
+          // Break Skip → Focus로 복귀
+          if (i < 3) { // 마지막은 Break 상태로 유지
+            currentState = transition(currentState, { type: 'SKIP' }, settings).state
+            expect(currentState.phase).toBe('focus')
+          }
         }
-        expect(currentState.phase).toBe('break') // Short Break
+
         expect(currentState.completedSessions).toBe(4)
         expect(currentState.longBreakCount).toBe(0) // Long Break 트리거 안 됨
       })
