@@ -66,6 +66,13 @@
     "vaul": "^1.1.2",
     "zod": "3.25.76"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
+  },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
     "@eslint/eslintrc": "^3.3.3",
