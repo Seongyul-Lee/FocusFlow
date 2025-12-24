@@ -58,33 +58,44 @@
 - 상태 확인(진행/완료/우선순위)은 task-master list/show/next 등 Task Master 출력만 SSOT로 신뢰한다.
 - docs/prd.txt의 체크박스는 참고용이며, 불일치 시 항상 Task Master 상태를 우선한다.
 
-### 4.2 Context7 (Free 200/day 최적화) — 강제 규칙
-- “코드 작성/수정/리뷰 시작 시” topic별 Context7 1회만 조회한다.
-- 동일 topic 재호출 금지. 첫 조회 결과는 반드시 baseline에 기록하고 작업 내내 재사용한다.
+### 4.2 Context7 (Free 200/day 적극 활용) — 자동 조회 정책
+- **작업 시작 시 자동으로 Context7을 조회한다** (할당량 200/day 적극 활용)
+- 당일 baseline 캐시가 있으면 재사용, 없으면 자동 조회 후 캐시
+- 다음 날(retrievedAt 날짜 다름)이면 자동 재조회하여 최신 문서 반영
 - baseline 경로: docs/context7-baseline.json
 
+#### 자동 조회 규칙 (파일 타입별)
+작업 중인 파일에 따라 자동으로 관련 라이브러리 문서 조회:
+- `app/**/*.tsx`, `app/**/*.ts` → `/vercel/next.js` (App Router, Server Actions, Metadata 등)
+- `components/**/*.tsx` → React Hooks, Radix UI 컴포넌트
+- `lib/**/*.ts` → 사용 중인 주요 라이브러리 (zod, date-fns 등)
+- `tests/**/*.ts` → Playwright, Testing Library
+- 기타: Claude 판단에 따라 필요 시 조회
+
 #### Topic 정의(고정)
-- `주제(topic) = (context7CompatibleLibraryID) + (topic) + (결정 지점/변경셋)`
-- 예: `/vercel/next.js + app router metadata + "layout/page에서 metadata 설계 결론"`
+- `주제(topic) = (context7CompatibleLibraryID) + (topic) + (작업 맥락)`
+- 예: `/vercel/next.js + server actions + "form validation with zod"`
 
 #### 기록 스키마(필수 7개 필드)
-- `topicName`
-- `context7CompatibleLibraryID`
-- `topic`
-- `pageRange`
-- `retrievedAt`
-- `keyAPIs/constraints`
-- `appliesToFiles`
+- `topicName`: 고유 식별자 (예: "nextjs-server-actions-validation")
+- `context7CompatibleLibraryID`: Context7 라이브러리 ID
+- `topic`: 조회한 주제
+- `pageRange`: 조회한 페이지 범위
+- `retrievedAt`: ISO 8601 날짜 (날짜 비교용, 예: "2025-12-24T00:00:00Z")
+- `keyAPIs`: 핵심 API 목록 (배열)
+- `constraints`: 제약사항/주의사항 (배열)
+- `appliesToFiles`: 적용 대상 파일 (배열)
 
-#### 예외(재호출 허용) — 반드시 사유 기록
-1) 새 topic
-2) 기존 baseline 불충분(범위 확장; pageRange 내 확장 + 사유 기록)
-3) 버전/에러 재검증(사유 기록)
+#### Baseline 캐시 전략
+1. **작업 시작 시**: baseline에서 topicName + retrievedAt 확인
+2. **당일 캐시 존재**: 재사용 (Context7 호출 안 함)
+3. **다른 날 또는 없음**: 자동 조회 후 baseline 업데이트
+4. **할당량 관리**: 같은 topic은 하루 1회만 조회 (자정 지나면 자동 갱신)
 
-#### .claude/commands/docs.md 준수
-- docs 실행 시 항상 baseline에서 `topicName`으로 먼저 검색한다.
-- 존재하면 Context7 호출 금지, baseline 재사용
-- 없으면 1회 호출 후 baseline에 기록(스키마 준수)
+#### 사용량 추정
+- 예상 일일 사용량: 15-30회 (할당량의 7.5-15%)
+- 파일 타입별 자동 조회로 항상 최신 문서 기반 작업
+- 할당량 부족 시 당일 캐시만 사용
 
 ---
 
