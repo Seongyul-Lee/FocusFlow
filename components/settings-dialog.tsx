@@ -60,7 +60,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
 
     setTimeout(() => {
       setIsSaved(false)
-    }, 2000)
+    }, 1000)
   }
 
   const handleSoundToggle = (checked: boolean) => {
