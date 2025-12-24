@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
 import { SettingsDialog, TimerSettings } from "./settings-dialog"
 
-type TimerType = 'focus' | 'break' | 'longBreak'
+type TimerPhase = 'focus' | 'break' | 'longBreak'
+type TimerStatus = 'idle' | 'running' | 'paused'
 
 const TIMER_RADIUS = 140
 const TIMER_CIRCUMFERENCE = 2 * Math.PI * TIMER_RADIUS
@@ -20,17 +21,18 @@ const DEFAULT_SETTINGS: TimerSettings = {
 
 export function PomodoroTimer() {
   const [settings, setSettings] = useState<TimerSettings>(DEFAULT_SETTINGS)
-  const [type, setType] = useState<TimerType>('focus')
+  const [phase, setPhase] = useState<TimerPhase>('focus')
   const [timeLeft, setTimeLeft] = useState(settings.focusDuration * 60)
-  const [isRunning, setIsRunning] = useState(false)
+  const [status, setStatus] = useState<TimerStatus>('idle')
   const [sessions, setSessions] = useState(0)
   const [completedSessions, setCompletedSessions] = useState(0)
   const [totalFocusMinutes, setTotalFocusMinutes] = useState(0)
   const [targetEndAtMs, setTargetEndAtMs] = useState<number | null>(null)
+  const [isTransitioning, setIsTransitioning] = useState(false)
 
   const getDuration = () => {
-    if (type === 'focus') return settings.focusDuration * 60
-    if (type === 'longBreak') return 15 * 60
+    if (phase === 'focus') return settings.focusDuration * 60
+    if (phase === 'longBreak') return 15 * 60
     return settings.breakDuration * 60
   }
 
@@ -43,10 +45,10 @@ export function PomodoroTimer() {
   // Browser title update
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const title = type === 'focus' ? 'Focus' : type === 'longBreak' ? 'Long Break' : 'Break'
+      const title = phase === 'focus' ? 'Focus' : phase === 'longBreak' ? 'Long Break' : 'Break'
       document.title = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} - ${title}`
     }
-  }, [timeLeft, type, minutes, seconds])
+  }, [timeLeft, phase, minutes, seconds])
 
   // Load settings
   useEffect(() => {
@@ -85,6 +87,21 @@ export function PomodoroTimer() {
     localStorage.setItem("pomodoro-total-minutes", totalFocusMinutes.toString())
   }, [totalFocusMinutes])
 
+  // Save timer state (Phase 1: save only, Phase 3: load & rehydrate)
+  useEffect(() => {
+    const timerState = {
+      version: 1,
+      phase,
+      status,
+      remainingSeconds: timeLeft,
+      targetEndAtMs,
+      completedSessions,
+      longBreakCount: 0, // TODO: track in future
+      lastUpdatedAtMs: Date.now()
+    }
+    localStorage.setItem("pomodoro-timer-state", JSON.stringify(timerState))
+  }, [phase, status, timeLeft, targetEndAtMs, completedSessions])
+
   // Request notification permission
   useEffect(() => {
     if (settings.notificationsEnabled && Notification.permission === "default") {
@@ -94,18 +111,18 @@ export function PomodoroTimer() {
 
   // Initialize / clear target end time for time-based timer
   useEffect(() => {
-    if (isRunning && targetEndAtMs === null) {
+    if (status === 'running' && targetEndAtMs === null) {
       setTargetEndAtMs(Date.now() + timeLeft * 1000)
       return
     }
-    if (!isRunning && targetEndAtMs !== null) {
+    if (status !== 'running' && targetEndAtMs !== null) {
       setTargetEndAtMs(null)
     }
-  }, [isRunning, targetEndAtMs])
+  }, [status, targetEndAtMs, timeLeft])
 
   // Tick: recompute remaining time from wall-clock (prevents background drift)
   useEffect(() => {
-    if (!isRunning || targetEndAtMs === null) return
+    if (status !== 'running' || targetEndAtMs === null) return
 
     const updateTimeLeft = () => {
       const remainingSeconds = Math.max(0, Math.ceil((targetEndAtMs - Date.now()) / 1000))
@@ -124,22 +141,24 @@ export function PomodoroTimer() {
       window.clearInterval(id)
       document.removeEventListener("visibilitychange", handleVisibilityChange)
     }
-  }, [isRunning, targetEndAtMs])
+  }, [status, targetEndAtMs])
 
   // Phase transition when timer hits 0
   useEffect(() => {
-    if (!(timeLeft === 0 && isRunning)) return
+    if (!(timeLeft === 0 && status === 'running')) return
+    if (isTransitioning) return // Prevent duplicate transition
 
-    setIsRunning(false)
+    setIsTransitioning(true)
+    setStatus('idle')
     setTargetEndAtMs(null)
 
     // Notifications and sound
     if (settings.notificationsEnabled && Notification.permission === "granted") {
-      const message = type === 'focus'
+      const message = phase === 'focus'
         ? "Time for a break"
         : "Ready for another session?"
       new Notification(
-        type === 'focus' ? "Focus session complete!" : "Break time over!",
+        phase === 'focus' ? "Focus session complete!" : "Break time over!",
         { body: message, icon: "/icon.png" }
       )
     }
@@ -150,38 +169,43 @@ export function PomodoroTimer() {
       audio.play()
     }
 
-    if (type === 'focus') {
+    if (phase === 'focus') {
       const newCompleted = completedSessions + 1
       setCompletedSessions(newCompleted)
-      setSessions((prev) => prev + 1)
+
+      const newSessions = sessions + 1
+      setSessions(newSessions)
 
       // Accumulate total focus time
       const newTotal = totalFocusMinutes + settings.focusDuration
       setTotalFocusMinutes(newTotal)
 
-      // Long Break every 4 sessions
-      if (newCompleted % 4 === 0) {
-        setType('longBreak')
+      // Long Break every 4 completed sessions (not skipped)
+      if (newSessions % 4 === 0) {
+        setPhase('longBreak')
         setTimeLeft(15 * 60)
       } else {
-        setType('break')
+        setPhase('break')
         setTimeLeft(settings.breakDuration * 60)
       }
     } else {
-      setType('focus')
+      setPhase('focus')
       setTimeLeft(settings.focusDuration * 60)
     }
-  }, [timeLeft, isRunning, type, settings, completedSessions, totalFocusMinutes])
 
-  const handleStart = useCallback(() => setIsRunning(true), [])
+    setIsTransitioning(false) // Reset flag after transition
+  }, [timeLeft, status, phase, settings, completedSessions, totalFocusMinutes, sessions, isTransitioning])
+
+  const handleStart = useCallback(() => setStatus('running'), [])
   const handlePause = useCallback(() => {
-    setIsRunning(false)
+    setStatus('paused')
     setTargetEndAtMs(null)
   }, [])
+  const handleResume = useCallback(() => setStatus('running'), [])
   const handleReset = useCallback(() => {
-    setIsRunning(false)
+    setStatus('idle')
     setTargetEndAtMs(null)
-    setType('focus')
+    setPhase('focus')
     setTimeLeft(settings.focusDuration * 60)
   }, [settings.focusDuration])
 
@@ -200,7 +224,13 @@ export function PomodoroTimer() {
 
       if (e.code === 'Space') {
         e.preventDefault()
-        isRunning ? handlePause() : handleStart()
+        if (status === 'running') {
+          handlePause()
+        } else if (status === 'paused') {
+          handleResume()
+        } else {
+          handleStart()
+        }
       } else if (e.code === 'KeyR') {
         e.preventDefault()
         handleReset()
@@ -211,50 +241,48 @@ export function PomodoroTimer() {
 
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [isRunning, handlePause, handleStart, handleReset])
+  }, [status, handlePause, handleResume, handleStart, handleReset])
 
   const handleSkip = useCallback(() => {
-    setIsRunning(false)
+    setStatus('idle')
     setTargetEndAtMs(null)
-    if (type === 'focus') {
+    if (phase === 'focus') {
+      // Skip increments completedSessions but NOT sessions
+      // Long Break is triggered only by completed Focus (not skipped)
       const newCompleted = completedSessions + 1
       setCompletedSessions(newCompleted)
 
-      if (newCompleted % 4 === 0) {
-        setType('longBreak')
-        setTimeLeft(15 * 60)
-      } else {
-        setType('break')
-        setTimeLeft(settings.breakDuration * 60)
-      }
+      // Always go to Short Break when skipping Focus
+      setPhase('break')
+      setTimeLeft(settings.breakDuration * 60)
     } else {
-      setType('focus')
+      setPhase('focus')
       setTimeLeft(settings.focusDuration * 60)
     }
-  }, [type, settings, completedSessions])
+  }, [phase, settings, completedSessions])
 
   const handleSettingsChange = (newSettings: TimerSettings) => {
     setSettings(newSettings)
     localStorage.setItem("pomodoro-settings", JSON.stringify(newSettings))
 
-    if (!isRunning) {
-      if (type === 'focus') {
+    if (status !== 'running') {
+      if (phase === 'focus') {
         setTimeLeft(newSettings.focusDuration * 60)
-      } else if (type === 'break') {
+      } else if (phase === 'break') {
         setTimeLeft(newSettings.breakDuration * 60)
       }
     }
   }
 
   const getTypeLabel = () => {
-    if (type === 'focus') return 'Focus Session'
-    if (type === 'longBreak') return 'Long Break'
+    if (phase === 'focus') return 'Focus Session'
+    if (phase === 'longBreak') return 'Long Break'
     return 'Break Time'
   }
 
   const getTypeDescription = () => {
-    if (type === 'focus') return 'Stay focused on your work'
-    if (type === 'longBreak') return 'Take a longer break - you earned it!'
+    if (phase === 'focus') return 'Stay focused on your work'
+    if (phase === 'longBreak') return 'Take a longer break - you earned it!'
     return 'Take a short break'
   }
 
@@ -262,7 +290,7 @@ export function PomodoroTimer() {
     <div className="relative flex flex-col items-center gap-8">
       <SettingsDialog
         settings={settings}
-        isRunning={isRunning}
+        isRunning={status === 'running'}
         onSettingsChange={handleSettingsChange}
       />
 
@@ -289,7 +317,7 @@ export function PomodoroTimer() {
             strokeDasharray={TIMER_CIRCUMFERENCE}
             strokeDashoffset={TIMER_CIRCUMFERENCE - (progress / 100) * TIMER_CIRCUMFERENCE}
             className={`transition-all duration-1000 ease-linear ${
-              type === 'focus' ? 'text-primary' : type === 'longBreak' ? 'text-blue-500' : 'text-green-500'
+              phase === 'focus' ? 'text-primary' : phase === 'longBreak' ? 'text-blue-500' : 'text-green-500'
             }`}
           />
         </svg>
@@ -302,15 +330,20 @@ export function PomodoroTimer() {
 
       <div className="flex flex-col items-center gap-4">
         <div className="flex items-center gap-3">
-          {!isRunning ? (
-            <Button size="lg" onClick={handleStart} className="gap-2 px-8">
-              <Play className="h-5 w-5" />
-              Start
-            </Button>
-          ) : (
+          {status === 'running' ? (
             <Button size="lg" onClick={handlePause} variant="secondary" className="gap-2 px-8">
               <Pause className="h-5 w-5" />
               Pause
+            </Button>
+          ) : status === 'paused' ? (
+            <Button size="lg" onClick={handleResume} className="gap-2 px-8">
+              <Play className="h-5 w-5" />
+              Resume
+            </Button>
+          ) : (
+            <Button size="lg" onClick={handleStart} className="gap-2 px-8">
+              <Play className="h-5 w-5" />
+              Start
             </Button>
           )}
           <Button size="lg" variant="outline" onClick={handleReset}>
@@ -320,7 +353,7 @@ export function PomodoroTimer() {
 
         <Button size="sm" variant="ghost" onClick={handleSkip} className="gap-2 text-muted-foreground hover:text-foreground">
           <SkipForward className="h-4 w-4" />
-          {type === 'focus' ? 'Skip to Break' : 'Skip Break'}
+          {phase === 'focus' ? 'Skip to Break' : 'Skip Break'}
         </Button>
       </div>
 
