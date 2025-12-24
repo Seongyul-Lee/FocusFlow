@@ -23,7 +23,9 @@ Task Master는 **작업 추적의 SSOT**이며, 작업 선택은 **유연하게*
 ### 필수 단계 (모든 워크플로우 공통)
 1. **작업 시작**: 사용자 요청 또는 `task-master next`
 2. **/plan**: 구현 계획 수립 (자동 또는 명시적)
-3. **/docs**: 외부 문서 자동 조회 (context7)
+3. **/docs**: 외부 문서 조회 ⚠️ **필수** - /plan 이후 반드시 실행
+   - baseline에 캐시된 문서는 재조회 안 함 (200/day 초과 방지)
+   - 새 topic이거나 캐시 없는 경우만 Context7 호출
 4. **구현**: 코드 작성 + 품질 게이트 (lint/build/e2e)
 5. **상태 업데이트**: `task-master set-status` ⚠️ **필수**
 
@@ -32,9 +34,15 @@ Task Master는 **작업 추적의 SSOT**이며, 작업 선택은 **유연하게*
 # 1. 다음 작업 조회
 task-master next
 
-# 2-4. 구현 (Plan → Docs → Code → Gates)
+# 2. Plan 수립
 /plan
+
+# 3. 문서 조회 (필수)
+/docs <관련 라이브러리/프레임워크>
+
+# 4. 구현 + 품질 게이트
 구현...
+pnpm lint && pnpm build
 
 # 5. 상태 업데이트 (필수)
 task-master set-status <id> done
@@ -47,9 +55,15 @@ task-master set-status <id> done
 # 1. 사용자 요청
 "다크모드 추가해줘"
 
-# 2-4. 구현 (Plan → Docs → Code → Gates)
+# 2. Plan 수립
 /plan (자동 실행)
+
+# 3. 문서 조회 (필수)
+/docs <관련 라이브러리/프레임워크>
+
+# 4. 구현 + 품질 게이트
 구현...
+pnpm lint && pnpm build
 
 # 5. Task 생성 + 상태 업데이트 (필수)
 task-master에 추가 후 done 처리
@@ -63,6 +77,34 @@ task-master에 추가 후 done 처리
 - ✅ 워크플로우 B: 새 task 추가 후 done 처리
 - ✅ 커밋 전 반드시 상태 업데이트 완료
 - ❌ 상태 미업데이트 커밋 금지
+
+### 사용자 요청 패턴별 강제 규칙 (절대 규칙)
+
+#### "다음 단계" 요청 시 → task-master next 필수
+사용자가 다음 중 하나의 패턴으로 요청하면 **반드시 task-master next**를 먼저 실행:
+
+**강제 트리거 패턴:**
+- "다음 단계"
+- "다음 작업"
+- "next"
+- "다음"
+- "계속"
+
+**실행 순서:**
+```bash
+# 1. 자동으로 task-master next 실행 (필수)
+task-master next
+
+# 2. 반환된 task로 워크플로우 A 진행
+/plan
+/docs
+구현...
+task-master set-status <id> done
+```
+
+**금지:**
+- ❌ "다음 단계" 요청 시 task-master next 없이 진행
+- ❌ 사용자에게 "다음 할 일이 뭐죠?" 같은 질문 (Task Master가 SSOT)
 
 ### 세션 재시작 시 컨텍스트 복구
 새 터미널에서 `claude` 실행 시 다음 순서로 진행 상황 확인:
