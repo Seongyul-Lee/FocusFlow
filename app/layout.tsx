@@ -60,6 +60,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteUrl,
   },
+  verification: {
+    other: {
+      "naver-site-verification": "e09d920f92485cdb757332999b0dcb5089701a75",
+    },
+  },
 }
 
 const jsonLd = {
