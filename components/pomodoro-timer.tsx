@@ -53,114 +53,6 @@ export function PomodoroTimer() {
     }
   }, [timeLeft, phase, minutes, seconds])
 
-  // Load settings
-  useEffect(() => {
-    const savedSettings = localStorage.getItem("pomodoro-settings")
-    if (savedSettings) {
-      const parsed = JSON.parse(savedSettings)
-      setSettings(parsed)
-      setTimeLeft(parsed.focusDuration * 60)
-    }
-  }, [])
-
-  // Load sessions & total time
-  useEffect(() => {
-    const savedSessions = localStorage.getItem("pomodoro-sessions")
-    const savedMinutes = localStorage.getItem("pomodoro-total-minutes")
-    const savedLongBreakCount = localStorage.getItem("pomodoro-long-break-count")
-    const savedDate = localStorage.getItem("pomodoro-date")
-    const today = new Date().toDateString()
-
-    if (savedDate === today) {
-      if (savedSessions) setSessions(parseInt(savedSessions))
-      if (savedMinutes) setTotalFocusMinutes(parseInt(savedMinutes))
-      if (savedLongBreakCount) setLongBreakCount(parseInt(savedLongBreakCount))
-    } else {
-      localStorage.setItem("pomodoro-date", today)
-      localStorage.setItem("pomodoro-sessions", "0")
-      localStorage.setItem("pomodoro-total-minutes", "0")
-      localStorage.setItem("pomodoro-long-break-count", "0")
-    }
-  }, [])
-
-  // Load timer state (rehydrate)
-  useEffect(() => {
-    const savedTimerState = localStorage.getItem("pomodoro-timer-state")
-    if (!savedTimerState) return
-
-    try {
-      const parsed = JSON.parse(savedTimerState)
-
-      // Validate required fields
-      if (
-        typeof parsed.version !== 'number' ||
-        !parsed.phase ||
-        !parsed.status ||
-        typeof parsed.remainingSeconds !== 'number'
-      ) {
-        console.warn('Invalid timer state data, skipping rehydration')
-        return
-      }
-
-      // Check if state is recent (within 24 hours)
-      const MAX_AGE_MS = 24 * 60 * 60 * 1000
-      const age = Date.now() - (parsed.lastUpdatedAtMs || 0)
-      if (age > MAX_AGE_MS) {
-        console.log('Timer state too old, skipping rehydration')
-        return
-      }
-
-      // Rehydrate state
-      setPhase(parsed.phase)
-      setCompletedSessions(parsed.completedSessions || 0)
-
-      // If status was 'running', calculate elapsed time and pause
-      if (parsed.status === 'running' && parsed.targetEndAtMs) {
-        const remainingMs = parsed.targetEndAtMs - Date.now()
-        const adjustedRemaining = Math.max(0, Math.ceil(remainingMs / 1000))
-        setTimeLeft(adjustedRemaining)
-        setStatus('paused') // Pause instead of auto-resuming
-      } else {
-        // Restore paused or idle state as-is
-        setStatus(parsed.status)
-        setTimeLeft(parsed.remainingSeconds)
-      }
-    } catch (error) {
-      console.error('Failed to parse timer state:', error)
-      // Fallback: use default initialization
-    }
-  }, [])
-
-  // Save sessions
-  useEffect(() => {
-    localStorage.setItem("pomodoro-sessions", sessions.toString())
-  }, [sessions])
-
-  // Save total time
-  useEffect(() => {
-    localStorage.setItem("pomodoro-total-minutes", totalFocusMinutes.toString())
-  }, [totalFocusMinutes])
-
-  // Save long break count
-  useEffect(() => {
-    localStorage.setItem("pomodoro-long-break-count", longBreakCount.toString())
-  }, [longBreakCount])
-
-  // Save timer state (Phase 1: save only, Phase 3: load & rehydrate)
-  useEffect(() => {
-    const timerState = {
-      version: 1,
-      phase,
-      status,
-      remainingSeconds: timeLeft,
-      targetEndAtMs,
-      completedSessions,
-      longBreakCount,
-      lastUpdatedAtMs: Date.now()
-    }
-    localStorage.setItem("pomodoro-timer-state", JSON.stringify(timerState))
-  }, [phase, status, timeLeft, targetEndAtMs, completedSessions, longBreakCount])
-
   // Request notification permission
   useEffect(() => {
     if (settings.notificationsEnabled && Notification.permission === "default") {
@@ -321,7 +213,6 @@ export function PomodoroTimer() {
 
   const handleSettingsChange = (newSettings: TimerSettings) => {
     setSettings(newSettings)
-    localStorage.setItem("pomodoro-settings", JSON.stringify(newSettings))
 
     if (status !== 'running') {
       if (phase === 'focus') {
