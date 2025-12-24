@@ -410,7 +410,7 @@ export function PomodoroTimer() {
               Start
             </Button>
           )}
-          <Button size="lg" variant="outline" onClick={handleReset}>
+          <Button size="lg" variant="outline" onClick={handleReset} aria-label="Reset timer">
             <RotateCcw className="h-5 w-5" />
           </Button>
         </div>
