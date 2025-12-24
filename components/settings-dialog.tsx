@@ -143,14 +143,14 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
               <div className="space-y-3 pl-1">
                 {/* Sound Type Selection */}
                 <div className="space-y-2">
-                  <span className="text-sm text-muted-foreground">Sound Type</span>
+                  <span className="text-sm text-muted-foreground" id="sound-type-label">Sound Type</span>
                   <Select
                     value={localSettings.soundType}
                     onValueChange={(value) =>
                       setLocalSettings({ ...localSettings, soundType: value })
                     }
                   >
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full" aria-labelledby="sound-type-label">
                       <SelectValue placeholder="Select a sound" />
                     </SelectTrigger>
                     <SelectContent>
@@ -165,7 +165,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
 
                 {/* Volume Slider */}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Volume</span>
+                  <span className="text-sm text-muted-foreground" id="volume-label">Volume</span>
                   <span className="text-sm font-medium">{localSettings.volume}%</span>
                 </div>
                 <Slider
@@ -176,6 +176,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                   max={100}
                   step={1}
                   className="w-full"
+                  aria-labelledby="volume-label"
                 />
                 <Button
                   variant="outline"

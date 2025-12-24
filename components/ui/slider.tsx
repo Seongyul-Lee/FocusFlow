@@ -23,6 +23,9 @@ function Slider({
     [value, defaultValue, min, max]
   )
 
+  // Extract aria-labelledby from props for Thumb components
+  const ariaLabel = 'aria-labelledby' in props ? props['aria-labelledby'] as string : undefined
+
   return (
     <SliderPrimitive.Root
       data-slot="slider"
@@ -54,6 +57,7 @@ function Slider({
           data-slot="slider-thumb"
           key={index}
           className="border-primary ring-ring/50 block size-4 shrink-0 rounded-full border bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+          aria-labelledby={ariaLabel}
         />
       ))}
     </SliderPrimitive.Root>
