@@ -146,18 +146,29 @@ export function PomodoroTimer() {
     setIsTransitioning(false) // Reset flag after transition
   }, [timeLeft, status, phase, settings, completedSessions, totalFocusMinutes, sessions, isTransitioning])
 
-  const handleStart = useCallback(() => setStatus('running'), [])
+  const handleStart = useCallback(() => {
+    if (isTransitioning) return
+    setStatus('running')
+  }, [isTransitioning])
+
   const handlePause = useCallback(() => {
+    if (isTransitioning) return
     setStatus('paused')
     setTargetEndAtMs(null)
-  }, [])
-  const handleResume = useCallback(() => setStatus('running'), [])
+  }, [isTransitioning])
+
+  const handleResume = useCallback(() => {
+    if (isTransitioning) return
+    setStatus('running')
+  }, [isTransitioning])
+
   const handleReset = useCallback(() => {
+    if (isTransitioning) return
     setStatus('idle')
     setTargetEndAtMs(null)
     setPhase('focus')
     setTimeLeft(settings.focusDuration * 60)
-  }, [settings.focusDuration])
+  }, [settings.focusDuration, isTransitioning])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -194,6 +205,7 @@ export function PomodoroTimer() {
   }, [status, handlePause, handleResume, handleStart, handleReset])
 
   const handleSkip = useCallback(() => {
+    if (isTransitioning) return
     setStatus('idle')
     setTargetEndAtMs(null)
     if (phase === 'focus') {
@@ -209,7 +221,7 @@ export function PomodoroTimer() {
       setPhase('focus')
       setTimeLeft(settings.focusDuration * 60)
     }
-  }, [phase, settings, completedSessions])
+  }, [phase, settings, completedSessions, isTransitioning])
 
   const handleSettingsChange = (newSettings: TimerSettings) => {
     setSettings(newSettings)
@@ -252,11 +264,11 @@ export function PomodoroTimer() {
         </p>
         <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full transition-opacity duration-200 ${
           status === 'paused'
-            ? 'bg-amber-100 dark:bg-amber-900/30 opacity-100 visible'
+            ? 'bg-amber-100 dark:bg-amber-950 opacity-100 visible'
             : 'opacity-0 invisible'
         }`}>
-          <Pause className="h-3 w-3 text-amber-700 dark:text-amber-500" />
-          <span className="text-xs font-medium text-amber-700 dark:text-amber-500 uppercase tracking-wide">
+          <Pause className="h-3 w-3 text-amber-700 dark:text-amber-200" />
+          <span className="text-xs font-medium text-amber-700 dark:text-amber-200 uppercase tracking-wide">
             Paused
           </span>
         </div>

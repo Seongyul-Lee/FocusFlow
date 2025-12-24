@@ -78,7 +78,7 @@ test.describe('Timer Operations', () => {
     expect(longBreakCount).toBe('1');
   });
 
-  test('should preserve paused state after page refresh', async ({ page }) => {
+  test('should reset to initial state after page refresh (Stateless)', async ({ page }) => {
     // Start timer
     await page.getByRole('button', { name: /start/i }).click();
 
@@ -88,67 +88,26 @@ test.describe('Timer Operations', () => {
     // Pause timer
     await page.getByRole('button', { name: /pause/i }).click();
 
-    // Get paused time
-    const timerDisplay = page.locator('text=/\\d{2}:\\d{2}/').first();
-    const pausedTime = await timerDisplay.textContent();
-
     // Reload page
     await page.reload();
 
-    // Verify timer is still paused
-    await expect(page.getByRole('button', { name: /resume/i })).toBeVisible();
+    // Verify timer reset to initial state (Stateless policy)
+    await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
 
-    // Verify time is approximately the same (allow 1 second difference)
-    const restoredTime = await timerDisplay.textContent();
-    const parsePausedTime = (time: string | null) => {
-      if (!time) return 0;
-      const [min, sec] = time.split(':').map(Number);
-      return min * 60 + sec;
-    };
-
-    const pausedSeconds = parsePausedTime(pausedTime);
-    const restoredSeconds = parsePausedTime(restoredTime);
-    expect(Math.abs(pausedSeconds - restoredSeconds)).toBeLessThanOrEqual(1);
-  });
-
-  test('should recalculate time after refresh during running state', async ({ page }) => {
-    // Start timer
-    await page.getByRole('button', { name: /start/i }).click();
-
-    // Wait for timer to tick
-    await page.waitForTimeout(2000);
-
-    // Reload page
-    await page.reload();
-
-    // Verify timer was paused (running state doesn't auto-resume per implementation)
-    await expect(page.getByRole('button', { name: /resume/i })).toBeVisible();
-
-    // Verify timer restored (implementation pauses running timers on reload)
-    // Time should be recalculated based on targetEndAtMs
+    // Verify time reset to 25:00
     const timerDisplay = page.locator('text=/\\d{2}:\\d{2}/').first();
     const restoredTime = await timerDisplay.textContent();
+    expect(restoredTime).toBe('25:00');
 
-    // Verify it's a valid time format
-    expect(restoredTime).toMatch(/\d{2}:\d{2}/);
+    // Verify phase reset to Focus
+    await expect(page.locator('text=/Focus Session/i')).toBeVisible();
   });
+
 });
 
 test.describe('Statistics Regression Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-
-    // Reset statistics
-    await page.evaluate(() => {
-      const today = new Date().toDateString();
-      localStorage.setItem('pomodoro-date', today);
-      localStorage.setItem('pomodoro-sessions', '0');
-      localStorage.setItem('pomodoro-total-minutes', '0');
-      localStorage.setItem('pomodoro-completed-sessions', '0');
-      localStorage.setItem('pomodoro-long-break-count', '0');
-    });
-
-    await page.reload();
     await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
   });
 
@@ -275,7 +234,9 @@ test.describe('Statistics Regression Tests', () => {
     expect(finalStats).toBe(initialStats);
   });
 
-  test('should handle missing localStorage keys gracefully (legacy users)', async ({ page }) => {
+  test.skip('should handle missing localStorage keys gracefully (legacy users)', async ({ page }) => {
+    // SKIPPED: Stateless policy - localStorage not used
+    // App no longer persists state across page refreshes
     await page.goto('/');
 
     // Simulate legacy user: only old keys exist, new keys (longBreakCount) don't
