@@ -15,12 +15,83 @@
 
 ---
 
-## 1) Default workflow (우선순위 고정)
-- 계획/작업쪼개기/다음 할 일 관리는 taskmaster-ai(MCP)를 우선 사용한다.
+## 1) Default workflow (하이브리드 운영)
+
+### 워크플로우 개요
+Task Master는 **작업 추적의 SSOT**이며, 작업 선택은 **유연하게** 진행한다.
+
+### 필수 단계 (모든 워크플로우 공통)
+1. **작업 시작**: 사용자 요청 또는 `task-master next`
+2. **/plan**: 구현 계획 수립 (자동 또는 명시적)
+3. **/docs**: 외부 문서 자동 조회 (context7)
+4. **구현**: 코드 작성 + 품질 게이트 (lint/build/e2e)
+5. **상태 업데이트**: `task-master set-status` ⚠️ **필수**
+
+### 워크플로우 A: Task Master 중심 (계획된 작업)
+```bash
+# 1. 다음 작업 조회
+task-master next
+
+# 2-4. 구현 (Plan → Docs → Code → Gates)
+/plan
+구현...
+
+# 5. 상태 업데이트 (필수)
+task-master set-status <id> done
+```
+
+**사용 시기**: PRD 기반 Phase/Milestone, 의존성 있는 작업
+
+### 워크플로우 B: 사용자 중심 (즉흥적 작업)
+```bash
+# 1. 사용자 요청
+"다크모드 추가해줘"
+
+# 2-4. 구현 (Plan → Docs → Code → Gates)
+/plan (자동 실행)
+구현...
+
+# 5. Task 생성 + 상태 업데이트 (필수)
+task-master에 추가 후 done 처리
+```
+
+**사용 시기**: 버그 수정, 긴급 요청, 실험적 기능
+
+### 상태 업데이트 규칙 (절대 규칙)
+- ✅ **모든 작업 완료 시 task-master set-status 필수**
+- ✅ 워크플로우 A: 기존 task 상태 업데이트
+- ✅ 워크플로우 B: 새 task 추가 후 done 처리
+- ✅ 커밋 전 반드시 상태 업데이트 완료
+- ❌ 상태 미업데이트 커밋 금지
+
+### 세션 재시작 시 컨텍스트 복구
+새 터미널에서 `claude` 실행 시 다음 순서로 진행 상황 확인:
+
+1. **Task Master 조회**
+   ```bash
+   task-master get-tasks status="in-progress,pending"
+   ```
+
+2. **최근 커밋 확인**
+   ```bash
+   git log -5 --oneline
+   ```
+
+3. **작업 중인 브랜치 확인**
+   ```bash
+   git status
+   git branch
+   ```
+
+4. **컨텍스트 복구 완료**
+   - Task Master 상태가 SSOT
+   - in-progress task가 현재 작업
+   - pending task가 다음 작업
+
+### 기타 원칙
 - 외부 라이브러리/프레임워크(Next.js/React 등) API가 불확실하면 context7(MCP)로 문서를 확인한 뒤 답한다.
 - 로컬 코드(레포 내부 구현)는 context7로 묻지 말고, 현재 파일/변경 diff를 근거로 답한다.
 - 모든 작업은 Plan에 `Workdir`를 먼저 확정한다. (plan-template 기준)
-- 실행은 `cd ~/pomobox/<workdir> && claude`로 해당 폴더에서 시작한다.
 
 ---
 
@@ -48,15 +119,91 @@
 
 ## 4) Tooling SSOT: Claude Code + Task Master + Context7
 
-### 4.1 Task Master (MCP)
+### 4.1 Task Master (MCP) - 작업 추적의 SSOT
 - Task Master는 `.taskmaster/`를 SSOT로 사용한다.
 - 모델은 `claude-code` provider로 통일한다(키/토큰을 레포에 저장하지 않는다).
 - `--research` 옵션은 사용하지 않는다(Research는 사실상 OFF).
-- 기본 운영:
-  - PRD/태스크 생성은 `.taskmaster/docs/`에서 관리
-  - 태스크 실행은 "next → 구현 → quality gates → 커밋" 순서로 진행
+
+#### 기본 운영 원칙
+- PRD/태스크 생성은 `.taskmaster/docs/`에서 관리
+- 태스크 실행은 "작업 시작 → /plan → /docs → 구현 → quality gates → **set-status (필수)** → 커밋" 순서로 진행
 - 상태 확인(진행/완료/우선순위)은 task-master list/show/next 등 Task Master 출력만 SSOT로 신뢰한다.
 - docs/prd.txt의 체크박스는 참고용이며, 불일치 시 항상 Task Master 상태를 우선한다.
+
+#### 상태 업데이트 필수 정책 (절대 규칙)
+⚠️ **모든 작업 완료 시 task-master set-status 필수**
+
+**워크플로우별 처리:**
+1. **워크플로우 A (Task Master 중심)**
+   ```bash
+   # 기존 task 상태 업데이트
+   task-master set-status <id> done
+   ```
+
+2. **워크플로우 B (사용자 중심)**
+   ```bash
+   # Step 1: tasks.json에 새 task 추가 (간결한 템플릿)
+   # Step 2: 상태를 done으로 설정
+   task-master set-status <new-id> done
+   ```
+
+**이유:**
+- 세션 재시작 시 컨텍스트 복구 필수
+- 진행 상황 추적 (어느 작업까지 완료했는지)
+- 팀원/미래의 자신이 작업 이력 파악
+
+**금지:**
+- ❌ 상태 미업데이트 후 커밋
+- ❌ Task Master 없이 작업 완료
+- ❌ "나중에 업데이트" (반드시 즉시)
+
+#### 세션 재시작 시 컨텍스트 복구 (자동 실행)
+새 터미널에서 `claude` 실행 시, **자동으로** 다음 순서로 컨텍스트 복구:
+
+**Step 1: Task Master 상태 확인 (필수)**
+```bash
+# 현재 작업 중/대기 중인 task 조회
+task-master get-tasks status="in-progress,pending"
+```
+- `in-progress`: 현재 작업 중 (재개 대상)
+- `pending`: 다음 작업 대기
+
+**Step 2: Git 상태 확인**
+```bash
+# 최근 커밋 5개 확인
+git log -5 --oneline
+
+# 현재 브랜치 및 변경 사항
+git status
+```
+
+**Step 3: 컨텍스트 복구 완료**
+- Task Master 상태 = SSOT (가장 신뢰)
+- in-progress task가 있으면 해당 작업 재개
+- 없으면 `task-master next` 또는 사용자 요청 대기
+
+**예시:**
+```
+# 새 터미널 시작
+$ claude
+
+# Claude Code 자동 실행:
+> task-master get-tasks status="in-progress"
+  → Task 12 (in-progress): "다크모드 구현"
+
+> git log -3 --oneline
+  → 63551a5 Task Master 최적화
+  → e1e3f41 Phase 3 완료
+
+> git status
+  → On branch preview
+  → Changes: components/theme-provider.tsx (modified)
+
+# 복구 완료 메시지:
+✓ 작업 복구: Task 12 "다크모드 구현" 진행 중
+✓ 파일 수정: components/theme-provider.tsx
+✓ 다음 단계: 구현 완료 → set-status → 커밋
+```
 
 #### Task Master 크기 제한 규칙 (토큰 초과 방지)
 **문제**: tasks.json 파일이 커지면 MCP 응답이 25,000 토큰 제한 초과
