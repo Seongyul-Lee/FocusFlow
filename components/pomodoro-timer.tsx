@@ -16,9 +16,9 @@ const DEFAULT_SETTINGS: TimerSettings = {
   focusDuration: 25,
   breakDuration: 5,
   notificationsEnabled: false,
-  soundEnabled: false,
+  soundEnabled: true,
   soundType: 'bell',
-  volume: 0,
+  volume: 50,
 }
 
 export function PomodoroTimer() {
@@ -353,7 +353,7 @@ export function PomodoroTimer() {
       />
 
       <div className="text-center">
-        <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
+        <p className="text-lg font-bold text-foreground uppercase tracking-wider mb-1">
           {getTypeLabel()}
         </p>
         <p className="text-xs text-muted-foreground mb-2">
@@ -361,11 +361,11 @@ export function PomodoroTimer() {
         </p>
         <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full transition-opacity duration-200 ${
           status === 'paused'
-            ? 'bg-yellow-100 dark:bg-yellow-900/30 opacity-100 visible'
+            ? 'bg-amber-100 dark:bg-amber-900/30 opacity-100 visible'
             : 'opacity-0 invisible'
         }`}>
-          <Pause className="h-3 w-3 text-yellow-700 dark:text-yellow-500" />
-          <span className="text-xs font-medium text-yellow-700 dark:text-yellow-500 uppercase tracking-wide">
+          <Pause className="h-3 w-3 text-amber-700 dark:text-amber-500" />
+          <span className="text-xs font-medium text-amber-700 dark:text-amber-500 uppercase tracking-wide">
             Paused
           </span>
         </div>
@@ -373,7 +373,7 @@ export function PomodoroTimer() {
 
       <div className="relative flex items-center justify-center">
         <svg className="w-64 h-64 sm:w-72 sm:h-72 -rotate-90" viewBox="0 0 300 300">
-          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-muted" />
+          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-zinc-300 dark:text-zinc-700" />
           <circle
             cx="150"
             cy="150"
@@ -386,7 +386,7 @@ export function PomodoroTimer() {
             strokeDashoffset={TIMER_CIRCUMFERENCE - (progress / 100) * TIMER_CIRCUMFERENCE}
             className={`transition-all duration-1000 ease-linear ${
               status === 'paused'
-                ? 'text-yellow-500 dark:text-yellow-600'
+                ? 'text-amber-500'
                 : phase === 'focus'
                 ? 'text-primary'
                 : phase === 'longBreak'

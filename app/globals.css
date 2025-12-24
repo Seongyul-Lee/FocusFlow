@@ -121,4 +121,11 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* 125% scale for tablet/desktop (md breakpoint: 768px+) */
+  @media (min-width: 768px) {
+    :root {
+      font-size: 125%;
+    }
+  }
 }

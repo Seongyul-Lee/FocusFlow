@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "@/components/ui/toaster"
+import { Providers } from "./providers"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -19,11 +20,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
-        {children}
-        <Analytics />
-        <Toaster />
+        <Providers>
+          {children}
+          <Analytics />
+          <Toaster />
+        </Providers>
       </body>
     </html>
   )

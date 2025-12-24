@@ -20,14 +20,32 @@
 ### 워크플로우 개요
 Task Master는 **작업 추적의 SSOT**이며, 작업 선택은 **유연하게** 진행한다.
 
-### 필수 단계 (모든 워크플로우 공통)
-1. **작업 시작**: 사용자 요청 또는 `task-master next`
-2. **/plan**: 구현 계획 수립 (자동 또는 명시적)
-3. **/docs**: 외부 문서 조회 ⚠️ **필수** - /plan 이후 반드시 실행
+### ⚠️ 절대 규칙: 코드 작업 시 필수 단계
+**모든 코드 작업** (버그 수정, 기능 추가, 리팩터링, UI 변경 등)은 **반드시** 다음 순서를 따른다:
+
+1. **작업 시작**: 사용자 요청 또는 `task-master next` 또는 "다음 단계" 패턴
+2. **/plan (강제)**: 구현 계획 수립 - **예외 없음**
+   - 단순 버그 수정도 /plan 필수
+   - 1줄 수정도 /plan 필수
+   - /plan 없이 코드 작성 시작 금지
+3. **/docs (강제)**: 외부 문서 조회 - /plan 이후 **반드시 실행**
    - baseline에 캐시된 문서는 재조회 안 함 (200/day 초과 방지)
    - 새 topic이거나 캐시 없는 경우만 Context7 호출
+   - 표준 API(Web Audio 등)도 baseline 확인 필수
 4. **구현**: 코드 작성 + 품질 게이트 (lint/build/e2e)
-5. **상태 업데이트**: `task-master set-status` ⚠️ **필수**
+5. **상태 업데이트 (강제)**: `task-master set-status` - **예외 없음**
+   - 커밋 전 반드시 상태 업데이트 완료
+   - 워크플로우 A: 기존 task 상태 업데이트
+   - 워크플로우 B: 새 task 추가 후 done 처리
+
+**Plan 생략 가능한 유일한 경우** (코드 변경 없음):
+- 문서 읽기/조회만 하는 경우 (README 읽기, 로그 확인 등)
+- 질문 답변만 하는 경우 ("이 함수 뭐하는 거야?")
+
+**금지**:
+- ❌ /plan 없이 코드 수정 시작
+- ❌ /docs 없이 외부 라이브러리 사용
+- ❌ task-master set-status 없이 커밋
 
 ### 워크플로우 A: Task Master 중심 (계획된 작업)
 ```bash
@@ -55,17 +73,17 @@ task-master set-status <id> done
 # 1. 사용자 요청
 "다크모드 추가해줘"
 
-# 2. Plan 수립
-/plan (자동 실행)
+# 2. Plan 수립 (강제)
+/plan
 
-# 3. 문서 조회 (필수)
+# 3. 문서 조회 (강제)
 /docs <관련 라이브러리/프레임워크>
 
 # 4. 구현 + 품질 게이트
 구현...
 pnpm lint && pnpm build
 
-# 5. Task 생성 + 상태 업데이트 (필수)
+# 5. Task 생성 + 상태 업데이트 (강제)
 task-master에 추가 후 done 처리
 ```
 
@@ -143,11 +161,11 @@ task-master set-status <id> done
 - UI 변경이 있으면 접근성(키보드 포커스/ARIA/대비) 확인을 포함한다.
 
 ### Lightweight Ops (low-maintenance)
-- Commands의 권위는 항상 `package.json` scripts이며, 문서에 명령을 “고정”하지 않는다. 필요 시 `pnpm -s run`으로 확인한다.
+- Commands의 권위는 항상 `package.json` scripts이며, 문서에 명령을 "고정"하지 않는다. 필요 시 `pnpm -s run`으로 확인한다.
 - 기본 품질 게이트(권장): pnpm lint → pnpm build (리스크 높은 변경은 pnpm e2e).
-- Plan은 Section 8 준수
+- Plan은 Section 1 및 Section 8 준수
 - Plan에는 최소 3가지만 적는다: 변경 요약 / 영향 범위(파일) / 검증 명령(또는 체크).
-- 사소한 변경(문구/스타일/주석/리드미)은 Plan 생성을 생략해도 된다.
+- **코드 변경이 있으면 Plan 필수** (Section 1 절대 규칙 준수)
 
 ---
 
@@ -358,7 +376,7 @@ $ claude
 ---
 
 ## 8) Testing & Verification (Plan/Skill 기반 운영)
-- 기능 작업은 “Plan 문서”로 시작한다.
+- **모든 코드 작업**은 "Plan 문서"로 시작한다 (Section 1 절대 규칙).
   - Plan 생성 위치(권장): `docs/plans/PLAN_<feature-name>.md`
   - Plan 문서 구조/Quality Gate/리스크·롤백은 `plan-template.md` 및 `SKILL.md`의 체크리스트를 따른다.
 - 테스트 우선순위:
