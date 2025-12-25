@@ -1,0 +1,75 @@
+<svg
+  width="512"
+  height="512"
+  viewBox="0 0 512 512"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#9333EA" />
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect
+    x="0"
+    y="0"
+    width="512"
+    height="512"
+    rx="90"
+    fill="url(#bgGradient)"
+  />
+
+  <!-- Timer/Clock Icon -->
+  <g transform="translate(256, 256)">
+    <!-- Clock circle -->
+    <circle
+      cx="0"
+      cy="0"
+      r="120"
+      fill="none"
+      stroke="white"
+      stroke-width="16"
+      stroke-linecap="round"
+    />
+
+    <!-- Hour hand (pointing up) -->
+    <line
+      x1="0"
+      y1="0"
+      x2="0"
+      y2="-50"
+      stroke="white"
+      stroke-width="16"
+      stroke-linecap="round"
+    />
+
+    <!-- Minute hand (pointing right) -->
+    <line
+      x1="0"
+      y1="0"
+      x2="70"
+      y2="0"
+      stroke="white"
+      stroke-width="16"
+      stroke-linecap="round"
+    />
+
+    <!-- Center dot -->
+    <circle
+      cx="0"
+      cy="0"
+      r="10"
+      fill="white"
+    />
+
+    <!-- 12 o'clock marker -->
+    <circle
+      cx="0"
+      cy="-100"
+      r="6"
+      fill="white"
+    />
+  </g>
+</svg>
