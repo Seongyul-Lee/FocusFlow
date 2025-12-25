@@ -62,28 +62,37 @@ function formatTimeHourMin(minutes: number, tTime: (key: string) => string): str
 function CustomTooltip({
   active,
   payload,
+  t,
 }: {
   active?: boolean
-  payload?: Array<{ value: number; payload: { fullDay: string; minutes: number } }>
+  payload?: Array<{ value: number; payload: { fullDay: string; minutes: number; sessions: number } }>
   label?: string
+  t: (key: string) => string
 }) {
   if (!active || !payload?.length) return null
 
   const minutes = payload[0].value
   const fullDay = payload[0].payload.fullDay
+  const sessions = payload[0].payload.sessions
 
   return (
-    <div className="bg-card/95 backdrop-blur-md border border-primary/20 rounded-xl px-4 py-3 shadow-xl shadow-primary/10">
+    <div className="bg-card/95 backdrop-blur-md border border-primary/20 rounded-xl px-4 py-3 shadow-xl shadow-primary/10 animate-in fade-in-0 zoom-in-95 duration-200">
       <p className="text-sm font-medium text-foreground mb-1">
         {fullDay}
       </p>
-      <div className="flex items-center gap-2">
-        <div className="w-2 h-2 rounded-full bg-chart-2" />
-        <p className="text-lg font-bold text-foreground">{formatTime(minutes)}</p>
-      </div>
-      {minutes > 0 && (
-        <p className="text-xs text-muted-foreground mt-1">
-          {Math.round(minutes / 25)} sessions
+      {minutes > 0 ? (
+        <>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-chart-2" />
+            <p className="text-lg font-bold text-foreground">{formatTime(minutes)}</p>
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            {sessions} {t("sessions")}
+          </p>
+        </>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          {t("noActivity")}
         </p>
       )}
     </div>
@@ -188,6 +197,7 @@ function WeeklyCard({ data }: { data: DayRecord[] }) {
       day: dayLabels[dayIndex],
       fullDay: fullDayLabels[dayIndex],
       minutes: d.totalMinutes,
+      sessions: d.totalSessions,
       dayIndex,
     }
   }).sort((a, b) => a.dayIndex - b.dayIndex)
@@ -224,7 +234,7 @@ function WeeklyCard({ data }: { data: DayRecord[] }) {
               />
               <YAxis hide />
               <Tooltip
-                content={<CustomTooltip />}
+                content={<CustomTooltip t={t} />}
                 cursor={{ fill: "hsl(var(--primary) / 0.1)", radius: 4 }}
               />
               <Bar

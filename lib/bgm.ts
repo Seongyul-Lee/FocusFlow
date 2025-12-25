@@ -1,4 +1,5 @@
 export type BgmCategory = 'lofi' | 'christmas'
+export type RepeatMode = 'off' | 'all' | 'one'
 
 export interface BgmTrack {
   id: string
@@ -77,12 +78,33 @@ export class BgmPlayer {
   private isPlaying = false
   private currentTrackId: string | null = null
   private volume = 0.3
+  private onEndedCallback: (() => void) | null = null
 
   constructor() {
     if (typeof window !== 'undefined') {
       this.audio = new Audio()
-      this.audio.loop = true
+      this.audio.loop = false // Managed by repeatMode in component
       this.audio.volume = this.volume
+
+      // Set up ended event listener
+      this.audio.addEventListener('ended', () => {
+        this.isPlaying = false
+        if (this.onEndedCallback) {
+          this.onEndedCallback()
+        }
+      })
+    }
+  }
+
+  // Register callback for when track ends
+  onEnded(callback: () => void): void {
+    this.onEndedCallback = callback
+  }
+
+  // Set loop mode for single track repeat
+  setLoop(loop: boolean): void {
+    if (this.audio) {
+      this.audio.loop = loop
     }
   }
 

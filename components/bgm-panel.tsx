@@ -16,12 +16,14 @@ import {
   SkipBack,
   SkipForward,
   Shuffle,
+  Repeat,
+  Repeat1,
   List,
   Volume2,
   VolumeX,
   Music,
 } from "lucide-react"
-import { BGM_TRACKS, getBgmPlayer, type BgmTrack } from "@/lib/bgm"
+import { BGM_TRACKS, getBgmPlayer, type BgmTrack, type RepeatMode } from "@/lib/bgm"
 
 export function BgmPanel() {
   const t = useTranslations("Bgm")
@@ -30,10 +32,12 @@ export function BgmPanel() {
   const [volume, setVolume] = useState(30)
   const [isMuted, setIsMuted] = useState(false)
   const [isShuffled, setIsShuffled] = useState(false)
+  const [repeatMode, setRepeatMode] = useState<RepeatMode>('all')
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [showVolume, setShowVolume] = useState(false)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const currentTrackIndexRef = useRef(currentTrackIndex)
 
   const player = typeof window !== "undefined" ? getBgmPlayer() : null
   const currentTrack = BGM_TRACKS[currentTrackIndex]
@@ -80,6 +84,57 @@ export function BgmPanel() {
       }
     }
   }, [player])
+
+  // Keep ref in sync with state for use in callback
+  useEffect(() => {
+    currentTrackIndexRef.current = currentTrackIndex
+  }, [currentTrackIndex])
+
+  // Handle track ended - determine next action based on repeatMode
+  useEffect(() => {
+    if (!player) return
+
+    const handleTrackEnded = () => {
+      const currentIdx = currentTrackIndexRef.current
+
+      if (repeatMode === 'off') {
+        // Stop playback
+        setIsPlaying(false)
+        return
+      }
+
+      if (repeatMode === 'one') {
+        // Single track repeat is handled by audio.loop
+        return
+      }
+
+      // repeatMode === 'all': play next track
+      let nextIndex: number
+      if (isShuffled) {
+        do {
+          nextIndex = Math.floor(Math.random() * BGM_TRACKS.length)
+        } while (nextIndex === currentIdx && BGM_TRACKS.length > 1)
+      } else {
+        nextIndex = (currentIdx + 1) % BGM_TRACKS.length
+      }
+
+      const track = BGM_TRACKS[nextIndex]
+      player.setVolume(isMuted ? 0 : volume / 100)
+      player.play(track.id)
+      setCurrentTrackIndex(nextIndex)
+      setIsPlaying(true)
+      setCurrentTime(0)
+    }
+
+    player.onEnded(handleTrackEnded)
+  }, [player, repeatMode, isShuffled, volume, isMuted])
+
+  // Update audio loop when repeatMode changes
+  useEffect(() => {
+    if (player) {
+      player.setLoop(repeatMode === 'one')
+    }
+  }, [player, repeatMode])
 
   const playTrack = useCallback(
     (index: number) => {
@@ -146,6 +201,14 @@ export function BgmPanel() {
 
   const handleShuffle = useCallback(() => {
     setIsShuffled((prev) => !prev)
+  }, [])
+
+  const handleRepeatToggle = useCallback(() => {
+    setRepeatMode((prev) => {
+      if (prev === 'off') return 'all'
+      if (prev === 'all') return 'one'
+      return 'off'
+    })
   }, [])
 
   const handleSeek = useCallback((values: number[]) => {
@@ -321,13 +384,30 @@ export function BgmPanel() {
             </Button>
           </div>
 
-          {/* Playlist */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-7 w-7">
-                <List className="h-4 w-4" />
-              </Button>
-            </PopoverTrigger>
+          {/* Repeat + Playlist */}
+          <div className="flex items-center gap-1">
+            {/* Repeat */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`h-7 w-7 ${repeatMode !== 'off' ? "text-primary" : "text-muted-foreground"}`}
+              onClick={handleRepeatToggle}
+              title={t(repeatMode === 'off' ? 'repeatOff' : repeatMode === 'all' ? 'repeatAll' : 'repeatOne')}
+            >
+              {repeatMode === 'one' ? (
+                <Repeat1 className="h-4 w-4" />
+              ) : (
+                <Repeat className="h-4 w-4" />
+              )}
+            </Button>
+
+            {/* Playlist */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-7 w-7">
+                  <List className="h-4 w-4" />
+                </Button>
+              </PopoverTrigger>
             <PopoverContent className="w-56 p-2" align="end">
               <div className="space-y-1">
                 {BGM_TRACKS.map((track) => (
@@ -352,7 +432,8 @@ export function BgmPanel() {
                 ))}
               </div>
             </PopoverContent>
-          </Popover>
+            </Popover>
+          </div>
         </div>
       </CardContent>
     </Card>
