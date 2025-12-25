@@ -74,7 +74,7 @@ export function DashboardSidebar() {
   // Loading state
   if (userLoading || loading) {
     return (
-      <Card>
+      <Card className="glass-card border-0">
         <CardContent className="flex items-center justify-center py-8">
           <Loader2 className="h-5 w-5 animate-spin text-primary" />
         </CardContent>
@@ -85,15 +85,17 @@ export function DashboardSidebar() {
   // Not logged in
   if (!user) {
     return (
-      <Card>
+      <Card className="glass-card border-0">
         <CardContent className="flex flex-col items-center justify-center py-8 gap-3">
-          <BarChart3 className="h-10 w-10 text-muted-foreground" />
+          <div className="p-3 rounded-xl bg-primary/10">
+            <BarChart3 className="h-8 w-8 text-primary" />
+          </div>
           <div className="text-center">
             <h3 className="text-sm font-semibold mb-1">{t("title")}</h3>
             <p className="text-xs text-muted-foreground mb-3">{t("loginRequired")}</p>
           </div>
           <Link href="/auth/login">
-            <Button size="sm" className="gap-2">
+            <Button size="sm" className="gap-2 glow-primary">
               <LogIn className="h-3 w-3" />
               {t("loginToView")}
             </Button>
@@ -110,10 +112,10 @@ export function DashboardSidebar() {
   const averagePerDay = daysActive > 0 ? Math.round(totalMinutes / daysActive) : 0
 
   return (
-    <Card>
+    <Card className="glass-card border-0">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
-          <BarChart3 className="h-4 w-4" />
+          <BarChart3 className="h-4 w-4 text-primary" />
           {t("weeklyChart")}
         </CardTitle>
       </CardHeader>
@@ -129,8 +131,8 @@ export function DashboardSidebar() {
 
         {/* Compact Stats Grid */}
         <div className="grid grid-cols-2 gap-2">
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-muted/50">
-            <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+          <div className="flex items-center gap-2 p-2 rounded-xl bg-primary/5 border border-primary/10">
+            <Clock className="h-3.5 w-3.5 text-primary shrink-0" />
             <div className="min-w-0">
               <p className="text-xs text-muted-foreground truncate">{t("totalFocusTime")}</p>
               <p className="text-sm font-semibold">
@@ -138,22 +140,22 @@ export function DashboardSidebar() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-muted/50">
-            <Target className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+          <div className="flex items-center gap-2 p-2 rounded-xl bg-green-500/5 border border-green-500/10">
+            <Target className="h-3.5 w-3.5 text-green-500 shrink-0" />
             <div className="min-w-0">
               <p className="text-xs text-muted-foreground truncate">{t("totalSessions")}</p>
               <p className="text-sm font-semibold">{totalSessions}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-muted/50">
-            <TrendingUp className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+          <div className="flex items-center gap-2 p-2 rounded-xl bg-sky-500/5 border border-sky-500/10">
+            <TrendingUp className="h-3.5 w-3.5 text-sky-500 shrink-0" />
             <div className="min-w-0">
               <p className="text-xs text-muted-foreground truncate">{t("dailyAverage")}</p>
               <p className="text-sm font-semibold">{averagePerDay}m</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-muted/50">
-            <Calendar className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+          <div className="flex items-center gap-2 p-2 rounded-xl bg-amber-500/5 border border-amber-500/10">
+            <Calendar className="h-3.5 w-3.5 text-amber-500 shrink-0" />
             <div className="min-w-0">
               <p className="text-xs text-muted-foreground truncate">{t("activeDays")}</p>
               <p className="text-sm font-semibold">{daysActive}/7</p>

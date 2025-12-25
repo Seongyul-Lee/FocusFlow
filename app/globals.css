@@ -81,37 +81,38 @@
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  /* Task Automate inspired dark theme */
+  --background: #0a0a12;
+  --foreground: #f8fafc;
+  --card: rgb(30 30 45 / 80%);
+  --card-foreground: #f8fafc;
+  --popover: rgb(30 30 45 / 95%);
+  --popover-foreground: #f8fafc;
+  --primary: #a78bfa;
+  --primary-foreground: #0f0f1a;
+  --secondary: rgb(45 45 65 / 80%);
+  --secondary-foreground: #f8fafc;
+  --muted: rgb(45 45 65 / 60%);
+  --muted-foreground: #94a3b8;
+  --accent: #7c3aed;
+  --accent-foreground: #f8fafc;
+  --destructive: #f87171;
+  --border: rgb(148 163 184 / 10%);
+  --input: rgb(148 163 184 / 15%);
+  --ring: #7c3aed;
+  --chart-1: #a78bfa;
+  --chart-2: #22c55e;
+  --chart-3: #f87171;
+  --chart-4: #38bdf8;
+  --chart-5: #fbbf24;
+  --sidebar: rgb(20 20 30 / 80%);
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #a78bfa;
+  --sidebar-primary-foreground: #f8fafc;
+  --sidebar-accent: rgb(124 58 237 / 20%);
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: rgb(148 163 184 / 10%);
+  --sidebar-ring: #7c3aed;
 }
 
 @layer base {
@@ -128,6 +129,52 @@
       font-size: 125%;
     }
   }
+}
+
+/* Dark mode gradient background with glow effects */
+.dark body {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgb(124 58 237 / 15%), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgb(59 130 246 / 10%), transparent),
+    radial-gradient(ellipse 50% 30% at 0% 100%, rgb(168 85 247 / 10%), transparent),
+    #0a0a12;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Glassmorphism card style for dark mode */
+.dark .glass-card {
+  background: rgb(30 30 45 / 60%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgb(148 163 184 / 10%);
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 20%),
+    0 2px 4px -2px rgb(0 0 0 / 20%),
+    inset 0 1px 0 0 rgb(255 255 255 / 5%);
+}
+
+/* Glassmorphism panel style */
+.dark .glass-panel {
+  background: rgb(20 20 30 / 70%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgb(148 163 184 / 8%);
+}
+
+/* Status color bars */
+.status-bar-focus { background: #a78bfa; }
+.status-bar-break { background: #22c55e; }
+.status-bar-longbreak { background: #38bdf8; }
+.status-bar-paused { background: #fbbf24; }
+
+/* Glow effect for primary elements */
+.dark .glow-primary {
+  box-shadow: 0 0 20px rgb(124 58 237 / 30%);
+}
+
+.dark .glow-success {
+  box-shadow: 0 0 20px rgb(34 197 94 / 30%);
 }
 
 /* Collapsible animations (Radix UI pattern) */

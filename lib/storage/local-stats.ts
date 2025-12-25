@@ -1,3 +1,5 @@
+import { recordToHistory } from "./local-history"
+
 const STORAGE_KEY = "pomobox_daily_stats"
 
 interface LocalDailyStats {
@@ -51,7 +53,7 @@ export function saveLocalTodayStats(stats: LocalDailyStats): void {
 }
 
 /**
- * 세션 완료 시 호출 - 통계 업데이트
+ * 세션 완료 시 호출 - 통계 업데이트 + 히스토리 기록
  */
 export function recordLocalSession(durationMinutes: number): LocalDailyStats {
   const current = getLocalTodayStats()
@@ -61,6 +63,10 @@ export function recordLocalSession(durationMinutes: number): LocalDailyStats {
     totalSessions: current.totalSessions + 1,
   }
   saveLocalTodayStats(updated)
+
+  // 히스토리에도 기록 (대시보드용)
+  recordToHistory(durationMinutes)
+
   return updated
 }
 

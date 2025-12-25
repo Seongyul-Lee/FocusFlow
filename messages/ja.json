@@ -115,7 +115,26 @@
     "perDay": "1日あたり",
     "daysThisWeek": "今週の活動日",
     "loginRequired": "詳細な統計を見るにはログインしてください",
-    "loginToView": "ログインして表示"
+    "loginToView": "ログインして表示",
+    "monthlyStats": "月間統計",
+    "weeklyStats": "週間統計",
+    "overview": "今日の概要",
+    "totalTime": "合計",
+    "dailyAvg": "日平均",
+    "todayFocus": "今日の集中",
+    "todaySessions": "今日のセッション",
+    "streak": "連続",
+    "streakAttendance": "連続出席",
+    "days": "日",
+    "week": "週目",
+    "activityCalendar": "活動カレンダー",
+    "less": "少ない",
+    "more": "多い",
+    "checkIn": "出席",
+    "checkedIn": "今日の出席完了！",
+    "checkInPrompt": "今日の出席をしてください",
+    "monthlyAttendance": "今月の出席",
+    "attendanceOnly": "出席のみ"
   },
   "Bgm": {
     "title": "BGM",
@@ -142,5 +161,14 @@
     "startPause": "開始 / 一時停止",
     "reset": "リセット",
     "pause": "一時停止"
+  },
+  "Days": {
+    "sun": "日",
+    "mon": "月",
+    "tue": "火",
+    "wed": "水",
+    "thu": "木",
+    "fri": "金",
+    "sat": "土"
   }
 }

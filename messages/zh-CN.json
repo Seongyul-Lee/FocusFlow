@@ -115,7 +115,26 @@
     "perDay": "每天",
     "daysThisWeek": "本周活跃",
     "loginRequired": "登录后查看详细统计",
-    "loginToView": "登录查看"
+    "loginToView": "登录查看",
+    "monthlyStats": "月度统计",
+    "weeklyStats": "周度统计",
+    "overview": "今日概览",
+    "totalTime": "总计",
+    "dailyAvg": "日均",
+    "todayFocus": "今日专注",
+    "todaySessions": "今日时段",
+    "streak": "连续",
+    "streakAttendance": "连续签到",
+    "days": "天",
+    "week": "周",
+    "activityCalendar": "活动日历",
+    "less": "少",
+    "more": "多",
+    "checkIn": "签到",
+    "checkedIn": "今日已签到！",
+    "checkInPrompt": "今日签到",
+    "monthlyAttendance": "本月签到",
+    "attendanceOnly": "仅签到"
   },
   "Bgm": {
     "title": "背景音乐",
@@ -142,5 +161,14 @@
     "startPause": "开始 / 暂停",
     "reset": "重置",
     "pause": "暂停"
+  },
+  "Days": {
+    "sun": "日",
+    "mon": "一",
+    "tue": "二",
+    "wed": "三",
+    "thu": "四",
+    "fri": "五",
+    "sat": "六"
   }
 }

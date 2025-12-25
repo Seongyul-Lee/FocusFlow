@@ -345,7 +345,7 @@ export function PomodoroTimer() {
 
       <div className="relative flex items-center justify-center">
         <svg className="w-64 h-64 sm:w-72 sm:h-72 -rotate-90" viewBox="0 0 300 300">
-          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-zinc-300 dark:text-zinc-700" />
+          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-zinc-300 dark:text-white/10" />
           <circle
             cx="150"
             cy="150"
@@ -382,12 +382,12 @@ export function PomodoroTimer() {
               {t('pause')}
             </Button>
           ) : status === 'paused' ? (
-            <Button size="lg" onClick={handleResume} className="gap-2 px-8">
+            <Button size="lg" onClick={handleResume} className="gap-2 px-8 glow-primary">
               <Play className="h-5 w-5" />
               {t('resume')}
             </Button>
           ) : (
-            <Button size="lg" onClick={handleStart} className="gap-2 px-8">
+            <Button size="lg" onClick={handleStart} className="gap-2 px-8 glow-primary">
               <Play className="h-5 w-5" />
               {t('start')}
             </Button>

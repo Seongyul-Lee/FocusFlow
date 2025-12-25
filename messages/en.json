@@ -115,7 +115,26 @@
     "perDay": "Per day",
     "daysThisWeek": "Days this week",
     "loginRequired": "Sign in to view your detailed statistics",
-    "loginToView": "Sign in to view"
+    "loginToView": "Sign in to view",
+    "monthlyStats": "Monthly Stats",
+    "weeklyStats": "Weekly Stats",
+    "overview": "Today Overview",
+    "totalTime": "Total",
+    "dailyAvg": "Daily Avg",
+    "todayFocus": "Today Focus",
+    "todaySessions": "Today Sessions",
+    "streak": "Streak",
+    "streakAttendance": "Streak",
+    "days": " days",
+    "week": "W",
+    "activityCalendar": "Activity Calendar",
+    "less": "Less",
+    "more": "More",
+    "checkIn": "Check In",
+    "checkedIn": "Checked in today!",
+    "checkInPrompt": "Check in today",
+    "monthlyAttendance": "This month",
+    "attendanceOnly": "Attendance"
   },
   "Bgm": {
     "title": "Background Music",
@@ -142,5 +161,14 @@
     "startPause": "Start / Pause",
     "reset": "Reset",
     "pause": "Pause"
+  },
+  "Days": {
+    "sun": "S",
+    "mon": "M",
+    "tue": "T",
+    "wed": "W",
+    "thu": "T",
+    "fri": "F",
+    "sat": "S"
   }
 }

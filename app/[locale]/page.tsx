@@ -5,7 +5,8 @@ import { useTranslations } from "next-intl"
 import { PomodoroTimer } from "@/components/pomodoro-timer"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { UserMenu } from "@/components/user-menu"
-import { DashboardSidebar } from "@/components/dashboard-sidebar"
+import { DashboardLeft } from "@/components/dashboard-left"
+import { DashboardRight } from "@/components/dashboard-right"
 import { BgmPanel } from "@/components/bgm-panel"
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts"
 
@@ -29,17 +30,17 @@ export default function Home() {
         <UserMenu />
       </div>
 
-      {/* 3-Column Layout */}
+      {/* 3-Column Layout: Left Dashboard - Timer (center) - Right (BGM/Calendar) */}
       <div className="min-h-screen pt-16 pb-8 px-4">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[280px_1fr_280px] gap-6 lg:gap-8">
-          {/* Left Sidebar: Dashboard (hidden on mobile, shown at bottom) */}
-          <aside className="hidden lg:block space-y-4">
+        <div className="max-w-[1800px] mx-auto grid grid-cols-1 xl:grid-cols-[320px_1fr_320px] gap-6 xl:gap-8">
+          {/* Left: Dashboard (오늘 요약, 주간, 월간) */}
+          <aside className="hidden xl:block space-y-4">
             <Suspense fallback={null}>
-              <DashboardSidebar />
+              <DashboardLeft />
             </Suspense>
           </aside>
 
-          {/* Center: Timer */}
+          {/* Center: Timer + Shortcuts */}
           <section className="flex flex-col items-center">
             <div className="text-center mb-4 md:mb-8 px-4">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
@@ -50,20 +51,30 @@ export default function Home() {
             <Suspense fallback={<TimerFallback />}>
               <PomodoroTimer />
             </Suspense>
+
+            {/* Shortcuts below timer on desktop */}
+            <div className="hidden xl:flex flex-col gap-4 mt-8 w-full max-w-sm">
+              <KeyboardShortcuts />
+            </div>
           </section>
 
-          {/* Right Sidebar: BGM + Shortcuts (hidden on mobile, shown at bottom) */}
-          <aside className="hidden lg:block space-y-4">
+          {/* Right: BGM + Activity Calendar */}
+          <aside className="hidden xl:block space-y-4">
             <BgmPanel />
-            <KeyboardShortcuts />
+            <Suspense fallback={null}>
+              <DashboardRight />
+            </Suspense>
           </aside>
         </div>
 
         {/* Mobile: Stacked panels below timer */}
-        <div className="lg:hidden mt-8 space-y-6 max-w-md mx-auto">
+        <div className="xl:hidden mt-8 space-y-6 max-w-md mx-auto">
           <BgmPanel />
           <Suspense fallback={null}>
-            <DashboardSidebar />
+            <DashboardLeft />
+          </Suspense>
+          <Suspense fallback={null}>
+            <DashboardRight />
           </Suspense>
           <KeyboardShortcuts />
         </div>

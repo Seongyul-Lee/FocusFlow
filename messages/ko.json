@@ -115,7 +115,26 @@
     "perDay": "일 평균",
     "daysThisWeek": "이번 주 활동",
     "loginRequired": "상세 통계를 보려면 로그인하세요",
-    "loginToView": "로그인하여 보기"
+    "loginToView": "로그인하여 보기",
+    "monthlyStats": "월간 현황",
+    "weeklyStats": "주간 현황",
+    "overview": "오늘 요약",
+    "totalTime": "총 시간",
+    "dailyAvg": "일평균",
+    "todayFocus": "오늘 집중",
+    "todaySessions": "오늘 세션",
+    "streak": "연속",
+    "streakAttendance": "연속 출석",
+    "days": "일",
+    "week": "주차",
+    "activityCalendar": "활동 캘린더",
+    "less": "적음",
+    "more": "많음",
+    "checkIn": "출석 체크",
+    "checkedIn": "오늘 출석 완료!",
+    "checkInPrompt": "오늘 출석 체크하세요",
+    "monthlyAttendance": "이번 달 출석",
+    "attendanceOnly": "출석만"
   },
   "Bgm": {
     "title": "배경 음악",
@@ -142,5 +161,14 @@
     "startPause": "시작 / 일시정지",
     "reset": "리셋",
     "pause": "일시정지"
+  },
+  "Days": {
+    "sun": "일",
+    "mon": "월",
+    "tue": "화",
+    "wed": "수",
+    "thu": "목",
+    "fri": "금",
+    "sat": "토"
   }
 }
