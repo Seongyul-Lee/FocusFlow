@@ -23,7 +23,7 @@ export default function Home() {
   const t = useTranslations("Home")
 
   return (
-    <main className="relative min-h-screen flex flex-col bg-gray-50 dark:bg-zinc-950 text-slate-900 dark:text-white">
+    <main className="relative min-h-screen flex flex-col text-foreground">
       {/* Fixed Header Controls */}
       <ThemeToggle />
       <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
