@@ -8,13 +8,14 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Settings, Check, Bell, Volume2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { SOUND_OPTIONS, playSound } from "@/lib/sounds"
+import { type SoundCategory, MELODY_SOUNDS, AMBIENT_SOUNDS, getSoundsByCategory, playSound, setVolume } from "@/lib/sounds"
 
 export interface TimerSettings {
   focusDuration: number
   breakDuration: number
   notificationsEnabled: boolean
   soundEnabled: boolean
+  soundCategory: SoundCategory
   soundType: string
   volume: number
 }
@@ -82,12 +83,23 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
   const handleVolumeTest = () => {
     playSound(localSettings.soundType, localSettings.volume / 100)
 
-    const selectedSound = SOUND_OPTIONS.find(s => s.value === localSettings.soundType)
-    const soundLabel = selectedSound?.label || "Bell (Default)"
+    const sounds = getSoundsByCategory(localSettings.soundCategory)
+    const selectedSound = sounds.find(s => s.value === localSettings.soundType)
+    const soundLabel = selectedSound?.label || "Achievement"
     toast({
       title: "Sound test",
       description: `${soundLabel} - Volume: ${localSettings.volume}%`,
       duration: 1000,
+    })
+  }
+
+  // 카테고리 변경 시 해당 카테고리의 첫 번째 사운드로 변경
+  const handleCategoryChange = (category: SoundCategory) => {
+    const sounds = getSoundsByCategory(category)
+    setLocalSettings({
+      ...localSettings,
+      soundCategory: category,
+      soundType: sounds[0].value,
     })
   }
 
@@ -141,9 +153,37 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
             {/* Sound Type & Volume */}
             {localSettings.soundEnabled && (
               <div className="space-y-3 pl-1">
+                {/* Sound Category Selection */}
+                <div className="space-y-2">
+                  <span className="text-sm text-muted-foreground">Sound Category</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      variant={localSettings.soundCategory === 'melody' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => handleCategoryChange('melody')}
+                      className="w-full"
+                    >
+                      🎵 Melody
+                    </Button>
+                    <Button
+                      variant={localSettings.soundCategory === 'ambient' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => handleCategoryChange('ambient')}
+                      className="w-full"
+                    >
+                      🔊 Ambient
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {localSettings.soundCategory === 'melody'
+                      ? 'High-pitched melodic sounds'
+                      : 'Deep bass & ambient sounds'}
+                  </p>
+                </div>
+
                 {/* Sound Type Selection */}
                 <div className="space-y-2">
-                  <span className="text-sm text-muted-foreground" id="sound-type-label">Sound Type</span>
+                  <span className="text-sm text-muted-foreground" id="sound-type-label">Sound</span>
                   <Select
                     value={localSettings.soundType}
                     onValueChange={(value) =>
@@ -154,7 +194,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                       <SelectValue placeholder="Select a sound" />
                     </SelectTrigger>
                     <SelectContent>
-                      {SOUND_OPTIONS.map((sound) => (
+                      {getSoundsByCategory(localSettings.soundCategory).map((sound) => (
                         <SelectItem key={sound.value} value={sound.value}>
                           {sound.label}
                         </SelectItem>
@@ -170,9 +210,10 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                 </div>
                 <Slider
                   value={[localSettings.volume]}
-                  onValueChange={([value]) =>
+                  onValueChange={([value]) => {
+                    setVolume(value / 100)
                     setLocalSettings({ ...localSettings, volume: value })
-                  }
+                  }}
                   max={100}
                   step={1}
                   className="w-full"

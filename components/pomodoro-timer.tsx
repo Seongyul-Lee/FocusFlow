@@ -1,10 +1,12 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
 import { SettingsDialog, TimerSettings } from "./settings-dialog"
+import { AdBanner } from "./ad-banner"
 import { playSound } from "@/lib/sounds"
 
 type TimerPhase = 'focus' | 'break' | 'longBreak'
@@ -18,11 +20,19 @@ const DEFAULT_SETTINGS: TimerSettings = {
   breakDuration: 5,
   notificationsEnabled: false,
   soundEnabled: true,
-  soundType: 'bell',
+  soundCategory: 'melody',
+  soundType: 'achievement',
   volume: 50,
 }
 
 export function PomodoroTimer() {
+  const searchParams = useSearchParams()
+
+  // Test-only: ?testDuration=10 sets focus duration to 10 seconds
+  const testDurationSec = searchParams.get('testDuration')
+    ? parseInt(searchParams.get('testDuration')!, 10)
+    : null
+
   const [settings, setSettings] = useState<TimerSettings>(DEFAULT_SETTINGS)
   const [phase, setPhase] = useState<TimerPhase>('focus')
   const [timeLeft, setTimeLeft] = useState(settings.focusDuration * 60)
@@ -35,10 +45,23 @@ export function PomodoroTimer() {
   const [isTransitioning, setIsTransitioning] = useState(false)
 
   const getDuration = () => {
-    if (phase === 'focus') return settings.focusDuration * 60
+    if (phase === 'focus') {
+      // Test mode: use testDuration (in seconds) if provided
+      if (testDurationSec !== null && testDurationSec > 0) {
+        return testDurationSec
+      }
+      return settings.focusDuration * 60
+    }
     if (phase === 'longBreak') return 15 * 60
     return settings.breakDuration * 60
   }
+
+  // Initialize timeLeft when testDuration is provided
+  useEffect(() => {
+    if (testDurationSec !== null && testDurationSec > 0 && phase === 'focus' && status === 'idle') {
+      setTimeLeft(testDurationSec)
+    }
+  }, [testDurationSec, phase, status])
 
   const duration = getDuration()
   const minutes = Math.floor(timeLeft / 60)
@@ -141,11 +164,14 @@ export function PomodoroTimer() {
       }
     } else {
       setPhase('focus')
-      setTimeLeft(settings.focusDuration * 60)
+      const focusDuration = testDurationSec !== null && testDurationSec > 0
+        ? testDurationSec
+        : settings.focusDuration * 60
+      setTimeLeft(focusDuration)
     }
 
     setIsTransitioning(false) // Reset flag after transition
-  }, [timeLeft, status, phase, settings, completedSessions, totalFocusMinutes, sessions, isTransitioning])
+  }, [timeLeft, status, phase, settings, completedSessions, totalFocusMinutes, sessions, isTransitioning, testDurationSec])
 
   const handleStart = useCallback(() => {
     if (isTransitioning) return
@@ -168,8 +194,11 @@ export function PomodoroTimer() {
     setStatus('idle')
     setTargetEndAtMs(null)
     setPhase('focus')
-    setTimeLeft(settings.focusDuration * 60)
-  }, [settings.focusDuration, isTransitioning])
+    const focusDuration = testDurationSec !== null && testDurationSec > 0
+      ? testDurationSec
+      : settings.focusDuration * 60
+    setTimeLeft(focusDuration)
+  }, [settings.focusDuration, isTransitioning, testDurationSec])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -265,11 +294,11 @@ export function PomodoroTimer() {
         </p>
         <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full transition-opacity duration-200 ${
           status === 'paused'
-            ? 'bg-amber-100 dark:bg-amber-950 opacity-100 visible'
+            ? 'bg-amber-500 opacity-100 visible'
             : 'opacity-0 invisible'
         }`}>
-          <Pause className="h-3 w-3 text-amber-700 dark:text-amber-200" />
-          <span className="text-xs font-medium text-amber-700 dark:text-amber-200 uppercase tracking-wide">
+          <Pause className="h-3 w-3 text-white" />
+          <span className="text-xs font-medium text-white uppercase tracking-wide">
             Paused
           </span>
         </div>
@@ -329,15 +358,20 @@ export function PomodoroTimer() {
           </Button>
         </div>
 
-        <Button size="sm" variant="ghost" onClick={handleSkip} className="gap-2 text-muted-foreground hover:text-foreground">
-          <SkipForward className="h-4 w-4" />
-          {phase === 'focus' ? 'Skip to Break' : 'Skip Break'}
+        <Button size="sm" variant="ghost" onClick={handleSkip} className="group gap-2 text-muted-foreground hover:text-foreground/60 border border-muted-foreground/30 rounded-xl hover:bg-muted/50 hover:scale-105 transition-all duration-200">
+          <SkipForward className="h-4 w-4 drop-shadow-md transition-transform duration-200 group-hover:translate-x-0.5" />
+          {phase === 'focus' ? 'Skip to Break' : 'Back to Focus'}
         </Button>
       </div>
 
       <div className="text-muted-foreground text-sm font-medium">
         Today: <span className="text-foreground">{sessions} sessions ({totalFocusMinutes} min)</span>
       </div>
+
+      {/* Ad Banner - Hidden until AdSense approval */}
+      {/* <div className="w-full max-w-md mt-6">
+        <AdBanner adSlot="YOUR_AD_SLOT_ID" adFormat="horizontal" />
+      </div> */}
 
       <div className="mt-8 text-xs text-muted-foreground">
         <Link href="/privacy" className="hover:text-foreground hover:underline">
