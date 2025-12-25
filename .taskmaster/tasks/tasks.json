@@ -158,9 +158,9 @@
         "dependencies": [
           "21"
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [],
-        "updatedAt": "2025-12-24T20:34:48.552Z"
+        "updatedAt": "2025-12-24T20:47:38.328Z"
       },
       {
         "id": "23",
@@ -291,13 +291,130 @@
         ],
         "status": "pending",
         "subtasks": []
+      },
+      {
+        "id": "33",
+        "title": "Vercel pnpm 빌드 스크립트 승인 설정",
+        "description": "pnpm 9.x 보안 기능으로 인한 빌드 경고 해결. esbuild, sharp, unrs-resolver의 postinstall 스크립트 승인",
+        "details": "package.json에 pnpm.onlyBuiltDependencies 설정 추가",
+        "testStrategy": "pnpm lint && pnpm build 통과, Vercel 빌드 경고 제거 확인",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": "34",
+        "title": "SEO 최적화 및 검색 엔진 등록",
+        "description": "sitemap, robots, 메타데이터, JSON-LD 추가 및 Google/Bing/Naver/Daum 검색 엔진 등록 완료",
+        "details": "기술적 SEO: sitemap.ts, robots.ts, OG/Twitter 메타태그, JSON-LD WebApplication 스키마. 검색엔진: GSC, Bing, Naver, Daum 등록",
+        "testStrategy": "각 검색 엔진에서 소유권 확인 성공",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": "35",
+        "title": "Google AdSense 계정 신청 및 승인",
+        "description": "Google AdSense 계정 생성, pomobox.app 사이트 등록 및 승인 대기",
+        "details": "1. https://adsense.google.com 접속\n2. Google 계정으로 로그인\n3. 사이트 URL 입력: https://pomobox.app\n4. 결제 정보 입력\n5. 승인 대기 (1-14일 소요)",
+        "testStrategy": "AdSense 대시보드에서 승인 상태 확인",
+        "priority": "high",
+        "dependencies": [
+          "34"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-24T23:58:49.369Z"
+      },
+      {
+        "id": "36",
+        "title": "ads.txt 파일 생성",
+        "description": "AdSense 승인 후 public/ads.txt 파일 생성하여 광고 인증",
+        "details": "public/ads.txt 파일 생성\n내용: google.com, pub-XXXXXXXXXX, DIRECT, f08c47fec0942fa0\n(pub-ID는 AdSense 대시보드에서 확인)",
+        "testStrategy": "https://pomobox.app/ads.txt 접근 가능 확인",
+        "priority": "high",
+        "dependencies": [
+          "35"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-24T23:58:49.373Z"
+      },
+      {
+        "id": "37",
+        "title": "AdSense 스크립트 추가 (layout.tsx)",
+        "description": "Next.js App Router에 AdSense 스크립트 추가",
+        "details": "app/layout.tsx의 metadata에 추가:\n- verification.google 또는 meta 태그\n- Script 컴포넌트로 adsbygoogle.js 로드\n\n환경변수 사용 권장: NEXT_PUBLIC_ADSENSE_ID",
+        "testStrategy": "브라우저 개발자 도구에서 스크립트 로드 확인",
+        "priority": "high",
+        "dependencies": [
+          "36"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-24T23:58:49.375Z"
+      },
+      {
+        "id": "38",
+        "title": "개인정보처리방침 페이지 추가",
+        "description": "AdSense 필수 요구사항: 개인정보처리방침 및 쿠키 정책 페이지 생성",
+        "details": "app/privacy/page.tsx 생성\n- 수집 정보 (쿠키, 분석)\n- Google AdSense/Analytics 사용 고지\n- 사용자 권리 (GDPR 준수)\n\nfooter에 링크 추가",
+        "testStrategy": "https://pomobox.app/privacy 접근 가능",
+        "priority": "high",
+        "dependencies": [
+          "35"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T00:07:54.195Z"
+      },
+      {
+        "id": "39",
+        "title": "광고 컴포넌트 생성 및 배치",
+        "description": "재사용 가능한 AdBanner 컴포넌트 생성 및 적절한 위치에 배치",
+        "details": "components/ad-banner.tsx 생성\n- 자동 광고 또는 수동 광고 단위\n- 반응형 광고 크기\n- 클라이언트 컴포넌트 ('use client')\n\n배치 위치: 타이머 하단 또는 사이드",
+        "testStrategy": "광고가 정상 렌더링되는지 확인",
+        "priority": "medium",
+        "dependencies": [
+          "37"
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": "40",
+        "title": "AdSense 정책 준수 검토",
+        "description": "광고 배치 및 콘텐츠가 AdSense 정책을 준수하는지 최종 검토",
+        "details": "- 광고 과다 배치 금지\n- 클릭 유도 금지\n- 콘텐츠와 광고 구분\n- 모바일 UX 확인\n- 개인정보처리방침 링크 확인",
+        "testStrategy": "AdSense 정책 센터 체크리스트 통과",
+        "priority": "medium",
+        "dependencies": [
+          "38",
+          "39"
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": "41",
+        "title": "AlternativeTo 등록",
+        "description": "AlternativeTo.net에 pomobox 앱 등록하여 타 포모도로 앱 대안으로 노출",
+        "details": "프로필 생성, 앱 정보 입력 (Full Description, Tags, Features, Platform Notes), 스크린샷 업로드 완료. 승인 대기 중 (1-3일)",
+        "testStrategy": "AlternativeTo에서 pomobox 검색 시 노출 확인",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T01:30:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-24T20:34:48.553Z",
-      "taskCount": 21,
-      "completedCount": 10,
+      "lastModified": "2025-12-25T01:30:00.000Z",
+      "taskCount": 30,
+      "completedCount": 18,
       "tags": [
         "master"
       ]
