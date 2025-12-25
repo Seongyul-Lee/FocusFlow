@@ -282,38 +282,38 @@ export function BgmPanel() {
             <Shuffle className="h-4 w-4" />
           </Button>
 
-          {/* Previous */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7"
-            onClick={handlePrevious}
-          >
-            <SkipBack className="h-4 w-4" />
-          </Button>
+          {/* Center Controls: Previous / Play / Next */}
+          <div className="flex items-center gap-5">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={handlePrevious}
+            >
+              <SkipBack className="h-4 w-4" />
+            </Button>
 
-          {/* Play/Pause */}
-          <Button
-            size="icon"
-            className="h-10 w-10 rounded-full glow-primary"
-            onClick={handlePlayPause}
-          >
-            {isPlaying ? (
-              <Pause className="h-4 w-4" />
-            ) : (
-              <Play className="h-4 w-4 ml-0.5" />
-            )}
-          </Button>
+            <Button
+              size="icon"
+              className="h-10 w-10 rounded-full glow-primary"
+              onClick={handlePlayPause}
+            >
+              {isPlaying ? (
+                <Pause className="h-4 w-4" />
+              ) : (
+                <Play className="h-4 w-4 ml-0.5" />
+              )}
+            </Button>
 
-          {/* Next */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7"
-            onClick={handleNext}
-          >
-            <SkipForward className="h-4 w-4" />
-          </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={handleNext}
+            >
+              <SkipForward className="h-4 w-4" />
+            </Button>
+          </div>
 
           {/* Playlist */}
           <Popover>
