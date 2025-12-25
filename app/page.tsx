@@ -1,5 +1,14 @@
+import { Suspense } from "react"
 import { PomodoroTimer } from "@/components/pomodoro-timer"
 import { ThemeToggle } from "@/components/theme-toggle"
+
+function TimerFallback() {
+  return (
+    <div className="flex items-center justify-center w-64 h-64 sm:w-72 sm:h-72">
+      <div className="animate-pulse text-muted-foreground">Loading...</div>
+    </div>
+  )
+}
 
 export default function Home() {
   return (
@@ -11,7 +20,9 @@ export default function Home() {
       </h1>
         <p className="text-slate-500 dark:text-slate-400">Stay focused, one session at a time</p>
       </div>
-      <PomodoroTimer />
+      <Suspense fallback={<TimerFallback />}>
+        <PomodoroTimer />
+      </Suspense>
     </main>
   )
 }

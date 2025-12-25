@@ -172,8 +172,9 @@
         "dependencies": [
           "21"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T08:13:19.486Z"
       },
       {
         "id": "24",
@@ -186,8 +187,9 @@
           "21",
           "23"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T08:17:40.714Z"
       },
       {
         "id": "25",
@@ -197,8 +199,9 @@
         "testStrategy": "E2E 테스트(Playwright): Settings 열기 → 포커스 위치 확인 → Tab 순환 → ESC 닫기 → 포커스 복귀 확인. @axe-core/playwright로 ARIA 자동 검사",
         "priority": "medium",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T08:19:26.951Z"
       },
       {
         "id": "26",
@@ -210,8 +213,9 @@
         "dependencies": [
           "25"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T08:29:26.773Z"
       },
       {
         "id": "27",
@@ -221,8 +225,9 @@
         "testStrategy": "E2E 테스트로 장시간 실행 검증. 단, CI에서는 시간이 오래 걸리므로 skip 또는 빠른 시나리오(10초)로 대체",
         "priority": "low",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T08:51:53.464Z"
       },
       {
         "id": "28",
@@ -256,8 +261,9 @@
         "dependencies": [
           "26"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T08:32:15.319Z"
       },
       {
         "id": "31",
@@ -380,8 +386,9 @@
         "dependencies": [
           "37"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T08:37:21.991Z"
       },
       {
         "id": "40",
@@ -394,8 +401,9 @@
           "38",
           "39"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T08:42:55.911Z"
       },
       {
         "id": "41",
@@ -408,13 +416,50 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2025-12-25T01:30:00.000Z"
+      },
+      {
+        "id": "42",
+        "title": "Paused 상태 색상 대비 수정 (WCAG 2 AA)",
+        "description": "axe-core 접근성 테스트에서 Paused 상태의 색상 대비가 WCAG 2 AA 기준(4.5:1) 미달. Tailwind v4 oklch 색상과 테스트 환경 간 호환성 문제 해결 필요",
+        "details": "현재 문제:\n- Paused 배지: amber-500 bg + white text → axe가 다른 색상으로 계산\n- Resume 버튼: primary 색상 대비 부족\n\n해결 방향:\n1. oklch 색상 대신 hex/rgb 직접 지정 검토\n2. 테스트 환경에서 색상 스키마 명시적 설정\n3. 또는 테스트에서 색상 대비 검사 제외\n\n관련 파일:\n- components/pomodoro-timer.tsx (line 266-275)\n- app/globals.css (primary 색상 정의)\n- tests/e2e/pomobox-a11y.spec.ts (현재 skip 처리됨)",
+        "testStrategy": "pnpm e2e tests/e2e/pomobox-a11y.spec.ts 에서 paused state 테스트 통과",
+        "priority": "low",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": "43",
+        "title": "Sound 시스템 개선 및 실시간 볼륨 조절",
+        "description": "Ambient 사운드 8개 교체, 실시간 볼륨 조절 구현, AudioContext 에러 수정, AdBanner 임시 숨김",
+        "details": "1. Ambient 사운드 8개 교체 (Warm Pad, Zen Bowl 유지)\n   - 삭제: Deep Gong, Thunder, Ocean, Tibetan, Bass Pulse, Cathedral, Drone Hum, Sub Impact\n   - 추가: Soft Bell, Piano Chord, Cello Bow, Synth Pad, Wind Sweep, Rain Drop, Forest Breath, Meditation Bell\n2. 실시간 Volume 조절: 전역 masterGain을 통해 재생 중 볼륨 변경 가능\n3. AudioContext 에러 수정: InvalidStateError 방지 (try-catch + state 체크 제거)\n4. AdBanner 임시 숨김: AdSense 승인 전까지 주석 처리",
+        "testStrategy": "Settings에서 Test Sound 재생 후 Volume 슬라이더 조절 시 실시간 반영 확인",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "createdAt": "2025-12-25T10:00:00Z",
+        "updatedAt": "2025-12-25T10:30:00Z"
+      },
+      {
+        "id": "44",
+        "title": "Skip to Break 버튼 UI 개선",
+        "description": "Skip to Break/Back to Focus 버튼 스타일 및 UX 개선",
+        "details": "1. 외관선 추가: border border-muted-foreground/30\n2. 아이콘 그림자: drop-shadow-md\n3. 호버 효과: hover:bg-muted/50, hover:scale-105, transition-all\n4. 둥근 모서리: rounded-xl\n5. 호버 텍스트 투명도: hover:text-foreground/60\n6. 아이콘 애니메이션: group-hover:translate-x-0.5\n7. 텍스트 변경: 'Skip Break' → 'Back to Focus' (명확한 구분)",
+        "testStrategy": "버튼 호버 시 애니메이션 및 스타일 변경 확인, Focus/Break 상태별 텍스트 확인",
+        "priority": "low",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "createdAt": "2025-12-25T11:00:00Z",
+        "updatedAt": "2025-12-25T11:30:00Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-25T01:30:00.000Z",
-      "taskCount": 30,
-      "completedCount": 18,
+      "lastModified": "2025-12-25T11:30:00.000Z",
+      "taskCount": 33,
+      "completedCount": 28,
       "tags": [
         "master"
       ]

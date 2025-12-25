@@ -140,5 +140,80 @@
       "components/pomodoro-timer.tsx",
       "components/settings-dialog.tsx"
     ]
+  },
+  {
+    "topicName": "nextjs-script-component",
+    "context7CompatibleLibraryID": "/vercel/next.js",
+    "topic": "Script component third-party external scripts",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-25T00:00:00Z",
+    "keyAPIs": [
+      "Script from 'next/script'",
+      "strategy='afterInteractive' (default, loads after hydration)",
+      "strategy='lazyOnload' (loads during idle time)",
+      "strategy='beforeInteractive' (loads before hydration)",
+      "onLoad callback (Client Component only)",
+      "onError callback (Client Component only)",
+      "onReady callback (fires on load and re-mount)"
+    ],
+    "constraints": [
+      "Script in layout.tsx loads once for all routes",
+      "onLoad/onError/onReady require 'use client' directive",
+      "beforeInteractive cannot use onLoad/onError",
+      "Use id prop for inline scripts",
+      "strategy='worker' offloads to web worker via Partytown"
+    ],
+    "appliesToFiles": [
+      "app/layout.tsx",
+      "components/ad-banner.tsx"
+    ]
+  },
+  {
+    "topicName": "nextjs-useSearchParams",
+    "context7CompatibleLibraryID": "/vercel/next.js",
+    "topic": "useSearchParams client component URL query parameters",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-25T00:00:00Z",
+    "keyAPIs": [
+      "useSearchParams from 'next/navigation'",
+      "searchParams.get('name') returns string | null",
+      "searchParams.has('name') returns boolean",
+      "Read-only URLSearchParams interface",
+      "Works in Client Components only"
+    ],
+    "constraints": [
+      "Requires 'use client' directive",
+      "Returns read-only URLSearchParams",
+      "Not supported in Server Components",
+      "Wrap in Suspense for static rendering",
+      "Returns null during pre-rendering in /pages directory"
+    ],
+    "appliesToFiles": [
+      "components/pomodoro-timer.tsx"
+    ]
+  },
+  {
+    "topicName": "playwright-clock-api",
+    "context7CompatibleLibraryID": "/microsoft/playwright",
+    "topic": "test assertions timing waitForTimeout page clock",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-25T00:00:00Z",
+    "keyAPIs": [
+      "page.clock.install() - installs mock clock",
+      "page.clock.fastForward('MM:SS') - fast forward time",
+      "page.clock.pauseAt(Date) - pause at specific time",
+      "page.clock.setFixedTime(Date) - fix time at specific point",
+      "test.slow() - marks test as slow (3x timeout)",
+      "test.setTimeout(ms) - custom timeout"
+    ],
+    "constraints": [
+      "clock.install() must be called before navigation",
+      "fastForward fires all due timers immediately",
+      "Clock API controls Date.now and setTimeout/setInterval",
+      "Use for time-dependent tests without real waits"
+    ],
+    "appliesToFiles": [
+      "tests/e2e/timer-accuracy.spec.ts"
+    ]
   }
 ]
