@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
 import { SettingsDialog, TimerSettings } from "./settings-dialog"
@@ -336,6 +337,12 @@ export function PomodoroTimer() {
 
       <div className="text-muted-foreground text-sm font-medium">
         Today: <span className="text-foreground">{sessions} sessions ({totalFocusMinutes} min)</span>
+      </div>
+
+      <div className="mt-8 text-xs text-muted-foreground">
+        <Link href="/privacy" className="hover:text-foreground hover:underline">
+          Privacy Policy
+        </Link>
       </div>
     </div>
   )
