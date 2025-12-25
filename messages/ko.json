@@ -16,7 +16,8 @@
     "privacyPolicy": "개인정보처리방침",
     "dailyGoal": "일일 목표",
     "min": "분",
-    "goalReached": "목표 달성! 수고하셨습니다!"
+    "goalReached": "목표 달성! 수고하셨습니다!",
+    "goalHint": "세션 완료 시 추가"
   },
   "Settings": {
     "title": "설정",

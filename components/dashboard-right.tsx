@@ -97,41 +97,40 @@ export function DashboardRight() {
   }).length
 
   return (
-    <Card className="glass-card border-0">
-      <CardHeader className="pb-2">
+    <Card className="glass-card border-0 flex flex-col flex-1">
+      <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-amber-400" />
+          <CardTitle className="text-lg font-medium flex items-center gap-2">
+            <Calendar className="h-6 w-6 text-amber-400" />
             {t("activityCalendar")}
           </CardTitle>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-base text-muted-foreground">
             {year}.{month + 1}
           </span>
         </div>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-6 flex-1 flex flex-col">
         {/* 출석 체크 버튼 */}
-        <div className="flex items-center justify-between p-2.5 rounded-xl bg-primary/5 border border-primary/10">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between p-4 rounded-xl bg-primary/5 border border-primary/10">
+          <div className="flex items-center gap-3">
             {isCheckedIn ? (
-              <CheckCircle2 className="h-5 w-5 text-green-500" />
+              <CheckCircle2 className="h-7 w-7 text-green-500" />
             ) : (
-              <Circle className="h-5 w-5 text-muted-foreground" />
+              <Circle className="h-7 w-7 text-muted-foreground" />
             )}
             <div>
-              <p className="text-xs font-medium">
+              <p className="text-base font-medium">
                 {isCheckedIn ? t("checkedIn") : t("checkInPrompt")}
               </p>
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 {t("monthlyAttendance")}: {monthAttendanceCount}{t("days")}
               </p>
             </div>
           </div>
           {!isCheckedIn && (
             <Button
-              size="sm"
               onClick={handleCheckIn}
-              className="h-7 text-xs glow-primary"
+              className="h-9 px-4 text-sm glow-primary"
             >
               {t("checkIn")}
             </Button>
@@ -139,11 +138,11 @@ export function DashboardRight() {
         </div>
 
         {/* 요일 헤더 */}
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-7 gap-2">
           {dayLabels.map((day, i) => (
             <div
               key={i}
-              className={`text-[11px] text-center py-1 font-medium ${
+              className={`text-sm text-center py-2 font-medium ${
                 i === 0 ? "text-rose-400" : i === 6 ? "text-blue-400" : "text-muted-foreground"
               }`}
             >
@@ -153,7 +152,7 @@ export function DashboardRight() {
         </div>
 
         {/* 캘린더 그리드 */}
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-7 gap-2.5 flex-1 content-start">
           {calendarDays.map((day, index) => {
             const isToday = day === today
             const dayOfWeek = day ? (firstDayOfMonth + day - 1) % 7 : -1
@@ -161,7 +160,7 @@ export function DashboardRight() {
             return (
               <div
                 key={index}
-                className={`aspect-square rounded-md flex items-center justify-center text-xs transition-all ${
+                className={`aspect-square rounded-lg flex items-center justify-center text-base font-medium transition-all ${
                   day === null
                     ? "bg-transparent"
                     : isToday
@@ -181,18 +180,18 @@ export function DashboardRight() {
         </div>
 
         {/* 범례 */}
-        <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-1">
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-sm bg-blue-500/40 ring-1 ring-blue-400/50" />
+        <div className="flex items-center justify-between text-sm text-muted-foreground pt-2">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-sm bg-blue-500/40 ring-1 ring-blue-400/50" />
             <span>{t("attendanceOnly")}</span>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <span>{t("less")}</span>
-            <div className="w-2.5 h-2.5 rounded-sm bg-muted/20" />
-            <div className="w-2.5 h-2.5 rounded-sm bg-green-500/30" />
-            <div className="w-2.5 h-2.5 rounded-sm bg-green-500/50" />
-            <div className="w-2.5 h-2.5 rounded-sm bg-green-500/70" />
-            <div className="w-2.5 h-2.5 rounded-sm bg-green-500" />
+            <div className="w-3.5 h-3.5 rounded-sm bg-muted/20" />
+            <div className="w-3.5 h-3.5 rounded-sm bg-green-500/30" />
+            <div className="w-3.5 h-3.5 rounded-sm bg-green-500/50" />
+            <div className="w-3.5 h-3.5 rounded-sm bg-green-500/70" />
+            <div className="w-3.5 h-3.5 rounded-sm bg-green-500" />
             <span>{t("more")}</span>
           </div>
         </div>

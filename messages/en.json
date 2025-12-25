@@ -16,7 +16,8 @@
     "privacyPolicy": "Privacy Policy",
     "dailyGoal": "Daily Goal",
     "min": "min",
-    "goalReached": "Goal reached! Great job!"
+    "goalReached": "Goal reached! Great job!",
+    "goalHint": "Added on session complete"
   },
   "Settings": {
     "title": "Settings",

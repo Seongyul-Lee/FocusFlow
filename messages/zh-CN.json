@@ -16,7 +16,8 @@
     "privacyPolicy": "隐私政策",
     "dailyGoal": "每日目标",
     "min": "分钟",
-    "goalReached": "目标达成！做得好！"
+    "goalReached": "目标达成！做得好！",
+    "goalHint": "完成时段后增加"
   },
   "Settings": {
     "title": "设置",

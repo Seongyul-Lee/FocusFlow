@@ -17,8 +17,6 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  AreaChart,
-  Area,
 } from "recharts"
 import {
   getRecentDays,
@@ -50,9 +48,9 @@ function CustomTooltip({
   if (!active || !payload?.length) return null
 
   return (
-    <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-lg px-3 py-2 shadow-lg">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="text-sm font-semibold">{formatTime(payload[0].value)}</p>
+    <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-lg px-4 py-2.5 shadow-lg">
+      <p className="text-sm text-muted-foreground">{label}</p>
+      <p className="text-base font-semibold">{formatTime(payload[0].value)}</p>
     </div>
   )
 }
@@ -71,28 +69,28 @@ function TodayCard({
 
   return (
     <Card className="glass-card border-0">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium flex items-center gap-2">
-          <Target className="h-4 w-4 text-green-400" />
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-medium flex items-center gap-2">
+          <Target className="h-5 w-5 text-green-400" />
           {t("overview")}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-3 gap-2">
-          <div className="flex flex-col items-center p-2 rounded-xl bg-primary/10">
-            <Clock className="h-4 w-4 text-primary mb-1" />
-            <p className="text-xs font-semibold">{formatTime(todayMinutes)}</p>
-            <p className="text-[10px] text-muted-foreground">{t("todayFocus")}</p>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="flex flex-col items-center p-3 rounded-xl bg-primary/10">
+            <Clock className="h-5 w-5 text-primary mb-1.5" />
+            <p className="text-sm font-semibold">{formatTime(todayMinutes)}</p>
+            <p className="text-xs text-muted-foreground">{t("todayFocus")}</p>
           </div>
-          <div className="flex flex-col items-center p-2 rounded-xl bg-green-500/10">
-            <Target className="h-4 w-4 text-green-400 mb-1" />
-            <p className="text-xs font-semibold">{todaySessions}</p>
-            <p className="text-[10px] text-muted-foreground">{t("sessions")}</p>
+          <div className="flex flex-col items-center p-3 rounded-xl bg-green-500/10">
+            <Target className="h-5 w-5 text-green-400 mb-1.5" />
+            <p className="text-sm font-semibold">{todaySessions}</p>
+            <p className="text-xs text-muted-foreground">{t("sessions")}</p>
           </div>
-          <div className="flex flex-col items-center p-2 rounded-xl bg-rose-500/10">
-            <Flame className="h-4 w-4 text-rose-400 mb-1" />
-            <p className="text-xs font-semibold">{streakDays}{t("days")}</p>
-            <p className="text-[10px] text-muted-foreground">{t("streak")}</p>
+          <div className="flex flex-col items-center p-3 rounded-xl bg-rose-500/10">
+            <Flame className="h-5 w-5 text-rose-400 mb-1.5" />
+            <p className="text-sm font-semibold">{streakDays}{t("days")}</p>
+            <p className="text-xs text-muted-foreground">{t("streak")}</p>
           </div>
         </div>
       </CardContent>
@@ -127,27 +125,27 @@ function WeeklyCard({ data }: { data: DayRecord[] }) {
 
   return (
     <Card className="glass-card border-0">
-      <CardHeader className="pb-2">
+      <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-sky-400" />
+          <CardTitle className="text-base font-medium flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-sky-400" />
             {t("weeklyStats")}
           </CardTitle>
         </div>
-        <div className="flex justify-between text-xs text-muted-foreground mt-1">
+        <div className="flex justify-between text-sm text-muted-foreground mt-1.5">
           <span>{t("totalSessions")}: {totalSessions}</span>
           <span>{t("dailyAvg")}: {formatTime(avgMinutes)}</span>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-28">
+        <div className="h-36">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} barSize={24}>
+            <BarChart data={chartData} barSize={32}>
               <XAxis
                 dataKey="day"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                tick={{ fontSize: 13, fill: "hsl(var(--muted-foreground))" }}
               />
               <YAxis hide />
               <Tooltip content={<CustomTooltip />} />
@@ -164,92 +162,47 @@ function WeeklyCard({ data }: { data: DayRecord[] }) {
   )
 }
 
-// 월간 현황 카드 (주차별 그래프)
+// 월간 현황 카드 (핵심 지표 4개)
 function MonthlyCard({ data }: { data: DayRecord[] }) {
   const t = useTranslations("Dashboard")
+
+  // 핵심 지표 계산
   const totalMinutes = data.reduce((sum, d) => sum + d.totalMinutes, 0)
-
-  // 주차별 데이터 그룹핑 (달력 기준 주차)
-  const weeklyData: { week: string; minutes: number }[] = []
-
-  if (data.length > 0) {
-    const firstDate = new Date(data[0].date)
-    const year = firstDate.getFullYear()
-    const month = firstDate.getMonth()
-
-    // 이번 달 1일의 요일
-    const firstDayOfMonth = new Date(year, month, 1).getDay()
-
-    let weekNum = 1
-    let weekMinutes = 0
-
-    data.forEach((d) => {
-      const date = new Date(d.date)
-      const dayOfMonth = date.getDate()
-      const dayOfWeek = date.getDay()
-
-      weekMinutes += d.totalMinutes
-
-      // 토요일이면 주 마감
-      if (dayOfWeek === 6) {
-        weeklyData.push({
-          week: `${weekNum}${t("week")}`,
-          minutes: weekMinutes,
-        })
-        weekNum++
-        weekMinutes = 0
-      }
-    })
-
-    // 마지막 주 (토요일로 끝나지 않은 경우)
-    if (weekMinutes > 0 || (data.length > 0 && new Date(data[data.length - 1].date).getDay() !== 6)) {
-      weeklyData.push({
-        week: `${weekNum}${t("week")}`,
-        minutes: weekMinutes,
-      })
-    }
-  }
+  const totalSessions = data.reduce((sum, d) => sum + d.totalSessions, 0)
+  const activeDays = data.filter((d) => d.totalMinutes > 0).length
+  const daysElapsed = new Date().getDate() // 이번 달 경과 일수
+  const avgMinutes = daysElapsed > 0 ? Math.round(totalMinutes / daysElapsed) : 0
 
   return (
     <Card className="glass-card border-0">
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-primary" />
-            {t("monthlyStats")}
-          </CardTitle>
-          <span className="text-xs font-medium text-primary">
-            {formatTime(totalMinutes)}
-          </span>
-        </div>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-medium flex items-center gap-2">
+          <TrendingUp className="h-5 w-5 text-primary" />
+          {t("monthlyStats")}
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-36">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={weeklyData}>
-              <defs>
-                <linearGradient id="colorMinutes" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <XAxis
-                dataKey="week"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-              />
-              <YAxis hide />
-              <Tooltip content={<CustomTooltip />} />
-              <Area
-                type="monotone"
-                dataKey="minutes"
-                stroke="hsl(var(--primary))"
-                strokeWidth={2}
-                fill="url(#colorMinutes)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col items-center p-4 rounded-xl bg-primary/10">
+            <Clock className="h-5 w-5 text-primary mb-1.5" />
+            <p className="text-base font-semibold">{formatTime(totalMinutes)}</p>
+            <p className="text-xs text-muted-foreground">{t("totalFocusTime")}</p>
+          </div>
+          <div className="flex flex-col items-center p-4 rounded-xl bg-green-500/10">
+            <Target className="h-5 w-5 text-green-400 mb-1.5" />
+            <p className="text-base font-semibold">{totalSessions}</p>
+            <p className="text-xs text-muted-foreground">{t("totalSessions")}</p>
+          </div>
+          <div className="flex flex-col items-center p-4 rounded-xl bg-sky-500/10">
+            <Calendar className="h-5 w-5 text-sky-400 mb-1.5" />
+            <p className="text-base font-semibold">{formatTime(avgMinutes)}</p>
+            <p className="text-xs text-muted-foreground">{t("dailyAvg")}</p>
+          </div>
+          <div className="flex flex-col items-center p-4 rounded-xl bg-amber-500/10">
+            <Flame className="h-5 w-5 text-amber-400 mb-1.5" />
+            <p className="text-base font-semibold">{activeDays}{t("days")}</p>
+            <p className="text-xs text-muted-foreground">{t("activeDays")}</p>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -275,7 +228,7 @@ export function DashboardLeft() {
   }, [])
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4 flex-1">
       {/* 오늘 요약 */}
       <TodayCard
         todayMinutes={todayStats.totalMinutes}

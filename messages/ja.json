@@ -16,7 +16,8 @@
     "privacyPolicy": "プライバシーポリシー",
     "dailyGoal": "日目標",
     "min": "分",
-    "goalReached": "目標達成！お疲れ様でした！"
+    "goalReached": "目標達成！お疲れ様でした！",
+    "goalHint": "セッション完了時に追加"
   },
   "Settings": {
     "title": "設定",

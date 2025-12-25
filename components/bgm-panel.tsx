@@ -197,9 +197,9 @@ export function BgmPanel() {
 
   return (
     <Card className="w-full glass-card border-0">
-      <CardContent className="p-4 space-y-4">
+      <CardContent className="p-3 space-y-2.5">
         {/* Track Info */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <div className="p-2 rounded-lg bg-primary/10">
             <Music className="h-5 w-5 text-primary" />
           </div>
@@ -256,7 +256,7 @@ export function BgmPanel() {
         </div>
 
         {/* Progress Bar */}
-        <div className="space-y-1">
+        <div className="space-y-0.5">
           <Slider
             value={[currentTime]}
             onValueChange={handleSeek}
@@ -276,7 +276,7 @@ export function BgmPanel() {
           <Button
             variant="ghost"
             size="icon"
-            className={`h-8 w-8 ${isShuffled ? "text-primary" : "text-muted-foreground"}`}
+            className={`h-7 w-7 ${isShuffled ? "text-primary" : "text-muted-foreground"}`}
             onClick={handleShuffle}
           >
             <Shuffle className="h-4 w-4" />
@@ -286,22 +286,22 @@ export function BgmPanel() {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
+            className="h-7 w-7"
             onClick={handlePrevious}
           >
-            <SkipBack className="h-5 w-5" />
+            <SkipBack className="h-4 w-4" />
           </Button>
 
           {/* Play/Pause */}
           <Button
             size="icon"
-            className="h-12 w-12 rounded-full glow-primary"
+            className="h-10 w-10 rounded-full glow-primary"
             onClick={handlePlayPause}
           >
             {isPlaying ? (
-              <Pause className="h-5 w-5" />
+              <Pause className="h-4 w-4" />
             ) : (
-              <Play className="h-5 w-5 ml-0.5" />
+              <Play className="h-4 w-4 ml-0.5" />
             )}
           </Button>
 
@@ -309,16 +309,16 @@ export function BgmPanel() {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
+            className="h-7 w-7"
             onClick={handleNext}
           >
-            <SkipForward className="h-5 w-5" />
+            <SkipForward className="h-4 w-4" />
           </Button>
 
           {/* Playlist */}
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button variant="ghost" size="icon" className="h-7 w-7">
                 <List className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
@@ -328,18 +328,18 @@ export function BgmPanel() {
                   <button
                     key={track.id}
                     onClick={() => handleSelectTrack(track)}
-                    className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left text-sm transition-colors ${
+                    className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left text-xs transition-colors ${
                       track.id === currentTrack.id
                         ? "bg-primary/10 text-primary"
                         : "hover:bg-muted"
                     }`}
                   >
                     {track.id === currentTrack.id && isPlaying ? (
-                      <span className="w-4 h-4 flex items-center justify-center">
-                        <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                      <span className="w-3.5 h-3.5 flex items-center justify-center">
+                        <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
                       </span>
                     ) : (
-                      <Music className="h-4 w-4 text-muted-foreground" />
+                      <Music className="h-3.5 w-3.5 text-muted-foreground" />
                     )}
                     <span className="truncate">{t(track.labelKey)}</span>
                   </button>

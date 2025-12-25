@@ -2,12 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { useSearchParams } from "next/navigation"
-import Link from "next/link"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
 import { SettingsDialog, TimerSettings } from "./settings-dialog"
-import { AdBanner } from "./ad-banner"
 import { playSound } from "@/lib/sounds"
 import { useUser } from "@/hooks/use-user"
 import { recordSessionComplete } from "@/lib/supabase/stats"
@@ -255,9 +253,6 @@ export function PomodoroTimer() {
         } else {
           handleStart()
         }
-      } else if (e.code === 'KeyR') {
-        e.preventDefault()
-        handleReset()
       } else if (e.code === 'Escape') {
         handlePause()
       }
@@ -265,7 +260,7 @@ export function PomodoroTimer() {
 
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [status, handlePause, handleResume, handleStart, handleReset])
+  }, [status, handlePause, handleResume, handleStart])
 
   const handleSkip = useCallback(() => {
     if (isTransitioning) return
@@ -412,16 +407,6 @@ export function PomodoroTimer() {
         goalMinutes={settings.dailyGoal}
       />
 
-      {/* Ad Banner - Hidden until AdSense approval */}
-      {/* <div className="w-full max-w-md mt-6">
-        <AdBanner adSlot="YOUR_AD_SLOT_ID" adFormat="horizontal" />
-      </div> */}
-
-      <div className="mt-8 text-xs text-muted-foreground">
-        <Link href="/privacy" className="hover:text-foreground hover:underline">
-          {t('privacyPolicy')}
-        </Link>
-      </div>
     </div>
   )
 }
