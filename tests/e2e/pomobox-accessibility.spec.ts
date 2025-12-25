@@ -93,8 +93,8 @@ test.describe('Settings Dialog Accessibility', () => {
   });
 
   test('should not respond to global shortcuts when dialog is open', async ({ page }) => {
-    // Get initial timer display
-    const timerDisplay = page.locator('text=/\\d{2}:\\d{2}/');
+    // Get initial timer display - use specific class selector to avoid matching title
+    const timerDisplay = page.locator('span.text-6xl.font-mono');
     const initialTime = await timerDisplay.textContent();
 
     // Open Settings dialog

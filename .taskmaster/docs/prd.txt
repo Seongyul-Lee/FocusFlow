@@ -119,9 +119,7 @@ Skip/Reset
   - TIME_UP → (completedSessions++, sessions++, totalFocusMinutes+=focusDuration) 후
       - completedSessions % 4 == 0 → LONGBREAK_RUNNING(또는 정지 진입 정책)
       - else → BREAK_RUNNING
-  - SKIP → (completedSessions++ only) 후
-      - completedSessions % 4 == 0 → LONGBREAK_RUNNING
-      - else → BREAK_RUNNING
+  - SKIP → (completedSessions++ only) 후 → BREAK_RUNNING (항상 Short Break, Long Break 트리거 안 함)
   - RESET → 초기 Focus 정지 상태로 복귀
 
 - FOCUS_PAUSED

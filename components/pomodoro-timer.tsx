@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
 import { SettingsDialog, TimerSettings } from "./settings-dialog"
@@ -26,6 +27,7 @@ const DEFAULT_SETTINGS: TimerSettings = {
 }
 
 export function PomodoroTimer() {
+  const t = useTranslations("Timer")
   const searchParams = useSearchParams()
 
   // Test-only: ?testDuration=10 sets focus duration to 10 seconds
@@ -266,15 +268,15 @@ export function PomodoroTimer() {
   }
 
   const getTypeLabel = () => {
-    if (phase === 'focus') return 'Focus Session'
-    if (phase === 'longBreak') return 'Long Break'
-    return 'Break Time'
+    if (phase === 'focus') return t('focusSession')
+    if (phase === 'longBreak') return t('longBreak')
+    return t('breakTime')
   }
 
   const getTypeDescription = () => {
-    if (phase === 'focus') return 'Stay focused on your work'
-    if (phase === 'longBreak') return 'Take a longer break - you earned it!'
-    return 'Take a short break'
+    if (phase === 'focus') return t('focusDescription')
+    if (phase === 'longBreak') return t('longBreakDescription')
+    return t('breakDescription')
   }
 
   return (
@@ -299,7 +301,7 @@ export function PomodoroTimer() {
         }`}>
           <Pause className="h-3 w-3 text-white" />
           <span className="text-xs font-medium text-white uppercase tracking-wide">
-            Paused
+            {t('paused')}
           </span>
         </div>
       </div>
@@ -340,17 +342,17 @@ export function PomodoroTimer() {
           {status === 'running' ? (
             <Button size="lg" onClick={handlePause} variant="secondary" className="gap-2 px-8 border-2 border-slate-400 dark:border-transparent">
               <Pause className="h-5 w-5" />
-              Pause
+              {t('pause')}
             </Button>
           ) : status === 'paused' ? (
             <Button size="lg" onClick={handleResume} className="gap-2 px-8">
               <Play className="h-5 w-5" />
-              Resume
+              {t('resume')}
             </Button>
           ) : (
             <Button size="lg" onClick={handleStart} className="gap-2 px-8">
               <Play className="h-5 w-5" />
-              Start
+              {t('start')}
             </Button>
           )}
           <Button size="lg" variant="outline" onClick={handleReset} aria-label="Reset timer">
@@ -360,12 +362,12 @@ export function PomodoroTimer() {
 
         <Button size="sm" variant="ghost" onClick={handleSkip} className="group gap-2 text-muted-foreground hover:text-foreground/60 border border-muted-foreground/30 rounded-xl hover:bg-muted/50 hover:scale-105 transition-all duration-200">
           <SkipForward className="h-4 w-4 drop-shadow-md transition-transform duration-200 group-hover:translate-x-0.5" />
-          {phase === 'focus' ? 'Skip to Break' : 'Back to Focus'}
+          {phase === 'focus' ? t('skipToBreak') : t('backToFocus')}
         </Button>
       </div>
 
       <div className="text-muted-foreground text-sm font-medium">
-        Today: <span className="text-foreground">{sessions} sessions ({totalFocusMinutes} min)</span>
+        <span className="text-foreground">{t('today', { sessions, minutes: totalFocusMinutes })}</span>
       </div>
 
       {/* Ad Banner - Hidden until AdSense approval */}
@@ -375,7 +377,7 @@ export function PomodoroTimer() {
 
       <div className="mt-8 text-xs text-muted-foreground">
         <Link href="/privacy" className="hover:text-foreground hover:underline">
-          Privacy Policy
+          {t('privacyPolicy')}
         </Link>
       </div>
     </div>

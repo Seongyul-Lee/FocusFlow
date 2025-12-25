@@ -453,13 +453,39 @@
         "subtasks": [],
         "createdAt": "2025-12-25T11:00:00Z",
         "updatedAt": "2025-12-25T11:30:00Z"
+      },
+      {
+        "id": "45",
+        "title": "앱 아이콘 제작 및 적용",
+        "description": "박스 + 타이머 컨셉의 pomobox 앱 아이콘 제작 및 적용",
+        "details": "Figma AI로 아이콘 디자인 생성 후 각 플랫폼별 사이즈로 변환 적용:\n- favicon.ico (32x32): 브라우저 탭\n- icon.png (192x192): PWA, 알림\n- icon-512.png (512x512): PWA 스플래시\n- apple-icon.png (180x180): iOS 홈 화면\n- icon.svg: 원본 벡터\n\n디자인: 파란색-보라색 그라데이션 배경 + 흰색 시계 아이콘",
+        "testStrategy": "브라우저 탭, PWA 설치, iOS Safari에서 아이콘 표시 확인",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "createdAt": "2025-12-25T12:00:00Z",
+        "updatedAt": "2025-12-25T12:30:00Z"
+      },
+      {
+        "id": "46",
+        "title": "Phase 1 다국어 지원 (en, ko, ja, zh-CN)",
+        "description": "next-intl로 4개 언어 URL 기반 라우팅 구현. 설정 다이얼로그에서 언어 변경 가능",
+        "details": "구현 완료:\n1. next-intl 설치 및 설정 (i18n/routing.ts, i18n/request.ts)\n2. proxy.ts 미들웨어 (Next.js 16 convention)\n3. app/[locale]/ 동적 라우팅\n4. messages/*.json 번역 파일 4개\n5. Settings Dialog에 Language 선택기 추가\n6. 언어 변경은 Save Changes 버튼 클릭 시에만 적용\n7. CJK 시스템 폰트 적용 (성능 최적화)\n8. Sound 이름은 언어 무관하게 영어로 표시",
+        "testStrategy": "pnpm lint && pnpm build 통과. 각 언어별 URL 접근 및 번역 확인",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "createdAt": "2025-12-25T13:00:00Z",
+        "updatedAt": "2025-12-25T14:00:00Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-25T11:30:00.000Z",
-      "taskCount": 33,
-      "completedCount": 28,
+      "lastModified": "2025-12-25T12:30:00.000Z",
+      "taskCount": 35,
+      "completedCount": 30,
       "tags": [
         "master"
       ]

@@ -1,13 +1,18 @@
 import type React from "react"
 import type { Metadata } from "next"
+import Script from "next/script"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { NextIntlClientProvider, hasLocale } from "next-intl"
+import { getMessages } from "next-intl/server"
+import { notFound } from "next/navigation"
 import { Toaster } from "@/components/ui/toaster"
-import { Providers } from "./providers"
-import "./globals.css"
+import { Providers } from "../providers"
+import { routing } from "@/i18n/routing"
+import "../globals.css"
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist" })
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" })
 
 const siteUrl = "https://pomobox.app"
 
@@ -93,25 +98,42 @@ const jsonLd = {
   ],
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+type Props = {
   children: React.ReactNode
-}>) {
+  params: Promise<{ locale: string }>
+}
+
+export default async function LocaleLayout({ children, params }: Props) {
+  const { locale } = await params
+
+  // Validate locale
+  if (!hasLocale(routing.locales, locale)) {
+    notFound()
+  }
+
+  const messages = await getMessages()
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`font-sans antialiased`}>
-        <Providers>
-          {children}
-          <Analytics />
-          <Toaster />
-        </Providers>
+      <body className={`${geist.variable} font-sans antialiased`}>
+        <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7020101743498097"
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
+        />
+        <NextIntlClientProvider messages={messages}>
+          <Providers>
+            {children}
+            <Analytics />
+            <Toaster />
+          </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   )

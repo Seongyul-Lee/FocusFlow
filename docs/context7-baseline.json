@@ -215,5 +215,39 @@
     "appliesToFiles": [
       "tests/e2e/timer-accuracy.spec.ts"
     ]
+  },
+  {
+    "topicName": "next-intl-app-router",
+    "context7CompatibleLibraryID": "/amannn/next-intl",
+    "topic": "App Router setup configuration middleware routing useTranslations",
+    "pageRange": "1-2",
+    "retrievedAt": "2025-12-25T00:00:00Z",
+    "keyAPIs": [
+      "defineRouting({ locales, defaultLocale }) - routing config",
+      "createMiddleware(routing) - locale routing middleware",
+      "getRequestConfig() from next-intl/server - request-scoped config",
+      "NextIntlClientProvider - wraps app for client components",
+      "useTranslations(namespace) - client component hook",
+      "getTranslations(namespace) - async server component function",
+      "hasLocale(locales, locale) - validate locale param",
+      "createNextIntlPlugin() - next.config.ts plugin"
+    ],
+    "constraints": [
+      "Middleware matcher must exclude /api, /_next, /_vercel, static files",
+      "i18n/routing.ts defines locales array and defaultLocale",
+      "i18n/request.ts provides locale and messages to Server Components",
+      "App content must be in app/[locale]/ folder for URL-based routing",
+      "Messages in messages/{locale}.json format",
+      "NextIntlClientProvider required in layout for client hooks",
+      "Use hasLocale + notFound() for invalid locale validation"
+    ],
+    "appliesToFiles": [
+      "i18n/routing.ts",
+      "i18n/request.ts",
+      "middleware.ts",
+      "next.config.ts",
+      "app/[locale]/layout.tsx",
+      "messages/*.json"
+    ]
   }
 ]

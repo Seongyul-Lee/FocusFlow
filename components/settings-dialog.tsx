@@ -1,14 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslations, useLocale } from "next-intl"
+import { useRouter, usePathname } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Switch } from "@/components/ui/switch"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Settings, Check, Bell, Volume2 } from "lucide-react"
+import { Settings, Check, Bell, Volume2, Globe } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { type SoundCategory, MELODY_SOUNDS, AMBIENT_SOUNDS, getSoundsByCategory, playSound, setVolume } from "@/lib/sounds"
+import { routing } from "@/i18n/routing"
 
 export interface TimerSettings {
   focusDuration: number
@@ -41,7 +44,13 @@ interface SettingsDialogProps {
 }
 
 export function SettingsDialog({ settings, isRunning, onSettingsChange }: SettingsDialogProps) {
+  const t = useTranslations("Settings")
+  const tLanguages = useTranslations("Languages")
+  const locale = useLocale()
+  const router = useRouter()
+  const pathname = usePathname()
   const [localSettings, setLocalSettings] = useState<TimerSettings>(settings)
+  const [selectedLocale, setSelectedLocale] = useState(locale)
   const [isSaved, setIsSaved] = useState(false)
   const { toast } = useToast()
 
@@ -49,15 +58,25 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
     setLocalSettings(settings)
   }, [settings])
 
+  useEffect(() => {
+    setSelectedLocale(locale)
+  }, [locale])
+
   const handleSave = () => {
     if (isRunning) return
     onSettingsChange(localSettings)
     setIsSaved(true)
-    
+
     toast({
-      title: "Settings saved!",
-      description: "Your preferences have been updated.",
+      title: t("settingsSaved"),
+      description: t("settingsUpdated"),
     })
+
+    // Apply language change if different
+    if (selectedLocale !== locale) {
+      const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}(-[A-Z]{2})?/, '') || '/'
+      router.push(`/${selectedLocale}${pathWithoutLocale}`)
+    }
 
     setTimeout(() => {
       setIsSaved(false)
@@ -112,7 +131,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Settings</DialogTitle>
+          <DialogTitle>{t("title")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-6 py-4">
           {/* Notifications */}
@@ -120,8 +139,8 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
             <div className="flex items-center gap-2">
               <Bell className="h-4 w-4 text-muted-foreground" />
               <div>
-                <p className="font-medium">Notifications</p>
-                <p className="text-sm text-muted-foreground">Get notified when timer ends</p>
+                <p className="font-medium">{t("notifications")}</p>
+                <p className="text-sm text-muted-foreground">{t("notificationsDescription")}</p>
               </div>
             </div>
             <Switch
@@ -139,8 +158,8 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
               <div className="flex items-center gap-2">
                 <Volume2 className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="font-medium">Sound</p>
-                  <p className="text-sm text-muted-foreground">Play sound when timer ends</p>
+                  <p className="font-medium">{t("sound")}</p>
+                  <p className="text-sm text-muted-foreground">{t("soundDescription")}</p>
                 </div>
               </div>
               <Switch
@@ -154,8 +173,8 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
             {localSettings.soundEnabled && (
               <div className="space-y-3 pl-1">
                 {/* Sound Category Selection */}
-                <div className="space-y-2">
-                  <span className="text-sm text-muted-foreground">Sound Category</span>
+                <div className="space-y-1.5">
+                  <span className="text-sm text-muted-foreground pb-0.5">{t("soundCategory")}</span>
                   <div className="grid grid-cols-2 gap-2">
                     <Button
                       variant={localSettings.soundCategory === 'melody' ? 'default' : 'outline'}
@@ -163,7 +182,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                       onClick={() => handleCategoryChange('melody')}
                       className="w-full"
                     >
-                      🎵 Melody
+                      🎵 {t("melody")}
                     </Button>
                     <Button
                       variant={localSettings.soundCategory === 'ambient' ? 'default' : 'outline'}
@@ -171,19 +190,19 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                       onClick={() => handleCategoryChange('ambient')}
                       className="w-full"
                     >
-                      🔊 Ambient
+                      🔊 {t("ambient")}
                     </Button>
                   </div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-muted-foreground pt-0.5">
                     {localSettings.soundCategory === 'melody'
-                      ? 'High-pitched melodic sounds'
-                      : 'Deep bass & ambient sounds'}
+                      ? t("melodyDescription")
+                      : t("ambientDescription")}
                   </p>
                 </div>
 
                 {/* Sound Type Selection */}
                 <div className="space-y-2">
-                  <span className="text-sm text-muted-foreground" id="sound-type-label">Sound</span>
+                  <span className="text-sm text-muted-foreground" id="sound-type-label">{t("soundType")}</span>
                   <Select
                     value={localSettings.soundType}
                     onValueChange={(value) =>
@@ -191,7 +210,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                     }
                   >
                     <SelectTrigger className="w-full" aria-labelledby="sound-type-label">
-                      <SelectValue placeholder="Select a sound" />
+                      <SelectValue placeholder={t("selectSound")} />
                     </SelectTrigger>
                     <SelectContent>
                       {getSoundsByCategory(localSettings.soundCategory).map((sound) => (
@@ -205,7 +224,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
 
                 {/* Volume Slider */}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground" id="volume-label">Volume</span>
+                  <span className="text-sm text-muted-foreground" id="volume-label">{t("volume")}</span>
                   <span className="text-sm font-medium">{localSettings.volume}%</span>
                 </div>
                 <Slider
@@ -225,15 +244,37 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                   onClick={handleVolumeTest}
                   className="w-full"
                 >
-                  Test Sound
+                  {t("testSound")}
                 </Button>
               </div>
             )}
           </div>
 
+          {/* Language */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Globe className="h-4 w-4 text-muted-foreground" />
+              <div>
+                <p className="font-medium">{t("language")}</p>
+              </div>
+            </div>
+            <Select value={selectedLocale} onValueChange={setSelectedLocale}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {routing.locales.map((loc) => (
+                  <SelectItem key={loc} value={loc}>
+                    {tLanguages(loc)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Focus Duration */}
           <div>
-            <p className="font-medium mb-3">Focus Duration</p>
+            <p className="font-medium mb-3">{t("focusDuration")}</p>
             <div className="grid grid-cols-4 gap-2">
               {FOCUS_OPTIONS.map((option) => (
                 <Button
@@ -243,7 +284,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                   disabled={isRunning}
                   onClick={() => setLocalSettings({ ...localSettings, focusDuration: option.value })}
                 >
-                  {option.label}
+                  {t("min", { value: option.value })}
                 </Button>
               ))}
             </div>
@@ -251,7 +292,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
 
           {/* Break Duration */}
           <div>
-            <p className="font-medium mb-3">Break Duration</p>
+            <p className="font-medium mb-3">{t("breakDuration")}</p>
             <div className="grid grid-cols-4 gap-2">
               {BREAK_OPTIONS.map((option) => (
                 <Button
@@ -261,29 +302,29 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                   disabled={isRunning}
                   onClick={() => setLocalSettings({ ...localSettings, breakDuration: option.value })}
                 >
-                  {option.label}
+                  {t("min", { value: option.value })}
                 </Button>
               ))}
             </div>
           </div>
 
-          <Button 
-            onClick={handleSave} 
+          <Button
+            onClick={handleSave}
             className="w-full"
             disabled={isSaved || isRunning}
           >
             {isSaved ? (
               <>
                 <Check className="mr-2 h-4 w-4" />
-                Saved!
+                {t("saved")}
               </>
             ) : (
-              "Save Changes"
+              t("saveChanges")
             )}
           </Button>
           {isRunning && (
             <p className="text-sm text-muted-foreground">
-              Stop the timer to change durations.
+              {t("stopTimerWarning")}
             </p>
           )}
         </div>
