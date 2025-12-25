@@ -23,9 +23,6 @@ import {
 } from "lucide-react"
 import { BGM_TRACKS, getBgmPlayer, type BgmTrack } from "@/lib/bgm"
 
-// Track duration in seconds (ambient sounds loop every 2 minutes)
-const TRACK_DURATION = 120
-
 export function BgmPanel() {
   const t = useTranslations("Bgm")
   const [isPlaying, setIsPlaying] = useState(false)
@@ -34,6 +31,7 @@ export function BgmPanel() {
   const [isMuted, setIsMuted] = useState(false)
   const [isShuffled, setIsShuffled] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
   const [showVolume, setShowVolume] = useState(false)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -42,23 +40,22 @@ export function BgmPanel() {
 
   // Format time as MM:SS
   const formatTime = (seconds: number) => {
+    if (!seconds || isNaN(seconds)) return "00:00"
     const mins = Math.floor(seconds / 60)
     const secs = Math.floor(seconds % 60)
     return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`
   }
 
-  // Progress timer
+  // Sync time with actual audio
   useEffect(() => {
-    if (isPlaying) {
+    if (isPlaying && player) {
       intervalRef.current = setInterval(() => {
-        setCurrentTime((prev) => {
-          if (prev >= TRACK_DURATION - 1) {
-            // Auto-advance to next track or loop
-            return 0
-          }
-          return prev + 1
-        })
-      }, 1000)
+        setCurrentTime(player.getCurrentTime())
+        const dur = player.getDuration()
+        if (dur && !isNaN(dur)) {
+          setDuration(dur)
+        }
+      }, 500)
     } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
@@ -70,7 +67,7 @@ export function BgmPanel() {
         clearInterval(intervalRef.current)
       }
     }
-  }, [isPlaying])
+  }, [isPlaying, player])
 
   // Sync with player on mount
   useEffect(() => {
@@ -101,7 +98,7 @@ export function BgmPanel() {
     if (!player) return
 
     if (isPlaying) {
-      player.stop()
+      player.pause()
       setIsPlaying(false)
     } else {
       playTrack(currentTrackIndex)
@@ -111,6 +108,7 @@ export function BgmPanel() {
   const handlePrevious = useCallback(() => {
     if (currentTime > 3) {
       // If more than 3 seconds in, restart current track
+      if (player) player.seek(0)
       setCurrentTime(0)
     } else {
       // Go to previous track
@@ -125,7 +123,7 @@ export function BgmPanel() {
         setCurrentTime(0)
       }
     }
-  }, [currentTime, currentTrackIndex, isPlaying, playTrack])
+  }, [currentTime, currentTrackIndex, isPlaying, playTrack, player])
 
   const handleNext = useCallback(() => {
     let newIndex: number
@@ -151,8 +149,11 @@ export function BgmPanel() {
   }, [])
 
   const handleSeek = useCallback((values: number[]) => {
-    setCurrentTime(values[0])
-  }, [])
+    if (player) {
+      player.seek(values[0])
+      setCurrentTime(values[0])
+    }
+  }, [player])
 
   const handleVolumeChange = useCallback(
     (values: number[]) => {
@@ -193,7 +194,12 @@ export function BgmPanel() {
     [isPlaying, playTrack]
   )
 
-  const progress = (currentTime / TRACK_DURATION) * 100
+  // Get category label
+  const getCategoryLabel = (category: string) => {
+    if (category === 'lofi') return t('categoryLofi')
+    if (category === 'christmas') return t('categoryChristmas')
+    return category
+  }
 
   return (
     <Card className="w-full glass-card border-0">
@@ -208,7 +214,7 @@ export function BgmPanel() {
               {t(currentTrack.labelKey)}
             </p>
             <p className="text-xs text-muted-foreground">
-              {t(`category${currentTrack.category.charAt(0).toUpperCase() + currentTrack.category.slice(1)}`)}
+              {getCategoryLabel(currentTrack.category)}
             </p>
           </div>
           {/* Volume Control */}
@@ -260,13 +266,13 @@ export function BgmPanel() {
           <Slider
             value={[currentTime]}
             onValueChange={handleSeek}
-            max={TRACK_DURATION}
+            max={duration || 100}
             step={1}
             className="w-full"
           />
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(TRACK_DURATION)}</span>
+            <span>{formatTime(duration)}</span>
           </div>
         </div>
 
