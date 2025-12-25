@@ -249,5 +249,28 @@
       "app/[locale]/layout.tsx",
       "messages/*.json"
     ]
+  },
+  {
+    "topicName": "tailwindcss-animate-pulse",
+    "context7CompatibleLibraryID": "/websites/v3_tailwindcss",
+    "topic": "animate-pulse animation utilities",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-25T00:00:00Z",
+    "keyAPIs": [
+      "animate-pulse: animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      "keyframes: 0%,100% opacity:1, 50% opacity:0.5",
+      "animate-spin, animate-ping, animate-bounce (기타 내장 애니메이션)",
+      "hover:animate-* 상태별 조건부 적용",
+      "theme.extend.animation으로 커스텀 애니메이션 추가"
+    ],
+    "constraints": [
+      "animate-pulse는 opacity 변화로 부드러운 깜빡임 효과",
+      "2초 주기로 무한 반복",
+      "skeleton loader나 상태 표시에 적합",
+      "다른 transition과 함께 사용 시 충돌 주의"
+    ],
+    "appliesToFiles": [
+      "components/pomodoro-timer.tsx"
+    ]
   }
 ]

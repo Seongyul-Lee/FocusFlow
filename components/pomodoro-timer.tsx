@@ -294,14 +294,18 @@ export function PomodoroTimer() {
         <p className="text-xs text-muted-foreground mb-2">
           {getTypeDescription()}
         </p>
-        <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full transition-opacity duration-200 ${
-          status === 'paused'
-            ? 'bg-amber-500 opacity-100 visible'
-            : 'opacity-0 invisible'
-        }`}>
+        <div
+          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full transition-opacity duration-200 ${
+            status === 'paused'
+              ? 'bg-amber-500 opacity-100 visible animate-pulse'
+              : 'opacity-0 invisible'
+          }`}
+          role="status"
+          aria-live="polite"
+        >
           <Pause className="h-3 w-3 text-white" />
           <span className="text-xs font-medium text-white uppercase tracking-wide">
-            {t('paused')}
+            {status === 'paused' ? t('paused') : ''}
           </span>
         </div>
       </div>
