@@ -287,6 +287,7 @@ export function BgmPanel() {
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 shrink-0"
+                aria-label={isMuted || volume === 0 ? t('unmute') : t('mute')}
               >
                 {isMuted || volume === 0 ? (
                   <VolumeX className="h-4 w-4" />
@@ -302,6 +303,7 @@ export function BgmPanel() {
                   size="icon"
                   className="h-6 w-6 shrink-0"
                   onClick={handleMuteToggle}
+                  aria-label={isMuted || volume === 0 ? t('unmute') : t('mute')}
                 >
                   {isMuted || volume === 0 ? (
                     <VolumeX className="h-3 w-3" />
@@ -315,6 +317,7 @@ export function BgmPanel() {
                   max={100}
                   step={1}
                   className="flex-1"
+                  aria-label={t('volume')}
                 />
                 <span className="text-xs text-muted-foreground w-7 text-right">
                   {isMuted ? 0 : volume}
@@ -332,6 +335,7 @@ export function BgmPanel() {
             max={duration || 100}
             step={1}
             className="w-full hover-music-bar"
+            aria-label={t('progress')}
           />
           <div className="flex justify-between text-xs text-muted-foreground mt-2">
             <span>{formatTime(currentTime)}</span>
@@ -348,6 +352,8 @@ export function BgmPanel() {
               size="icon"
               className={`h-7 w-7 hover:scale-110 transition-all duration-200 ${isShuffled ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
               onClick={handleShuffle}
+              aria-label={t('shuffle')}
+              aria-pressed={isShuffled}
             >
               <Shuffle className="h-4 w-4" />
             </Button>
@@ -356,7 +362,7 @@ export function BgmPanel() {
               size="icon"
               className={`h-7 w-7 hover:scale-110 transition-all duration-200 ${repeatMode !== 'off' ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
               onClick={handleRepeatToggle}
-              title={t(repeatMode === 'off' ? 'repeatOff' : repeatMode === 'all' ? 'repeatAll' : 'repeatOne')}
+              aria-label={t(repeatMode === 'off' ? 'repeatOff' : repeatMode === 'all' ? 'repeatAll' : 'repeatOne')}
             >
               {repeatMode === 'one' ? (
                 <Repeat1 className="h-4 w-4" />
@@ -373,6 +379,7 @@ export function BgmPanel() {
               size="icon"
               className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200"
               onClick={handlePrevious}
+              aria-label={t('previous')}
             >
               <SkipBack className="h-4 w-4" />
             </Button>
@@ -381,6 +388,7 @@ export function BgmPanel() {
               size="icon"
               className="h-10 w-10 rounded-full glow-primary hover-glow hover:scale-110 transition-transform duration-200"
               onClick={handlePlayPause}
+              aria-label={isPlaying ? t('pause') : t('play')}
             >
               {isPlaying ? (
                 <Pause className="h-4 w-4" />
@@ -394,6 +402,7 @@ export function BgmPanel() {
               size="icon"
               className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200"
               onClick={handleNext}
+              aria-label={t('next')}
             >
               <SkipForward className="h-4 w-4" />
             </Button>
@@ -402,7 +411,7 @@ export function BgmPanel() {
           {/* Playlist */}
           <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200">
+                <Button variant="ghost" size="icon" className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200" aria-label={t('playlist')}>
                   <List className="h-4 w-4" />
                 </Button>
               </PopoverTrigger>

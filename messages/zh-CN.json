@@ -170,7 +170,15 @@
     "longStroll": "Long Stroll",
     "repeatOff": "关闭重复",
     "repeatAll": "全部重复",
-    "repeatOne": "单曲重复"
+    "repeatOne": "单曲重复",
+    "mute": "静音",
+    "unmute": "取消静音",
+    "volume": "音量",
+    "progress": "播放进度",
+    "shuffle": "随机播放",
+    "previous": "上一首",
+    "next": "下一首",
+    "playlist": "播放列表"
   },
   "Shortcuts": {
     "title": "键盘快捷键",

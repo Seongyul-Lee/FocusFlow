@@ -170,7 +170,15 @@
     "longStroll": "Long Stroll",
     "repeatOff": "Repeat off",
     "repeatAll": "Repeat all",
-    "repeatOne": "Repeat one"
+    "repeatOne": "Repeat one",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "volume": "Volume",
+    "progress": "Track progress",
+    "shuffle": "Shuffle",
+    "previous": "Previous track",
+    "next": "Next track",
+    "playlist": "Playlist"
   },
   "Shortcuts": {
     "title": "Keyboard Shortcuts",

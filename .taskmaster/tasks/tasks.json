@@ -615,13 +615,26 @@
         "subtasks": [],
         "createdAt": "2025-12-26T12:00:00.000Z",
         "updatedAt": "2025-12-26T12:30:00.000Z"
+      },
+      {
+        "id": "57",
+        "title": "CI/E2E 테스트 속도 최적화",
+        "description": "GitHub Actions CI에서 E2E 테스트 실행 시간 70-80% 단축을 위한 최적화",
+        "details": "문제점:\n- Playwright 브라우저 매번 다운로드 (~500MB)\n- 3개 브라우저 테스트 (chromium, firefox, webkit)\n- 워커 1개로 병렬 처리 없음\n- dev 서버 사용으로 느린 시작\n- 재시도 2회로 실패 시 시간 증가\n\n해결:\n1. .github/workflows/ci.yml:\n   - Playwright 브라우저 캐싱 추가 (pnpm-lock.yaml 기반 키)\n   - chromium만 설치 (--with-deps chromium)\n   - 캐시 히트 시 install-deps만 실행\n\n2. playwright.config.ts:\n   - CI 환경: chromium만 테스트\n   - 워커 수: 1 → 2\n   - 재시도: 2 → 1\n   - 서버: pnpm dev → pnpm start\n   - 타임아웃: 120s → 60s\n\n예상 효과: 70-80% 시간 단축",
+        "testStrategy": "GitHub Actions에서 CI 실행 시간 비교. 첫 실행 후 캐시 적용 확인",
+        "status": "done",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": [],
+        "createdAt": "2025-12-26T13:00:00.000Z",
+        "updatedAt": "2025-12-26T13:30:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-26T12:30:00.000Z",
-      "taskCount": 45,
-      "completedCount": 40,
+      "lastModified": "2025-12-26T13:30:00.000Z",
+      "taskCount": 46,
+      "completedCount": 41,
       "tags": [
         "master"
       ]

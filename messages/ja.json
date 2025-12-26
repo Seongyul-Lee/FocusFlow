@@ -170,7 +170,15 @@
     "longStroll": "Long Stroll",
     "repeatOff": "リピートオフ",
     "repeatAll": "全曲リピート",
-    "repeatOne": "1曲リピート"
+    "repeatOne": "1曲リピート",
+    "mute": "ミュート",
+    "unmute": "ミュート解除",
+    "volume": "音量",
+    "progress": "再生位置",
+    "shuffle": "シャッフル",
+    "previous": "前の曲",
+    "next": "次の曲",
+    "playlist": "プレイリスト"
   },
   "Shortcuts": {
     "title": "キーボードショートカット",

@@ -36,7 +36,7 @@ export default function Home() {
         <div className="flex-1 pt-16 pb-6 px-4 xl:px-8">
           <div className="max-w-[1800px] mx-auto grid grid-cols-1 xl:grid-cols-[570px_minmax(400px,1fr)_570px] gap-6 xl:gap-6 xl:items-stretch">
             {/* Left: Dashboard (오늘 요약, 주간, 월간) */}
-            <aside className="hidden xl:flex xl:flex-col gap-4">
+            <aside className="hidden xl:flex xl:flex-col gap-4" aria-label="Statistics Dashboard">
               <Suspense fallback={null}>
                 <DashboardLeft />
               </Suspense>
@@ -56,7 +56,7 @@ export default function Home() {
             </section>
 
             {/* Right: BGM + Activity Calendar */}
-            <aside className="hidden xl:flex xl:flex-col gap-4">
+            <aside className="hidden xl:flex xl:flex-col gap-4" aria-label="Music and Calendar">
               <BgmPanel />
               <Suspense fallback={null}>
                 <DashboardRight />
