@@ -54,7 +54,7 @@ export function UserMenu() {
   if (!user) {
     return (
       <Link href="/auth/login">
-        <Button variant="ghost" size="sm" className="gap-2">
+        <Button variant="ghost" size="sm" className="gap-2 hover:scale-105 hover:bg-primary/10 transition-all duration-200">
           <User className="h-4 w-4" />
           {t("login")}
         </Button>
@@ -65,7 +65,7 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
+        <Button variant="ghost" size="icon" className="relative hover:scale-105 hover:bg-primary/10 transition-all duration-200">
           <User className="h-4 w-4" />
           <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-green-500" />
         </Button>

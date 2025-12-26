@@ -269,11 +269,11 @@ export function BgmPanel() {
       <CardContent className="pt-0.5 pb-3 px-3 space-y-2.5">
         {/* Track Info */}
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-lg bg-primary/10">
+          <div className="p-2 rounded-lg bg-primary/10 hover-music-icon">
             <Music className="h-5 w-5 text-primary" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">
+            <p className="text-sm font-medium truncate hover-song-title">
               {t(currentTrack.labelKey)}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -331,7 +331,7 @@ export function BgmPanel() {
             onValueChange={handleSeek}
             max={duration || 100}
             step={1}
-            className="w-full"
+            className="w-full hover-music-bar"
           />
           <div className="flex justify-between text-xs text-muted-foreground mt-2">
             <span>{formatTime(currentTime)}</span>
@@ -341,22 +341,37 @@ export function BgmPanel() {
 
         {/* Playback Controls */}
         <div className="flex items-center justify-between">
-          {/* Shuffle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`h-7 w-7 ${isShuffled ? "text-primary" : "text-muted-foreground"}`}
-            onClick={handleShuffle}
-          >
-            <Shuffle className="h-4 w-4" />
-          </Button>
+          {/* Shuffle + Repeat */}
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`h-7 w-7 hover:scale-110 transition-all duration-200 ${isShuffled ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
+              onClick={handleShuffle}
+            >
+              <Shuffle className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`h-7 w-7 hover:scale-110 transition-all duration-200 ${repeatMode !== 'off' ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
+              onClick={handleRepeatToggle}
+              title={t(repeatMode === 'off' ? 'repeatOff' : repeatMode === 'all' ? 'repeatAll' : 'repeatOne')}
+            >
+              {repeatMode === 'one' ? (
+                <Repeat1 className="h-4 w-4" />
+              ) : (
+                <Repeat className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
 
           {/* Center Controls: Previous / Play / Next */}
           <div className="flex items-center gap-5">
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200"
               onClick={handlePrevious}
             >
               <SkipBack className="h-4 w-4" />
@@ -364,7 +379,7 @@ export function BgmPanel() {
 
             <Button
               size="icon"
-              className="h-10 w-10 rounded-full glow-primary"
+              className="h-10 w-10 rounded-full glow-primary hover-glow hover:scale-110 transition-transform duration-200"
               onClick={handlePlayPause}
             >
               {isPlaying ? (
@@ -377,34 +392,17 @@ export function BgmPanel() {
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200"
               onClick={handleNext}
             >
               <SkipForward className="h-4 w-4" />
             </Button>
           </div>
 
-          {/* Repeat + Playlist */}
-          <div className="flex items-center gap-1">
-            {/* Repeat */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className={`h-7 w-7 ${repeatMode !== 'off' ? "text-primary" : "text-muted-foreground"}`}
-              onClick={handleRepeatToggle}
-              title={t(repeatMode === 'off' ? 'repeatOff' : repeatMode === 'all' ? 'repeatAll' : 'repeatOne')}
-            >
-              {repeatMode === 'one' ? (
-                <Repeat1 className="h-4 w-4" />
-              ) : (
-                <Repeat className="h-4 w-4" />
-              )}
-            </Button>
-
-            {/* Playlist */}
-            <Popover>
+          {/* Playlist */}
+          <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-7 w-7">
+                <Button variant="ghost" size="icon" className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200">
                   <List className="h-4 w-4" />
                 </Button>
               </PopoverTrigger>
@@ -432,8 +430,7 @@ export function BgmPanel() {
                 ))}
               </div>
             </PopoverContent>
-            </Popover>
-          </div>
+          </Popover>
         </div>
       </CardContent>
     </Card>

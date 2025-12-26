@@ -139,6 +139,7 @@
     "dailyGoal": "일일 목표",
     "goalReached": "목표 달성!",
     "noActivity": "활동 없음",
+    "loading": "로딩 중...",
     "minute": "분",
     "vsLastMonth": "전월 대비",
     "currentStreak": "연속",

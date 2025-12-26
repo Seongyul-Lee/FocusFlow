@@ -140,24 +140,24 @@ function TodayCard({
     <Card className="glass-card border-0">
       <CardHeader className="pb-3">
         <CardTitle className="text-base font-medium flex items-center gap-2">
-          <Target className="h-5 w-5 text-green-400" />
-          {t("overview")}
+          <Target className="h-5 w-5 text-green-400 hover-dashboard-icon" />
+          <span className="hover-dashboard-title">{t("overview")}</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-3 gap-3">
-          <div className="flex flex-col items-center p-3 rounded-xl bg-primary/10">
-            <Clock className="h-5 w-5 text-primary mb-1.5" />
+          <div className="flex flex-col items-center p-3 rounded-xl bg-primary/10 hover-stat cursor-default">
+            <Clock className="h-5 w-5 text-primary mb-1.5 hover-bounce" />
             <p className="text-sm font-semibold">{formatTime(displayMinutes)}</p>
             <p className="text-xs text-muted-foreground">{t("todayFocus")}</p>
           </div>
-          <div className="flex flex-col items-center p-3 rounded-xl bg-green-500/10">
-            <Target className="h-5 w-5 text-green-400 mb-1.5" />
+          <div className="flex flex-col items-center p-3 rounded-xl bg-green-500/10 hover-stat cursor-default">
+            <Target className="h-5 w-5 text-green-400 mb-1.5 hover-bounce" />
             <p className="text-sm font-semibold">{todaySessions}</p>
             <p className="text-xs text-muted-foreground">{t("sessions")}</p>
           </div>
-          <div className="flex flex-col items-center p-3 rounded-xl bg-rose-500/10">
-            <Flame className="h-5 w-5 text-rose-400 mb-1.5" />
+          <div className="flex flex-col items-center p-3 rounded-xl bg-rose-500/10 hover-stat cursor-default">
+            <Flame className="h-5 w-5 text-rose-400 mb-1.5 hover-bounce" />
             <p className="text-sm font-semibold">{streakDays}{t("days")}</p>
             <p className="text-xs text-muted-foreground">{t("streak")}</p>
           </div>
@@ -228,8 +228,8 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-medium flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-sky-400" />
-            {t("weeklyStats")}
+            <Calendar className="h-5 w-5 text-sky-400 hover-dashboard-icon" />
+            <span className="hover-dashboard-title">{t("weeklyStats")}</span>
           </CardTitle>
         </div>
       </CardHeader>
@@ -257,7 +257,7 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
                 <YAxis hide />
                 <Tooltip
                   content={<CustomTooltip t={t} />}
-                  cursor={{ fill: "hsl(var(--primary) / 0.1)", radius: 4 }}
+                  cursor={{ fill: "rgba(167, 139, 250, 0.15)", radius: 4 }}
                 />
                 <Bar
                   dataKey="minutes"
@@ -323,8 +323,8 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtime
     <Card className="glass-card border-0">
       <CardHeader className="pb-3">
         <CardTitle className="text-base font-medium flex items-center gap-2">
-          <TrendingUp className="h-5 w-5 text-emerald-400" />
-          {t("weeklyComparison")}
+          <TrendingUp className="h-5 w-5 text-emerald-400 hover-dashboard-icon" />
+          <span className="hover-dashboard-title">{t("weeklyComparison")}</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="relative">
@@ -332,11 +332,11 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtime
           <div className="grid grid-cols-2 gap-4">
             {/* 시간 비교 */}
             <div className="space-y-3">
-              <div className="flex flex-col items-center p-3 rounded-xl bg-primary/10">
+              <div className="flex flex-col items-center p-3 rounded-xl bg-primary/10 hover-stat cursor-default">
                 <p className="text-xs text-muted-foreground mb-1">{t("thisWeekLabel")}</p>
                 <p className="text-lg font-bold text-primary">{formatTimeHourMin(thisWeekMinutes, tTime)}</p>
               </div>
-              <div className="flex flex-col items-center p-3 rounded-xl bg-muted/20">
+              <div className="flex flex-col items-center p-3 rounded-xl bg-muted/20 hover-stat cursor-default">
                 <p className="text-xs text-muted-foreground mb-1">{t("lastWeekLabel")}</p>
                 <p className="text-lg font-semibold">{formatTimeHourMin(lastWeekMinutes, tTime)}</p>
               </div>
@@ -349,11 +349,11 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtime
 
             {/* 세션 비교 */}
             <div className="space-y-3">
-              <div className="flex flex-col items-center p-3 rounded-xl bg-green-500/10">
+              <div className="flex flex-col items-center p-3 rounded-xl bg-green-500/10 hover-stat cursor-default">
                 <p className="text-xs text-muted-foreground mb-1">{t("thisWeekLabel")}</p>
                 <p className="text-lg font-bold text-green-400">{thisWeekSessions} {t("sessions")}</p>
               </div>
-              <div className="flex flex-col items-center p-3 rounded-xl bg-muted/20">
+              <div className="flex flex-col items-center p-3 rounded-xl bg-muted/20 hover-stat cursor-default">
                 <p className="text-xs text-muted-foreground mb-1">{t("lastWeekLabel")}</p>
                 <p className="text-lg font-semibold">{lastWeekSessions} {t("sessions")}</p>
               </div>
@@ -394,33 +394,33 @@ function MonthlyCard({ data, prevData, isLoggedIn, realtimeMinutes }: { data: Da
     <Card className="glass-card border-0">
       <CardHeader className="pb-3">
         <CardTitle className="text-base font-medium flex items-center gap-2">
-          <TrendingUp className="h-5 w-5 text-primary" />
-          {t("monthlyStats")}
+          <TrendingUp className="h-5 w-5 text-primary hover-dashboard-icon" />
+          <span className="hover-dashboard-title">{t("monthlyStats")}</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="relative">
         <div className={!isLoggedIn ? "blur-sm pointer-events-none select-none" : ""}>
           <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col items-center p-4 rounded-xl bg-primary/10">
-              <Clock className="h-5 w-5 text-primary mb-1.5" />
+            <div className="flex flex-col items-center p-4 rounded-xl bg-primary/10 hover-stat cursor-default">
+              <Clock className="h-5 w-5 text-primary mb-1.5 hover-bounce" />
               <p className="text-base font-semibold">{formatTime(totalMinutes)}</p>
               <p className="text-xs text-muted-foreground">{t("totalFocusTime")}</p>
               <TrendIndicator current={totalMinutes} previous={prevTotalMinutes} label={t("vsLastMonth")} />
             </div>
-            <div className="flex flex-col items-center p-4 rounded-xl bg-green-500/10">
-              <Target className="h-5 w-5 text-green-400 mb-1.5" />
+            <div className="flex flex-col items-center p-4 rounded-xl bg-green-500/10 hover-stat cursor-default">
+              <Target className="h-5 w-5 text-green-400 mb-1.5 hover-bounce" />
               <p className="text-base font-semibold">{totalSessions}</p>
               <p className="text-xs text-muted-foreground">{t("totalSessions")}</p>
               <TrendIndicator current={totalSessions} previous={prevTotalSessions} label={t("vsLastMonth")} />
             </div>
-            <div className="flex flex-col items-center p-4 rounded-xl bg-sky-500/10">
-              <Calendar className="h-5 w-5 text-sky-400 mb-1.5" />
+            <div className="flex flex-col items-center p-4 rounded-xl bg-sky-500/10 hover-stat cursor-default">
+              <Calendar className="h-5 w-5 text-sky-400 mb-1.5 hover-bounce" />
               <p className="text-base font-semibold">{formatTime(avgMinutes)}</p>
               <p className="text-xs text-muted-foreground">{t("dailyAvg")}</p>
               <TrendIndicator current={avgMinutes} previous={prevAvgMinutes} label={t("vsLastMonth")} />
             </div>
-            <div className="flex flex-col items-center p-4 rounded-xl bg-amber-500/10">
-              <Flame className="h-5 w-5 text-amber-400 mb-1.5" />
+            <div className="flex flex-col items-center p-4 rounded-xl bg-amber-500/10 hover-stat cursor-default">
+              <Flame className="h-5 w-5 text-amber-400 mb-1.5 hover-bounce" />
               <p className="text-base font-semibold">{activeDays}{t("days")}</p>
               <p className="text-xs text-muted-foreground">{t("activeDays")}</p>
               <TrendIndicator current={activeDays} previous={prevActiveDays} label={t("vsLastMonth")} />

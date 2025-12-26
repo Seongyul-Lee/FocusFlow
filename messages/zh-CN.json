@@ -139,6 +139,7 @@
     "dailyGoal": "每日目标",
     "goalReached": "目标达成！",
     "noActivity": "无活动",
+    "loading": "加载中...",
     "minute": "分钟",
     "vsLastMonth": "与上月相比",
     "currentStreak": "连续",

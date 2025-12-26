@@ -45,10 +45,10 @@ export default function Home() {
             {/* Center: Timer */}
             <section className="flex flex-col items-center justify-start pt-8 xl:pt-12">
               <div className="text-center mb-4 md:mb-8 px-4">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 hover-title-outline inline-block">
                   {t("title")}
                 </h1>
-                <p className="text-slate-500 dark:text-slate-400">{t("description")}</p>
+                <p className="text-slate-500 dark:text-slate-400 hover-phase-label">{t("description")}</p>
               </div>
               <Suspense fallback={<TimerFallback />}>
                 <PomodoroTimer />

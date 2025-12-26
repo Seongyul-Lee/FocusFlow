@@ -10,7 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { Calendar, CheckCircle2, Circle, Clock, Target, Flame } from "lucide-react"
+import { Calendar, CheckCircle2, Circle, Clock, Target, Flame, Loader2 } from "lucide-react"
 import {
   getCurrentMonthData,
   type DayRecord,
@@ -47,7 +47,7 @@ export function DashboardRight() {
   const tDays = useTranslations("Days")
   const [monthlyData, setMonthlyData] = useState<DayRecord[]>([])
   const [attendance, setAttendance] = useState<string[]>([])
-  const [isCheckedIn, setIsCheckedIn] = useState(false)
+  const [isCheckedIn, setIsCheckedIn] = useState<boolean | null>(null) // null = loading
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
   const [streakStats, setStreakStats] = useState({ current: 0, best: 0 })
   const [weeklyRate, setWeeklyRate] = useState({ attended: 0, total: 7, rate: 0 })
@@ -101,9 +101,9 @@ export function DashboardRight() {
 
   // user 변경 시 (로그인/로그아웃) 상태 초기화 후 데이터 로드
   useEffect(() => {
-    // 상태 초기화
+    // 상태 초기화 (isCheckedIn은 null로 설정하여 로딩 상태 표시)
     setAttendance([])
-    setIsCheckedIn(false)
+    setIsCheckedIn(null)
     setStreakStats({ current: 0, best: 0 })
     setWeeklyRate({ attended: 0, total: 7, rate: 0 })
     setMonthlyData([])
@@ -216,8 +216,8 @@ export function DashboardRight() {
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-medium flex items-center gap-2">
-            <Calendar className="h-6 w-6 text-amber-400" />
-            {t("activityCalendar")}
+            <Calendar className="h-6 w-6 text-amber-400 hover-dashboard-icon" />
+            <span className="hover-dashboard-title">{t("activityCalendar")}</span>
           </CardTitle>
           <span className="text-base text-muted-foreground">
             {year}.{month + 1}.{today}
@@ -228,24 +228,26 @@ export function DashboardRight() {
         {/* 출석 체크 버튼 */}
         <div className="flex items-center justify-between p-4 rounded-xl bg-primary/5 border border-primary/10">
           <div className="flex items-center gap-3">
-            {isCheckedIn ? (
+            {isCheckedIn === null ? (
+              <Loader2 className="h-7 w-7 text-muted-foreground animate-spin" />
+            ) : isCheckedIn ? (
               <CheckCircle2 className="h-7 w-7 text-green-500" />
             ) : (
               <Circle className="h-7 w-7 text-muted-foreground" />
             )}
             <div>
               <p className="text-base font-medium">
-                {isCheckedIn ? t("checkedIn") : t("checkInPrompt")}
+                {isCheckedIn === null ? t("loading") : isCheckedIn ? t("checkedIn") : t("checkInPrompt")}
               </p>
               <p className="text-sm text-muted-foreground">
                 {t("monthlyAttendance")}: {monthAttendanceCount}{t("days")}
               </p>
             </div>
           </div>
-          {!isCheckedIn && (
+          {isCheckedIn === false && (
             <Button
               onClick={handleCheckIn}
-              className="h-9 px-4 text-sm glow-primary"
+              className="h-9 px-4 text-sm glow-primary hover-glow hover-shine"
             >
               {t("checkIn")}
             </Button>
@@ -254,18 +256,18 @@ export function DashboardRight() {
 
         {/* 스트릭 통계 */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="flex flex-col items-center p-3 rounded-xl bg-rose-500/10">
-            <Flame className="h-5 w-5 text-rose-400 mb-1.5" />
+          <div className="flex flex-col items-center p-3 rounded-xl bg-rose-500/10 hover-stat cursor-default">
+            <Flame className="h-5 w-5 text-rose-400 mb-1.5 hover-bounce" />
             <p className="text-base font-semibold">{streakStats.current}{t("days")}</p>
             <p className="text-xs text-muted-foreground">{t("currentStreak")}</p>
           </div>
-          <div className="flex flex-col items-center p-3 rounded-xl bg-amber-500/10">
-            <Flame className="h-5 w-5 text-amber-400 mb-1.5" />
+          <div className="flex flex-col items-center p-3 rounded-xl bg-amber-500/10 hover-stat cursor-default">
+            <Flame className="h-5 w-5 text-amber-400 mb-1.5 hover-bounce" />
             <p className="text-base font-semibold">{streakStats.best}{t("days")}</p>
             <p className="text-xs text-muted-foreground">{t("bestStreak")}</p>
           </div>
-          <div className="flex flex-col items-center p-3 rounded-xl bg-sky-500/10">
-            <Target className="h-5 w-5 text-sky-400 mb-1.5" />
+          <div className="flex flex-col items-center p-3 rounded-xl bg-sky-500/10 hover-stat cursor-default">
+            <Target className="h-5 w-5 text-sky-400 mb-1.5 hover-bounce" />
             <p className="text-base font-semibold">{weeklyRate.rate}%</p>
             <p className="text-xs text-muted-foreground">{t("weeklyRate")}</p>
           </div>

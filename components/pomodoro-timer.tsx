@@ -85,7 +85,7 @@ export function PomodoroTimer() {
   // Browser title update
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const title = phase === 'focus' ? 'Focus' : phase === 'longBreak' ? 'Long Break' : 'Break'
+      const title = phase === 'focus' ? 'Pomobox' : phase === 'longBreak' ? 'Long Break' : 'Break'
       document.title = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} - ${title}`
     }
   }, [timeLeft, phase, minutes, seconds])
@@ -388,14 +388,15 @@ export function PomodoroTimer() {
           settings={settings}
           isRunning={status === 'running'}
           onSettingsChange={handleSettingsChange}
+          buttonClassName="hover-rotate-settings"
         />
       </div>
 
       <div className="text-center">
-        <p className="text-lg font-bold text-foreground uppercase tracking-wider mb-1">
+        <p className="text-lg font-bold text-foreground uppercase tracking-wider mb-1 hover-title-outline">
           {getTypeLabel()}
         </p>
-        <p className="text-xs text-muted-foreground mb-2">
+        <p className="text-xs text-muted-foreground mb-2 hover-phase-label">
           {getTypeDescription()}
         </p>
         <div
@@ -414,9 +415,9 @@ export function PomodoroTimer() {
         </div>
       </div>
 
-      <div className="relative flex items-center justify-center">
-        <svg className="w-64 h-64 sm:w-72 sm:h-72 -rotate-90" viewBox="0 0 300 300">
-          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-muted dark:text-white/10" />
+      <div className="relative flex items-center justify-center group">
+        <svg className="w-64 h-64 sm:w-72 sm:h-72 -rotate-90 hover-ring" viewBox="0 0 300 300">
+          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-muted dark:text-white/10 transition-all duration-300" />
           <circle
             cx="150"
             cy="150"
@@ -427,7 +428,7 @@ export function PomodoroTimer() {
             strokeLinecap="round"
             strokeDasharray={TIMER_CIRCUMFERENCE}
             strokeDashoffset={TIMER_CIRCUMFERENCE - (progress / 100) * TIMER_CIRCUMFERENCE}
-            className={`transition-all duration-1000 ease-linear ${
+            className={`transition-all duration-1000 ease-linear group-hover:stroke-[10] ${
               status === 'paused'
                 ? 'text-amber-500'
                 : phase === 'focus'
@@ -439,7 +440,7 @@ export function PomodoroTimer() {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-6xl font-mono font-semibold tracking-tight text-foreground">
+          <span className="text-6xl font-mono font-semibold tracking-tight text-foreground hover-timer-display">
             {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
           </span>
         </div>
@@ -448,22 +449,22 @@ export function PomodoroTimer() {
       <div className="flex flex-col items-center gap-4">
         <div className="flex items-center gap-3">
           {status === 'running' ? (
-            <Button size="lg" onClick={handlePause} variant="secondary" className="gap-2 px-8 border-2 border-border dark:border-transparent">
+            <Button size="lg" onClick={handlePause} variant="secondary" className="gap-2 px-8 border-2 border-border dark:border-transparent hover:scale-105 transition-transform duration-200">
               <Pause className="h-5 w-5" />
               {t('pause')}
             </Button>
           ) : status === 'paused' ? (
-            <Button size="lg" onClick={handleResume} className="gap-2 px-8 glow-primary">
+            <Button size="lg" onClick={handleResume} className="gap-2 px-8 glow-primary hover-glow hover-shine">
               <Play className="h-5 w-5" />
               {t('resume')}
             </Button>
           ) : (
-            <Button size="lg" onClick={handleStart} className="gap-2 px-8 glow-primary">
+            <Button size="lg" onClick={handleStart} className="gap-2 px-8 glow-primary hover-glow hover-shine">
               <Play className="h-5 w-5" />
               {t('start')}
             </Button>
           )}
-          <Button size="lg" variant="outline" onClick={handleReset} aria-label="Reset timer">
+          <Button size="lg" variant="outline" onClick={handleReset} aria-label="Reset timer" className="hover:scale-105 hover:bg-muted/50 transition-all duration-200">
             <RotateCcw className="h-5 w-5" />
           </Button>
         </div>
@@ -474,7 +475,7 @@ export function PomodoroTimer() {
         </Button>
       </div>
 
-      <div className="text-muted-foreground text-sm font-medium">
+      <div className="text-muted-foreground text-sm font-medium hover-today-stats">
         <span className="text-foreground">{t('today', { sessions, minutes: totalFocusMinutes })}</span>
       </div>
 

@@ -139,6 +139,7 @@
     "dailyGoal": "Daily Goal",
     "goalReached": "Goal reached!",
     "noActivity": "No activity",
+    "loading": "Loading...",
     "minute": "min",
     "vsLastMonth": "vs last month",
     "currentStreak": "Streak",
