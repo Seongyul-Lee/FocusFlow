@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -31,6 +31,7 @@ import {
   getStreakStatsFromDB,
   getWeeklyAttendanceRateFromDB,
 } from "@/lib/supabase/attendance"
+import { useRealtimeFocusMinutes } from "@/hooks/use-realtime-focus"
 
 // 시간 포맷팅
 function formatTime(minutes: number): string {
@@ -43,6 +44,7 @@ function formatTime(minutes: number): string {
 
 export function DashboardRight() {
   const { user } = useUser()
+  const realtimeMinutes = useRealtimeFocusMinutes()
   const t = useTranslations("Dashboard")
   const tDays = useTranslations("Days")
   const [monthlyData, setMonthlyData] = useState<DayRecord[]>([])
@@ -113,6 +115,16 @@ export function DashboardRight() {
     loadData()
   }, [loadData])
 
+  // 세션 종료 시 (realtimeMinutes가 양수 → 0) 데이터 다시 로드
+  const prevRealtimeMinutes = useRef(realtimeMinutes)
+  useEffect(() => {
+    // realtimeMinutes가 0보다 큰 값에서 0으로 변경되면 세션 종료로 간주
+    if (prevRealtimeMinutes.current > 0 && realtimeMinutes === 0) {
+      loadData()
+    }
+    prevRealtimeMinutes.current = realtimeMinutes
+  }, [realtimeMinutes, loadData])
+
   const handleCheckIn = useCallback(async () => {
     if (user) {
       // 로그인 사용자: Supabase에 출석 저장
@@ -165,11 +177,16 @@ export function DashboardRight() {
     return attendance.includes(dateStr)
   }
 
-  // 집중 시간 가져오기
+  // 집중 시간 가져오기 (오늘이면 실시간 분 추가)
   const getFocusMinutes = (day: number) => {
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
     const record = monthlyData.find((d) => d.date === dateStr)
-    return record?.totalMinutes || 0
+    const storedMinutes = record?.totalMinutes || 0
+    // 오늘인 경우 실시간 분 추가
+    if (day === today) {
+      return storedMinutes + realtimeMinutes
+    }
+    return storedMinutes
   }
 
   // 세션 수 가져오기

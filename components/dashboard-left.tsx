@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -20,6 +20,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  Cell,
 } from "recharts"
 import {
   getRecentDays,
@@ -87,7 +88,8 @@ function CustomTooltip({
 }) {
   if (!active || !payload?.length) return null
 
-  const minutes = payload[0].value
+  // payload[0].value는 displayMinutes (최소 3), 실제 minutes 사용
+  const minutes = payload[0].payload.minutes
   const fullDay = payload[0].payload.fullDay
   const sessions = payload[0].payload.sessions
 
@@ -190,15 +192,24 @@ function TodayCard({
   )
 }
 
+// 차트 색상 상수 (다크모드 기준 - 앱이 다크모드 기본)
+const CHART_COLORS = {
+  today: "#a78bfa",      // chart-1: 보라색 (오늘 강조)
+  default: "#22c55e",    // chart-2: 녹색 (기본)
+  muted: "rgba(148, 163, 184, 0.2)", // muted placeholder
+  todayLabel: "#a78bfa", // 오늘 레이블 색상
+  defaultLabel: "rgba(248, 250, 252, 0.8)", // 기본 레이블 색상
+}
+
 // 주간 현황 카드
 function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; isLoggedIn: boolean; realtimeMinutes: number }) {
   const t = useTranslations("Dashboard")
   const tDays = useTranslations("Days")
   const tTime = useTranslations("Time")
 
-  // 총 시간 및 세션 (실시간 시간 포함)
+  // 총 시간 및 세션 (로그인 사용자만 실시간 시간 포함)
   const storedMinutes = data.reduce((sum, d) => sum + d.totalMinutes, 0)
-  const totalMinutes = storedMinutes + realtimeMinutes
+  const totalMinutes = storedMinutes + (isLoggedIn ? realtimeMinutes : 0)
   const totalSessions = data.reduce((sum, d) => sum + d.totalSessions, 0)
   const avgMinutes = Math.round(totalMinutes / 7)
 
@@ -212,16 +223,28 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
     tDays("thursday"), tDays("friday"), tDays("saturday")
   ]
 
-  const chartData = data.map((d) => {
-    const dayIndex = new Date(d.date).getDay()
+  // 오늘 요일 인덱스 (0=일, 6=토)
+  const todayDayIndex = new Date().getDay()
+
+  // 7일 모두 표시 (데이터 없는 날도 placeholder로)
+  const chartData = Array.from({ length: 7 }, (_, dayIndex) => {
+    const dayData = data.find(d => new Date(d.date).getDay() === dayIndex)
+    const storedMins = dayData?.totalMinutes || 0
+    const isToday = dayIndex === todayDayIndex
+    // 오늘인 경우 실시간 시간 추가 (로그인 사용자만 - 비로그인은 블러 영역이므로 제외)
+    const minutes = isToday && isLoggedIn ? storedMins + realtimeMinutes : storedMins
     return {
       day: dayLabels[dayIndex],
       fullDay: fullDayLabels[dayIndex],
-      minutes: d.totalMinutes,
-      sessions: d.totalSessions,
+      minutes,
+      // 차트 표시용: 0값도 최소 높이(3) 보장
+      displayMinutes: minutes > 0 ? minutes : 3,
+      sessions: dayData?.totalSessions || 0,
       dayIndex,
+      isToday,
+      hasData: minutes > 0,
     }
-  }).sort((a, b) => a.dayIndex - b.dayIndex)
+  })
 
   return (
     <Card className="glass-card border-0">
@@ -252,25 +275,56 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
                   dataKey="day"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 13, fontWeight: 600, fill: "rgba(248, 250, 252, 0.8)" }}
+                  tick={({ x, y, payload }) => {
+                    const entry = chartData.find(d => d.day === payload.value)
+                    const isToday = entry?.isToday
+                    return (
+                      <text
+                        x={x}
+                        y={y + 12}
+                        textAnchor="middle"
+                        fontSize={13}
+                        fontWeight={isToday ? 700 : 600}
+                        fill={isToday ? CHART_COLORS.todayLabel : CHART_COLORS.defaultLabel}
+                      >
+                        {payload.value}
+                      </text>
+                    )
+                  }}
                 />
                 <YAxis hide />
                 <Tooltip
                   content={<CustomTooltip t={t} />}
-                  cursor={{ fill: "rgba(167, 139, 250, 0.15)", radius: 4 }}
+                  cursor={{ fill: "rgba(167, 139, 250, 0.12)", radius: 6 }}
                 />
                 <Bar
-                  dataKey="minutes"
-                  fill="hsl(var(--chart-2))"
+                  dataKey="displayMinutes"
+                  fill={CHART_COLORS.default}
                   radius={[6, 6, 0, 0]}
                   activeBar={{
-                    fill: "hsl(var(--chart-2))",
                     fillOpacity: 1,
-                    stroke: "hsl(var(--chart-2))",
                     strokeWidth: 2,
-                    filter: "brightness(1.2)",
+                    filter: "brightness(1.15) drop-shadow(0 4px 12px rgba(167, 139, 250, 0.4))",
                   }}
-                />
+                >
+                  {chartData.map((entry, index) => {
+                    // 데이터 없는 날: muted placeholder
+                    // 오늘: 보라색 (강조)
+                    // 기타: 녹색 (기본)
+                    const fill = !entry.hasData
+                      ? CHART_COLORS.muted
+                      : entry.isToday
+                        ? CHART_COLORS.today
+                        : CHART_COLORS.default
+                    return (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={fill}
+                        stroke={fill}
+                      />
+                    )
+                  })}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -304,9 +358,9 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtime
   const t = useTranslations("Dashboard")
   const tTime = useTranslations("Time")
 
-  // 이번 주 통계 (실시간 시간 포함)
+  // 이번 주 통계 (로그인 사용자만 실시간 시간 포함)
   const storedThisWeekMinutes = thisWeekData.reduce((sum, d) => sum + d.totalMinutes, 0)
-  const thisWeekMinutes = storedThisWeekMinutes + realtimeMinutes
+  const thisWeekMinutes = storedThisWeekMinutes + (isLoggedIn ? realtimeMinutes : 0)
   const thisWeekSessions = thisWeekData.reduce((sum, d) => sum + d.totalSessions, 0)
 
   // 지난 주 통계
@@ -375,9 +429,9 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtime
 function MonthlyCard({ data, prevData, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; prevData: DayRecord[]; isLoggedIn: boolean; realtimeMinutes: number }) {
   const t = useTranslations("Dashboard")
 
-  // 이번 달 핵심 지표 계산 (실시간 시간 포함)
+  // 이번 달 핵심 지표 계산 (로그인 사용자만 실시간 시간 포함)
   const storedMinutes = data.reduce((sum, d) => sum + d.totalMinutes, 0)
-  const totalMinutes = storedMinutes + realtimeMinutes
+  const totalMinutes = storedMinutes + (isLoggedIn ? realtimeMinutes : 0)
   const totalSessions = data.reduce((sum, d) => sum + d.totalSessions, 0)
   const activeDays = data.filter((d) => d.totalMinutes > 0).length
   const daysElapsed = new Date().getDate() // 이번 달 경과 일수
@@ -506,6 +560,16 @@ export function DashboardLeft() {
     // 새 데이터 로드
     loadData()
   }, [loadData])
+
+  // 세션 종료 시 (realtimeMinutes가 양수 → 0) 데이터 다시 로드
+  const prevRealtimeMinutes = useRef(realtimeMinutes)
+  useEffect(() => {
+    // realtimeMinutes가 0보다 큰 값에서 0으로 변경되면 세션 종료로 간주
+    if (prevRealtimeMinutes.current > 0 && realtimeMinutes === 0) {
+      loadData()
+    }
+    prevRealtimeMinutes.current = realtimeMinutes
+  }, [realtimeMinutes, loadData])
 
   return (
     <div className="flex flex-col gap-4 flex-1">

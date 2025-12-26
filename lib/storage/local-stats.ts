@@ -8,8 +8,18 @@ interface LocalDailyStats {
   totalSessions: number
 }
 
+/**
+ * 로컬 시간 기준 오늘 날짜 (YYYY-MM-DD)
+ * 타임존 문제 방지를 위해 toISOString 대신 로컬 날짜 사용
+ */
+export function getLocalToday(): string {
+  const now = new Date()
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`
+}
+
+// 내부용 alias
 function getToday(): string {
-  return new Date().toISOString().split("T")[0]
+  return getLocalToday()
 }
 
 /**
@@ -50,6 +60,25 @@ export function saveLocalTodayStats(stats: LocalDailyStats): void {
   } catch (error) {
     console.error("Failed to save local stats:", error)
   }
+}
+
+/**
+ * 1분 단위 증분 저장 (세션 카운트는 증가 안함)
+ * - Focus 세션 중 1분마다 호출
+ */
+export function incrementLocalMinutes(minutes: number = 1): LocalDailyStats {
+  const current = getLocalTodayStats()
+  const updated: LocalDailyStats = {
+    date: getToday(),
+    totalMinutes: current.totalMinutes + minutes,
+    totalSessions: current.totalSessions, // 세션 카운트 유지
+  }
+  saveLocalTodayStats(updated)
+
+  // 히스토리에도 기록 (대시보드용)
+  recordToHistory(minutes)
+
+  return updated
 }
 
 /**

@@ -1,13 +1,20 @@
 import { createClient } from "./client"
 
 /**
+ * 로컬 시간 기준 날짜 (YYYY-MM-DD)
+ */
+function getLocalDate(date: Date = new Date()): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+}
+
+/**
  * 출석 체크 (attendance 테이블에 기록)
  */
 export async function checkInToDB(userId: string): Promise<boolean> {
   if (!userId) return false
 
   const supabase = createClient()
-  const today = new Date().toISOString().split("T")[0]
+  const today = getLocalDate()
 
   // 이미 출석했는지 확인
   const { data: existing } = await supabase
@@ -40,7 +47,7 @@ export async function isCheckedInTodayDB(userId: string): Promise<boolean> {
   if (!userId) return false
 
   const supabase = createClient()
-  const today = new Date().toISOString().split("T")[0]
+  const today = getLocalDate()
 
   const { data } = await supabase
     .from("attendance")
@@ -96,7 +103,7 @@ export async function getStreakDaysFromDB(userId: string): Promise<number> {
   for (let i = 0; i < 365; i++) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
-    const dateStr = date.toISOString().split("T")[0]
+    const dateStr = getLocalDate(date)
 
     if (attendanceSet.has(dateStr)) {
       streak++
@@ -180,7 +187,7 @@ export async function getWeeklyAttendanceRateFromDB(userId: string): Promise<{
   for (let i = 0; i < 7; i++) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
-    const dateStr = date.toISOString().split("T")[0]
+    const dateStr = getLocalDate(date)
     if (attendanceSet.has(dateStr)) {
       attended++
     }

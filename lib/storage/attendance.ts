@@ -32,10 +32,17 @@ function saveAttendance(dates: string[]): void {
 }
 
 /**
+ * 로컬 시간 기준 날짜 (YYYY-MM-DD)
+ */
+function getLocalDate(date: Date = new Date()): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+}
+
+/**
  * 오늘 날짜 문자열 반환 (YYYY-MM-DD)
  */
 function getToday(): string {
-  return new Date().toISOString().split("T")[0]
+  return getLocalDate()
 }
 
 /**
@@ -72,7 +79,7 @@ export function getStreakDays(): number {
   for (let i = 0; i < 365; i++) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
-    const dateStr = date.toISOString().split("T")[0]
+    const dateStr = getLocalDate(date)
 
     if (attendance.includes(dateStr)) {
       streak++
@@ -153,7 +160,7 @@ export function getWeeklyAttendanceRate(): { attended: number; total: number; ra
   for (let i = 0; i < 7; i++) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
-    const dateStr = date.toISOString().split("T")[0]
+    const dateStr = getLocalDate(date)
     if (attendance.includes(dateStr)) {
       attended++
     }

@@ -1,6 +1,14 @@
 const HISTORY_KEY = "pomobox_history"
 const MAX_DAYS = 365 // 최대 1년 데이터 보관
 
+/**
+ * 로컬 시간 기준 날짜 (YYYY-MM-DD)
+ * 타임존 문제 방지를 위해 toISOString 대신 로컬 날짜 사용
+ */
+function getLocalDate(date: Date = new Date()): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+}
+
 export interface DayRecord {
   date: string // YYYY-MM-DD
   totalMinutes: number
@@ -42,7 +50,7 @@ function saveLocalHistory(history: DayRecord[]): void {
  * 오늘 기록 추가/업데이트
  */
 export function recordToHistory(minutes: number): void {
-  const today = new Date().toISOString().split("T")[0]
+  const today = getLocalDate()
   const history = getLocalHistory()
 
   const existingIndex = history.findIndex((r) => r.date === today)
@@ -72,7 +80,7 @@ export function getRecentDays(days: number): DayRecord[] {
   for (let i = days - 1; i >= 0; i--) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
-    const dateStr = date.toISOString().split("T")[0]
+    const dateStr = getLocalDate(date)
 
     const existing = history.find((r) => r.date === dateStr)
     result.push(
@@ -101,7 +109,7 @@ export function getCurrentMonthData(): DayRecord[] {
   const result: DayRecord[] = []
 
   for (let d = new Date(firstDay); d <= now; d.setDate(d.getDate() + 1)) {
-    const dateStr = d.toISOString().split("T")[0]
+    const dateStr = getLocalDate(d)
     const existing = history.find((r) => r.date === dateStr)
     result.push(
       existing || {
@@ -126,7 +134,7 @@ export function getLastWeekData(): DayRecord[] {
   for (let i = 7; i <= 13; i++) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
-    const dateStr = date.toISOString().split("T")[0]
+    const dateStr = getLocalDate(date)
 
     const existing = history.find((r) => r.date === dateStr)
     result.push(
@@ -156,7 +164,7 @@ export function getPreviousMonthData(): DayRecord[] {
   const result: DayRecord[] = []
 
   for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
-    const dateStr = d.toISOString().split("T")[0]
+    const dateStr = getLocalDate(d)
     const existing = history.find((r) => r.date === dateStr)
     result.push(
       existing || {
@@ -192,7 +200,7 @@ export function getTotalStats(): {
   for (let i = 0; i < 365; i++) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
-    const dateStr = date.toISOString().split("T")[0]
+    const dateStr = getLocalDate(date)
     const record = history.find((r) => r.date === dateStr)
 
     if (record && record.totalSessions > 0) {
