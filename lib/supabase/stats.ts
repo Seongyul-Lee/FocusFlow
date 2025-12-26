@@ -1,5 +1,13 @@
 import { createClient } from "./client"
 
+/**
+ * 로컬 시간 기준 날짜 (YYYY-MM-DD)
+ * 타임존 문제 방지를 위해 toISOString 대신 로컬 날짜 사용
+ */
+function getLocalDate(date: Date = new Date()): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+}
+
 export interface FocusSession {
   id?: string
   user_id: string
@@ -54,7 +62,7 @@ export async function updateDailyStats(
   dailyGoalMinutes: number = 120
 ) {
   const supabase = createClient()
-  const today = new Date().toISOString().split("T")[0] // YYYY-MM-DD
+  const today = getLocalDate() // YYYY-MM-DD
 
   // 먼저 오늘 통계 조회
   const { data: existing } = await supabase
@@ -68,19 +76,25 @@ export async function updateDailyStats(
   const newTotalMinutes = (existing?.total_minutes || 0) + durationMinutes
   const goalAchieved = newTotalMinutes >= dailyGoalMinutes
 
+  // upsert 데이터 준비 (기존 레코드가 있으면 id 포함하여 update)
+  const upsertData: Record<string, unknown> = {
+    user_id: userId,
+    date: today,
+    total_sessions: newTotalSessions,
+    total_minutes: newTotalMinutes,
+    goal_achieved: goalAchieved,
+  }
+  if (existing?.id) {
+    upsertData.id = existing.id
+  }
+
   const { data, error } = await supabase
     .from("daily_stats")
-    .upsert({
-      user_id: userId,
-      date: today,
-      total_sessions: newTotalSessions,
-      total_minutes: newTotalMinutes,
-      goal_achieved: goalAchieved,
-    })
+    .upsert(upsertData)
     .select()
 
   if (error) {
-    console.error("Failed to update daily stats:", error)
+    console.error("Failed to update daily stats:", error, { userId, durationMinutes, existing })
     throw error
   }
 
@@ -92,7 +106,7 @@ export async function updateDailyStats(
  */
 export async function getTodayStats(userId: string): Promise<DailyStats | null> {
   const supabase = createClient()
-  const today = new Date().toISOString().split("T")[0]
+  const today = getLocalDate()
 
   const { data, error } = await supabase
     .from("daily_stats")
@@ -117,7 +131,7 @@ export async function getWeeklyStats(userId: string): Promise<DailyStats[]> {
   const supabase = createClient()
   const weekAgo = new Date()
   weekAgo.setDate(weekAgo.getDate() - 7)
-  const weekAgoStr = weekAgo.toISOString().split("T")[0]
+  const weekAgoStr = getLocalDate(weekAgo)
 
   const { data, error } = await supabase
     .from("daily_stats")
@@ -132,6 +146,55 @@ export async function getWeeklyStats(userId: string): Promise<DailyStats[]> {
   }
 
   return data || []
+}
+
+/**
+ * 1분 단위 증분 저장 (세션 카운트는 증가 안함)
+ * - Focus 세션 중 1분마다 호출
+ */
+export async function incrementDailyMinutes(
+  userId: string,
+  minutes: number = 1,
+  dailyGoalMinutes: number = 120
+) {
+  const supabase = createClient()
+  const today = getLocalDate()
+
+  // 먼저 오늘 통계 조회
+  const { data: existing } = await supabase
+    .from("daily_stats")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("date", today)
+    .single()
+
+  // 시간만 증가, 세션 카운트는 유지
+  const newTotalMinutes = (existing?.total_minutes || 0) + minutes
+  const goalAchieved = newTotalMinutes >= dailyGoalMinutes
+
+  // upsert 데이터 준비 (기존 레코드가 있으면 id 포함하여 update)
+  const upsertData: Record<string, unknown> = {
+    user_id: userId,
+    date: today,
+    total_sessions: existing?.total_sessions || 0, // 세션 카운트 유지
+    total_minutes: newTotalMinutes,
+    goal_achieved: goalAchieved,
+  }
+  if (existing?.id) {
+    upsertData.id = existing.id
+  }
+
+  const { data, error } = await supabase
+    .from("daily_stats")
+    .upsert(upsertData)
+    .select()
+
+  if (error) {
+    console.error("Failed to increment daily minutes:", error, { userId, minutes, existing })
+    throw error
+  }
+
+  return data
 }
 
 /**
@@ -169,7 +232,7 @@ export async function getRecentDaysStats(userId: string, days: number): Promise<
   const today = new Date()
   const startDate = new Date(today)
   startDate.setDate(startDate.getDate() - days + 1)
-  const startDateStr = startDate.toISOString().split("T")[0]
+  const startDateStr = getLocalDate(startDate)
 
   const { data, error } = await supabase
     .from("daily_stats")
@@ -188,7 +251,7 @@ export async function getRecentDaysStats(userId: string, days: number): Promise<
   for (let i = days - 1; i >= 0; i--) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
-    const dateStr = date.toISOString().split("T")[0]
+    const dateStr = getLocalDate(date)
 
     const existing = data?.find((d) => d.date === dateStr)
     result.push({
@@ -212,8 +275,8 @@ export async function getLastWeekStats(userId: string): Promise<DayRecord[]> {
   const endDate = new Date(today)
   endDate.setDate(endDate.getDate() - 7)
 
-  const startDateStr = startDate.toISOString().split("T")[0]
-  const endDateStr = endDate.toISOString().split("T")[0]
+  const startDateStr = getLocalDate(startDate)
+  const endDateStr = getLocalDate(endDate)
 
   const { data, error } = await supabase
     .from("daily_stats")
@@ -233,7 +296,7 @@ export async function getLastWeekStats(userId: string): Promise<DayRecord[]> {
   for (let i = 13; i >= 7; i--) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
-    const dateStr = date.toISOString().split("T")[0]
+    const dateStr = getLocalDate(date)
 
     const existing = data?.find((d) => d.date === dateStr)
     result.push({
@@ -255,8 +318,8 @@ export async function getMonthlyStats(userId: string): Promise<DayRecord[]> {
   const year = now.getFullYear()
   const month = now.getMonth()
   const firstDay = new Date(year, month, 1)
-  const firstDayStr = firstDay.toISOString().split("T")[0]
-  const todayStr = now.toISOString().split("T")[0]
+  const firstDayStr = getLocalDate(firstDay)
+  const todayStr = getLocalDate(now)
 
   const { data, error } = await supabase
     .from("daily_stats")
@@ -274,7 +337,7 @@ export async function getMonthlyStats(userId: string): Promise<DayRecord[]> {
   // 빈 날짜 채우기
   const result: DayRecord[] = []
   for (let d = new Date(firstDay); d <= now; d.setDate(d.getDate() + 1)) {
-    const dateStr = d.toISOString().split("T")[0]
+    const dateStr = getLocalDate(d)
     const existing = data?.find((r) => r.date === dateStr)
     result.push({
       date: dateStr,
@@ -297,8 +360,8 @@ export async function getPreviousMonthStats(userId: string): Promise<DayRecord[]
 
   const firstDay = new Date(year, month, 1)
   const lastDay = new Date(year, month + 1, 0)
-  const firstDayStr = firstDay.toISOString().split("T")[0]
-  const lastDayStr = lastDay.toISOString().split("T")[0]
+  const firstDayStr = getLocalDate(firstDay)
+  const lastDayStr = getLocalDate(lastDay)
 
   const { data, error } = await supabase
     .from("daily_stats")
@@ -316,7 +379,7 @@ export async function getPreviousMonthStats(userId: string): Promise<DayRecord[]
   // 빈 날짜 채우기
   const result: DayRecord[] = []
   for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
-    const dateStr = d.toISOString().split("T")[0]
+    const dateStr = getLocalDate(d)
     const existing = data?.find((r) => r.date === dateStr)
     result.push({
       date: dateStr,
@@ -363,7 +426,7 @@ export async function getTotalStatsFromDB(userId: string): Promise<{
   for (let i = 0; i < 365; i++) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
-    const dateStr = date.toISOString().split("T")[0]
+    const dateStr = getLocalDate(date)
 
     if (dates.has(dateStr)) {
       streakDays++

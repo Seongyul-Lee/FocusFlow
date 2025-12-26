@@ -8,8 +8,8 @@ import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
 import { SettingsDialog, TimerSettings } from "./settings-dialog"
 import { playSound } from "@/lib/sounds"
 import { useUser } from "@/hooks/use-user"
-import { recordSessionComplete } from "@/lib/supabase/stats"
-import { getLocalTodayStats, recordLocalSession } from "@/lib/storage/local-stats"
+import { recordSessionComplete, incrementDailyMinutes } from "@/lib/supabase/stats"
+import { getLocalTodayStats, recordLocalSession, incrementLocalMinutes, saveLocalTodayStats } from "@/lib/storage/local-stats"
 import { getLocalSettings, saveLocalSettings, DEFAULT_SETTINGS } from "@/lib/storage/local-settings"
 import { GoalProgress } from "./goal-progress"
 import { useTimerContext } from "@/contexts/timer-context"
@@ -45,6 +45,8 @@ export function PomodoroTimer() {
 
   // Focus 세션 시작 시간 (경과 시간 계산용)
   const focusSessionStartRef = useRef<number | null>(null)
+  // 마지막으로 저장된 분 (1분 단위 증분 저장용)
+  const lastSavedMinuteRef = useRef<number>(0)
 
   // localStorage에서 설정 및 오늘 통계 복원
   useEffect(() => {
@@ -131,6 +133,44 @@ export function PomodoroTimer() {
     }
   }, [status, targetEndAtMs])
 
+  // 1분마다 자동 저장 (Focus 세션 중에만)
+  useEffect(() => {
+    if (status !== 'running' || phase !== 'focus' || focusSessionStartRef.current === null) {
+      return
+    }
+
+    const checkAndSave = () => {
+      if (focusSessionStartRef.current === null) return
+
+      const elapsedMs = Date.now() - focusSessionStartRef.current
+      const elapsedMinutes = Math.floor(elapsedMs / 60000)
+
+      // 새로운 분이 경과했으면 저장
+      if (elapsedMinutes > lastSavedMinuteRef.current) {
+        const minutesToSave = elapsedMinutes - lastSavedMinuteRef.current
+        lastSavedMinuteRef.current = elapsedMinutes
+
+        // UI는 realtimeMinutes가 담당하므로 setTotalFocusMinutes 호출 안함
+        // (GoalProgress에서 currentMinutes + realtimeMinutes로 표시)
+
+        // localStorage 저장 (모든 사용자)
+        incrementLocalMinutes(minutesToSave)
+
+        // Supabase 저장 (로그인 사용자만)
+        if (user) {
+          incrementDailyMinutes(user.id, minutesToSave, settings.dailyGoal).catch(err => {
+            console.error("Failed to save to Supabase:", err)
+          })
+        }
+      }
+    }
+
+    // 5초마다 체크 (1초는 과하고, 1분은 느림)
+    const intervalId = setInterval(checkAndSave, 5000)
+
+    return () => clearInterval(intervalId)
+  }, [status, phase, user, settings.dailyGoal])
+
   // Phase transition when timer hits 0
   useEffect(() => {
     if (!(timeLeft === 0 && status === 'running')) return
@@ -162,15 +202,28 @@ export function PomodoroTimer() {
       const newSessions = sessions + 1
       setSessions(newSessions)
 
-      // Accumulate total focus time
-      const newTotal = totalFocusMinutes + settings.focusDuration
+      // 남은 분 계산 (이미 1분마다 저장했으므로 중복 방지)
+      const remainingMinutes = settings.focusDuration - lastSavedMinuteRef.current
+
+      // localStorage에 남은 분 저장 + 세션 카운트 증가
+      if (remainingMinutes > 0) {
+        incrementLocalMinutes(remainingMinutes)
+      }
+      // 세션 카운트 증가 (recordLocalSession은 시간도 추가하므로 직접 처리)
+      const localStats = getLocalTodayStats()
+      saveLocalTodayStats({
+        ...localStats,
+        totalSessions: localStats.totalSessions + 1,
+      })
+
+      // localStorage에서 최신 값 읽어와서 state 동기화
+      const updatedStats = getLocalTodayStats()
+      const newTotal = updatedStats.totalMinutes
       setTotalFocusMinutes(newTotal)
 
-      // localStorage에 세션 기록 (모든 사용자)
-      recordLocalSession(settings.focusDuration)
-
       // 목표 달성 시 confetti 애니메이션
-      if (totalFocusMinutes < settings.dailyGoal && newTotal >= settings.dailyGoal) {
+      const previousTotal = totalFocusMinutes
+      if (previousTotal < settings.dailyGoal && newTotal >= settings.dailyGoal) {
         confetti({
           particleCount: 100,
           spread: 70,
@@ -178,10 +231,18 @@ export function PomodoroTimer() {
         })
       }
 
-      // 로그인 사용자: Supabase에 세션 저장
+      // 로그인 사용자: Supabase에 남은 분 저장 + 세션 완료 기록
       if (user) {
-        recordSessionComplete(user.id, settings.focusDuration)
+        // 남은 분 저장
+        if (remainingMinutes > 0) {
+          incrementDailyMinutes(user.id, remainingMinutes, settings.dailyGoal).catch(console.error)
+        }
+        // 세션 완료 기록 (세션 카운트 증가)
+        recordSessionComplete(user.id, 0) // duration=0으로 세션만 기록
       }
+
+      // lastSavedMinuteRef 초기화
+      lastSavedMinuteRef.current = 0
 
       // Context 업데이트: Focus 완료 → 휴식으로 전환
       timerContext.stopSession()
@@ -246,25 +307,28 @@ export function PomodoroTimer() {
   const handleReset = useCallback(() => {
     if (isTransitioning) return
 
-    // Focus 세션 중 Reset 시 경과 시간 저장
+    // Focus 세션 중 Reset 시: 이미 저장된 분 이후 남은 분만 저장
     if (phase === 'focus' && focusSessionStartRef.current !== null) {
       const elapsedMs = Date.now() - focusSessionStartRef.current
       const elapsedMinutes = Math.floor(elapsedMs / 60000)
+      const remainingMinutes = elapsedMinutes - lastSavedMinuteRef.current
 
-      // 1분 이상 경과한 경우에만 저장
-      if (elapsedMinutes >= 1) {
-        // 로컬 통계 업데이트
-        setTotalFocusMinutes((prev) => prev + elapsedMinutes)
+      // 남은 분이 있으면 저장 (세션 카운트는 증가 안함)
+      if (remainingMinutes > 0) {
+        incrementLocalMinutes(remainingMinutes)
 
-        // localStorage에 저장 (모든 사용자)
-        recordLocalSession(elapsedMinutes)
-
-        // 로그인 사용자: Supabase에도 저장
         if (user) {
-          recordSessionComplete(user.id, elapsedMinutes)
+          incrementDailyMinutes(user.id, remainingMinutes, settings.dailyGoal).catch(console.error)
         }
       }
+
+      // localStorage에서 최신 값 읽어와서 state 동기화
+      const updatedStats = getLocalTodayStats()
+      setTotalFocusMinutes(updatedStats.totalMinutes)
     }
+
+    // lastSavedMinuteRef 초기화
+    lastSavedMinuteRef.current = 0
 
     // Context 및 ref 초기화
     timerContext.stopSession()
@@ -279,7 +343,7 @@ export function PomodoroTimer() {
       ? testDurationSec
       : settings.focusDuration * 60
     setTimeLeft(focusDuration)
-  }, [settings.focusDuration, isTransitioning, testDurationSec, phase, user, timerContext])
+  }, [settings.focusDuration, settings.dailyGoal, isTransitioning, testDurationSec, phase, user, timerContext])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -315,21 +379,28 @@ export function PomodoroTimer() {
   const handleSkip = useCallback(() => {
     if (isTransitioning) return
 
-    // Focus 세션 스킵 시 경과 시간 저장
+    // Focus 세션 스킵 시: 이미 저장된 분 이후 남은 분만 저장
     if (phase === 'focus' && focusSessionStartRef.current !== null) {
       const elapsedMs = Date.now() - focusSessionStartRef.current
       const elapsedMinutes = Math.floor(elapsedMs / 60000)
+      const remainingMinutes = elapsedMinutes - lastSavedMinuteRef.current
 
-      // 1분 이상 경과한 경우에만 저장
-      if (elapsedMinutes >= 1) {
-        setTotalFocusMinutes((prev) => prev + elapsedMinutes)
-        recordLocalSession(elapsedMinutes)
+      // 남은 분이 있으면 저장 (세션 카운트는 증가 안함)
+      if (remainingMinutes > 0) {
+        incrementLocalMinutes(remainingMinutes)
 
         if (user) {
-          recordSessionComplete(user.id, elapsedMinutes)
+          incrementDailyMinutes(user.id, remainingMinutes, settings.dailyGoal).catch(console.error)
         }
       }
+
+      // localStorage에서 최신 값 읽어와서 state 동기화
+      const updatedStats = getLocalTodayStats()
+      setTotalFocusMinutes(updatedStats.totalMinutes)
     }
+
+    // lastSavedMinuteRef 초기화
+    lastSavedMinuteRef.current = 0
 
     setStatus('idle')
     setTargetEndAtMs(null)
