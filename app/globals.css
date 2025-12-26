@@ -81,37 +81,38 @@
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  /* Task Automate inspired dark theme */
+  --background: #0a0a12;
+  --foreground: #f8fafc;
+  --card: rgb(30 30 45 / 80%);
+  --card-foreground: #f8fafc;
+  --popover: rgb(30 30 45 / 95%);
+  --popover-foreground: #f8fafc;
+  --primary: #a78bfa;
+  --primary-foreground: #0f0f1a;
+  --secondary: rgb(45 45 65 / 80%);
+  --secondary-foreground: #f8fafc;
+  --muted: rgb(45 45 65 / 60%);
+  --muted-foreground: #94a3b8;
+  --accent: #7c3aed;
+  --accent-foreground: #f8fafc;
+  --destructive: #f87171;
+  --border: rgb(148 163 184 / 15%);
+  --input: rgb(148 163 184 / 20%);
+  --ring: #a78bfa;
+  --chart-1: #a78bfa;
+  --chart-2: #22c55e;
+  --chart-3: #f87171;
+  --chart-4: #38bdf8;
+  --chart-5: #fbbf24;
+  --sidebar: rgb(20 20 30 / 80%);
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #a78bfa;
+  --sidebar-primary-foreground: #f8fafc;
+  --sidebar-accent: rgb(124 58 237 / 20%);
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: rgb(148 163 184 / 10%);
+  --sidebar-ring: #7c3aed;
 }
 
 @layer base {
@@ -127,5 +128,476 @@
     :root {
       font-size: 125%;
     }
+  }
+}
+
+/* Dark mode gradient background with glow effects */
+.dark body {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgb(124 58 237 / 15%), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgb(59 130 246 / 10%), transparent),
+    radial-gradient(ellipse 50% 30% at 0% 100%, rgb(168 85 247 / 10%), transparent),
+    #0a0a12;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Glassmorphism card style for dark mode */
+.dark .glass-card {
+  background: rgb(30 30 45 / 60%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgb(148 163 184 / 10%);
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 20%),
+    0 2px 4px -2px rgb(0 0 0 / 20%),
+    inset 0 1px 0 0 rgb(255 255 255 / 5%);
+}
+
+/* Glassmorphism panel style */
+.dark .glass-panel {
+  background: rgb(20 20 30 / 70%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgb(148 163 184 / 8%);
+}
+
+/* Status color bars */
+.status-bar-focus { background: #a78bfa; }
+.status-bar-break { background: #22c55e; }
+.status-bar-longbreak { background: #38bdf8; }
+.status-bar-paused { background: #fbbf24; }
+
+/* Glow effect for primary elements */
+.dark .glow-primary {
+  box-shadow: 0 0 20px rgb(124 58 237 / 30%);
+}
+
+.dark .glow-success {
+  box-shadow: 0 0 20px rgb(34 197 94 / 30%);
+}
+
+/* ===== Hover Effects (inspired by do-bit.com) ===== */
+
+/* Card lift effect - subtle elevation on hover */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+.dark .hover-lift:hover {
+  box-shadow: 0 8px 25px rgba(124, 58, 237, 0.15);
+}
+
+/* Card scale effect - gentle scale up */
+.hover-scale {
+  transition: transform 0.2s ease;
+}
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Stat card hover - background brightness */
+.hover-stat {
+  transition: all 0.2s ease;
+}
+.hover-stat:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+.dark .hover-stat:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Button glow effect - enhanced on hover */
+.hover-glow {
+  transition: all 0.2s ease;
+}
+.hover-glow:hover {
+  box-shadow: 0 0 25px rgba(124, 58, 237, 0.4);
+  transform: scale(1.02);
+}
+
+/* Icon bounce effect */
+.hover-bounce {
+  transition: transform 0.2s ease;
+}
+.hover-bounce:hover {
+  animation: icon-bounce 0.4s ease;
+}
+@keyframes icon-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* Glass card hover - enhanced glass effect */
+.dark .glass-card {
+  transition: all 0.2s ease;
+}
+.dark .glass-card:hover {
+  background: rgb(35 35 55 / 70%);
+  border-color: rgb(148 163 184 / 15%);
+  box-shadow:
+    0 8px 32px -4px rgb(0 0 0 / 30%),
+    0 4px 8px -2px rgb(0 0 0 / 20%),
+    inset 0 1px 0 0 rgb(255 255 255 / 8%);
+}
+
+/* Navigation/Button shine effect */
+.hover-shine {
+  position: relative;
+  overflow: hidden;
+}
+.hover-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+.hover-shine:hover::before {
+  left: 100%;
+}
+
+/* ===== Timer Area Hover Effects ===== */
+
+/* Settings button - rotation on hover (no background) */
+.hover-rotate-settings {
+  transition: transform 0.3s ease;
+}
+.hover-rotate-settings:hover {
+  transform: rotate(90deg);
+}
+
+/* Timer display - scale and color change */
+.hover-timer-display {
+  transition: transform 0.25s ease, color 0.25s ease, text-shadow 0.25s ease;
+  cursor: default;
+}
+.hover-timer-display:hover {
+  transform: scale(1.08);
+  color: #a78bfa;
+}
+.dark .hover-timer-display:hover {
+  text-shadow: 0 0 25px rgba(167, 139, 250, 0.6);
+}
+.hover-timer-display:hover {
+  color: #7c3aed;
+}
+.dark .hover-timer-display:hover {
+  color: #c4b5fd;
+  text-shadow: 0 0 25px rgba(167, 139, 250, 0.6);
+}
+
+/* Progress ring - glow effect */
+.hover-ring {
+  transition: filter 0.3s ease;
+}
+.hover-ring:hover {
+  filter: drop-shadow(0 0 12px currentColor);
+}
+
+/* Phase label hover */
+.hover-phase-label {
+  transition: all 0.2s ease;
+  cursor: default;
+}
+.hover-phase-label:hover {
+  transform: translateY(-1px);
+}
+.dark .hover-phase-label:hover {
+  text-shadow: 0 0 15px rgba(167, 139, 250, 0.4);
+}
+
+/* Pomodoro Timer title - scale with outline and shadow */
+.hover-title-outline {
+  transition: transform 0.25s ease, text-shadow 0.25s ease, -webkit-text-stroke 0.25s ease;
+  cursor: default;
+}
+.hover-title-outline:hover {
+  transform: scale(1.05);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+}
+.dark .hover-title-outline:hover {
+  text-shadow: 0 0 20px rgba(167, 139, 250, 0.5), 2px 2px 10px rgba(0, 0, 0, 0.3);
+  -webkit-text-stroke: 0.5px rgba(167, 139, 250, 0.3);
+}
+
+/* Daily Goal individual text hover */
+.hover-goal-label {
+  transition: all 0.2s ease;
+  cursor: default;
+}
+.hover-goal-label:hover {
+  color: #7c3aed;
+  transform: translateX(2px);
+}
+.dark .hover-goal-label:hover {
+  color: #a78bfa;
+}
+
+.hover-goal-value {
+  transition: all 0.2s ease;
+  cursor: default;
+}
+.hover-goal-value:hover {
+  transform: scale(1.05);
+  font-weight: 600;
+}
+.dark .hover-goal-value:hover {
+  color: #c4b5fd;
+}
+
+/* Progress bar - purple outline only */
+.hover-progress-bar {
+  transition: all 0.25s ease;
+}
+.hover-progress-bar:hover {
+  outline: 2px solid #a78bfa;
+  outline-offset: 2px;
+}
+
+/* Today stats highlight */
+.hover-today-stats {
+  transition: all 0.2s ease;
+  cursor: default;
+}
+.hover-today-stats:hover {
+  transform: scale(1.02);
+}
+.dark .hover-today-stats:hover {
+  color: #a78bfa;
+}
+
+/* Hint text fade in */
+.hover-hint-text {
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+.hover-hint-text:hover {
+  opacity: 1 !important;
+}
+.dark .hover-hint-text:hover {
+  color: #a78bfa;
+}
+
+/* ===== Settings Dialog Hover Effects ===== */
+
+/* Section label with icon bounce */
+.hover-section-label {
+  transition: all 0.2s ease;
+}
+.hover-section-label:hover {
+  color: #a78bfa;
+}
+.hover-section-label:hover svg {
+  animation: icon-bounce 0.4s ease;
+}
+
+/* Slider track enhancement */
+.hover-slider-track {
+  transition: all 0.2s ease;
+}
+.hover-slider-track:hover {
+  height: 10px;
+  box-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+}
+
+/* Slider thumb enhancement */
+.hover-slider-thumb {
+  transition: all 0.2s ease;
+}
+.hover-slider-thumb:hover {
+  transform: scale(1.3);
+  box-shadow: 0 0 15px rgba(167, 139, 250, 0.5);
+}
+
+/* Close button rotation */
+.hover-close-rotate {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.hover-close-rotate:hover {
+  transform: rotate(90deg);
+  color: #f87171;
+}
+
+/* Toggle switch glow */
+.hover-toggle {
+  transition: box-shadow 0.2s ease;
+}
+.hover-toggle:hover {
+  box-shadow: 0 0 12px rgba(167, 139, 250, 0.4);
+}
+
+/* ===== Dashboard Hover Effects ===== */
+
+/* Dashboard main title hover */
+.hover-dashboard-title {
+  transition: all 0.2s ease;
+  cursor: default;
+}
+.hover-dashboard-title:hover {
+  color: #7c3aed;
+  transform: translateX(2px);
+}
+.dark .hover-dashboard-title:hover {
+  color: #a78bfa;
+  text-shadow: 0 0 12px rgba(167, 139, 250, 0.3);
+}
+
+/* Dashboard main icon hover */
+.hover-dashboard-icon {
+  transition: all 0.25s ease;
+  cursor: default;
+}
+.hover-dashboard-icon:hover {
+  transform: scale(1.2) rotate(10deg);
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+/* ===== BGM Panel Hover Effects ===== */
+
+/* Music icon container hover */
+.hover-music-icon {
+  transition: all 0.25s ease;
+}
+.hover-music-icon:hover {
+  transform: scale(1.1);
+  background-color: rgba(167, 139, 250, 0.2);
+}
+.hover-music-icon:hover svg {
+  animation: icon-bounce 0.4s ease;
+}
+
+/* Song title hover */
+.hover-song-title {
+  transition: all 0.2s ease;
+  cursor: default;
+}
+.hover-song-title:hover {
+  color: #7c3aed;
+}
+.dark .hover-song-title:hover {
+  color: #a78bfa;
+  text-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+}
+
+/* Music progress bar hover - color change only */
+.hover-music-bar {
+  transition: all 0.2s ease;
+}
+.hover-music-bar:hover [data-slot="track"] {
+  background-color: rgba(167, 139, 250, 0.3);
+}
+.hover-music-bar:hover [data-slot="range"] {
+  background-color: #a78bfa;
+}
+
+/* Collapsible animations (Radix UI pattern) */
+@keyframes collapsible-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+  }
+}
+
+@keyframes collapsible-up {
+  from {
+    height: var(--radix-collapsible-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@theme inline {
+  --animate-collapsible-down: collapsible-down 200ms ease-out;
+  --animate-collapsible-up: collapsible-up 200ms ease-out;
+}
+
+/* ===== Mobile Responsive Layout ===== */
+
+/* 모든 모바일 (너비 640px 이하): Sign in, 테마 토글 위치 */
+@media (max-width: 640px) {
+  /* Sign in 버튼: 우측 상단 */
+  main > div.absolute {
+    left: auto !important;
+    right: -33px !important;
+    transform: none !important;
+  }
+
+  /* 테마 토글: 좌측 상단 */
+  div.fixed.bottom-6.right-6,
+  main div.fixed {
+    top: 1rem !important;
+    left: 1rem !important;
+    bottom: auto !important;
+    right: auto !important;
+  }
+
+  /* BGM 패널 영역: 첫 화면에 안 보이도록 margin-top 증가 */
+  .xl\:hidden.mt-8 {
+    margin-top: 12rem !important;
+  }
+}
+
+/* 작은 모바일만 (너비 640px 이하 AND 높이 700px 이하): 컴팩트 레이아웃 */
+@media (max-width: 640px) and (max-height: 700px) {
+  /* 메인 컨테이너 상단 패딩 */
+  main > div.flex-1 {
+    padding-top: 2.5rem !important;
+  }
+
+  /* 센터 섹션 상단 패딩 */
+  main section {
+    padding-top: 0.25rem !important;
+  }
+
+  /* 제목 영역 하단 마진 */
+  main section > div.text-center:first-child {
+    margin-bottom: 0.25rem !important;
+  }
+
+  /* 제목 폰트 */
+  main section h1 {
+    font-size: 1.25rem !important;
+    margin-bottom: 0.125rem !important;
+  }
+
+  /* 부제목 */
+  main section > div.text-center:first-child > p {
+    font-size: 0.7rem !important;
+  }
+
+  /* 타이머 컴포넌트 gap */
+  main section > div:last-child {
+    gap: 0.5rem !important;
+  }
+
+  /* 버튼 영역 gap */
+  main section > div:last-child > div.flex {
+    gap: 0.375rem !important;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -63,3 +63,8 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+/.playwright-mcp/
+
+# CI log files
+E2E.txt
+Run pnpm e2e.txt

@@ -249,5 +249,178 @@
       "app/[locale]/layout.tsx",
       "messages/*.json"
     ]
+  },
+  {
+    "topicName": "tailwindcss-animate-pulse",
+    "context7CompatibleLibraryID": "/websites/v3_tailwindcss",
+    "topic": "animate-pulse animation utilities",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-25T00:00:00Z",
+    "keyAPIs": [
+      "animate-pulse: animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      "keyframes: 0%,100% opacity:1, 50% opacity:0.5",
+      "animate-spin, animate-ping, animate-bounce (기타 내장 애니메이션)",
+      "hover:animate-* 상태별 조건부 적용",
+      "theme.extend.animation으로 커스텀 애니메이션 추가"
+    ],
+    "constraints": [
+      "animate-pulse는 opacity 변화로 부드러운 깜빡임 효과",
+      "2초 주기로 무한 반복",
+      "skeleton loader나 상태 표시에 적합",
+      "다른 transition과 함께 사용 시 충돌 주의"
+    ],
+    "appliesToFiles": [
+      "components/pomodoro-timer.tsx"
+    ]
+  },
+  {
+    "topicName": "supabase-nextjs-app-router",
+    "context7CompatibleLibraryID": "/supabase/supabase",
+    "topic": "Next.js App Router setup client server ssr",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-25T00:00:00Z",
+    "keyAPIs": [
+      "createBrowserClient from @supabase/ssr (client-side)",
+      "createServerClient from @supabase/ssr (server-side)",
+      "cookies.getAll() / setAll() for session management",
+      "process.env.NEXT_PUBLIC_SUPABASE_URL",
+      "process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY"
+    ],
+    "constraints": [
+      "Client: 'use client' directive required",
+      "Server: async function with await cookies()",
+      "setAll try-catch for Server Component compatibility",
+      "Middleware needed for session refresh",
+      "RLS policies required for data security"
+    ],
+    "appliesToFiles": [
+      "lib/supabase/client.ts",
+      "lib/supabase/server.ts",
+      "middleware.ts"
+    ]
+  },
+  {
+    "topicName": "next-intl-navigation",
+    "context7CompatibleLibraryID": "/amannn/next-intl",
+    "topic": "Link navigation createNavigation router",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-25T00:00:00Z",
+    "keyAPIs": [
+      "createNavigation(routing) - creates locale-aware navigation APIs",
+      "Link component - auto locale prefix",
+      "useRouter() - programmatic navigation",
+      "usePathname() - current pathname without locale",
+      "redirect() - server-side redirect",
+      "getPathname() - get localized pathname"
+    ],
+    "constraints": [
+      "createNavigation must receive routing config from defineRouting",
+      "Export from separate i18n/navigation.ts file",
+      "Link automatically prefixes current locale",
+      "Use locale prop on Link to switch locales",
+      "useRouter/usePathname require 'use client' directive"
+    ],
+    "appliesToFiles": [
+      "i18n/navigation.ts",
+      "components/user-menu.tsx",
+      "app/[locale]/auth/**/*.tsx"
+    ]
+  },
+  {
+    "topicName": "supabase-crud-operations",
+    "context7CompatibleLibraryID": "/supabase/supabase",
+    "topic": "insert upsert update select client javascript",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-25T00:00:00Z",
+    "keyAPIs": [
+      ".from('table') - 테이블 선택",
+      ".insert({ data }) - 데이터 삽입",
+      ".upsert({ data }) - 삽입 또는 업데이트",
+      ".update({ data }).eq('col', val) - 조건부 업데이트",
+      ".select() - v2에서 데이터 반환 시 필수",
+      ".single() - 단일 행 반환"
+    ],
+    "constraints": [
+      "v2에서 insert/upsert 후 데이터 반환 시 .select() 필수",
+      "RLS 정책에 따라 data가 빈 객체일 수 있음",
+      "upsert는 unique constraint가 있는 컬럼 기준으로 동작",
+      "에러 핸들링: { data, error } 패턴 사용"
+    ],
+    "appliesToFiles": [
+      "lib/supabase/stats.ts"
+    ]
+  },
+  {
+    "topicName": "recharts-composed-chart",
+    "context7CompatibleLibraryID": "/recharts/recharts",
+    "topic": "BarChart LineChart ComposedChart responsive",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-26T00:00:00Z",
+    "keyAPIs": [
+      "ResponsiveContainer - 반응형 컨테이너 (width='100%' height={400})",
+      "ComposedChart - 여러 차트 타입 조합 (Bar + Line)",
+      "XAxis, YAxis - 축 설정 (yAxisId로 다중 Y축)",
+      "CartesianGrid - 그리드 라인",
+      "Tooltip, Legend - 인터랙티브 요소",
+      "Bar, Line - 개별 데이터 시리즈"
+    ],
+    "constraints": [
+      "ResponsiveContainer는 부모에 고정 높이 필요",
+      "ComposedChart에서 다중 Y축 사용 시 yAxisId 필수",
+      "Line의 type='monotone'으로 부드러운 곡선",
+      "Recharts 3.0에서 접근성 기본 활성화"
+    ],
+    "appliesToFiles": [
+      "components/stats-chart.tsx"
+    ]
+  },
+  {
+    "topicName": "radix-ui-collapsible",
+    "context7CompatibleLibraryID": "/websites/radix-ui-primitives",
+    "topic": "Collapsible component animation",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-26T00:00:00Z",
+    "keyAPIs": [
+      "Collapsible.Root - 루트 컴포넌트 (open, onOpenChange props)",
+      "Collapsible.Trigger - 토글 버튼 (asChild 지원)",
+      "Collapsible.Content - 접히는 콘텐츠 영역",
+      "data-state='open'/'closed' - 상태 속성",
+      "--radix-collapsible-content-height - 콘텐츠 높이 CSS 변수"
+    ],
+    "constraints": [
+      "애니메이션은 CSS keyframes로 구현 (slideDown/slideUp)",
+      "Content에 overflow: hidden 필수",
+      "높이 애니메이션은 --radix-collapsible-content-height 사용",
+      "data-state 속성으로 open/closed 상태 스타일링"
+    ],
+    "appliesToFiles": [
+      "components/ui/collapsible.tsx",
+      "components/keyboard-shortcuts.tsx",
+      "app/globals.css"
+    ]
+  },
+  {
+    "topicName": "recharts-barchart-styling",
+    "context7CompatibleLibraryID": "/recharts/recharts",
+    "topic": "CartesianGrid BarChart Tooltip hover styling customization",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-26T00:00:00Z",
+    "keyAPIs": [
+      "CartesianGrid - strokeDasharray='3 3' for dashed grid lines",
+      "CartesianGrid - vertical={false} to hide vertical lines",
+      "Tooltip - content={<CustomTooltip />} for custom rendering",
+      "Tooltip - cursor={{ fill, radius }} for hover background",
+      "Bar - activeBar={{ fill, stroke, strokeWidth, filter }} for hover state",
+      "Bar - radius={[topLeft, topRight, bottomRight, bottomLeft]} for rounded corners"
+    ],
+    "constraints": [
+      "CartesianGrid stroke color should use CSS variables for theme support",
+      "Custom Tooltip receives active, payload, label props",
+      "activeBar filter: 'brightness(1.2)' for hover glow effect",
+      "Tooltip cursor fill with low opacity for subtle highlight"
+    ],
+    "appliesToFiles": [
+      "components/dashboard-left.tsx"
+    ]
   }
 ]

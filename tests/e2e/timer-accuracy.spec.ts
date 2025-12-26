@@ -71,8 +71,8 @@ test.describe('Timer Accuracy', () => {
     await page.clock.install()
     await page.goto('/?testDuration=5')
 
-    // Verify initial session count
-    await expect(page.getByText(/today.*0 sessions/i)).toBeVisible()
+    // Verify initial session count (use specific span selector to avoid matching dashboard panels)
+    await expect(page.locator('span.text-foreground').filter({ hasText: /Today: 0 sessions/ })).toBeVisible()
 
     // Start and complete timer
     await page.getByRole('button', { name: /start/i }).click()
@@ -80,15 +80,15 @@ test.describe('Timer Accuracy', () => {
 
     // Wait for transition and check session count
     await expect(page.getByText('Break Time')).toBeVisible({ timeout: 2000 })
-    await expect(page.getByText(/today.*1 session/i)).toBeVisible()
+    await expect(page.locator('span.text-foreground').filter({ hasText: /Today: 1 session/ })).toBeVisible()
   })
 
   test('timer should update browser title', async ({ page }) => {
     await page.clock.install()
     await page.goto('/?testDuration=10')
 
-    // Check initial title
-    await expect(page).toHaveTitle(/00:10.*Focus/i)
+    // Check initial title (format: "00:10 - Pomobox")
+    await expect(page).toHaveTitle(/00:10.*Pomobox/i)
 
     // Start timer
     await page.getByRole('button', { name: /start/i }).click()
@@ -97,6 +97,6 @@ test.describe('Timer Accuracy', () => {
     await page.clock.fastForward('00:03')
 
     // Title should reflect remaining time
-    await expect(page).toHaveTitle(/00:0[67].*Focus/i)
+    await expect(page).toHaveTitle(/00:0[67].*Pomobox/i)
   })
 })

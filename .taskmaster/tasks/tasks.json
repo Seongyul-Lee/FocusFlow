@@ -237,8 +237,9 @@
         "testStrategy": "시각적 QA. 접근성 테스트에서 aria-live 확인",
         "priority": "low",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T13:41:11.314Z"
       },
       {
         "id": "29",
@@ -479,13 +480,161 @@
         "subtasks": [],
         "createdAt": "2025-12-25T13:00:00Z",
         "updatedAt": "2025-12-25T14:00:00Z"
+      },
+      {
+        "id": "47",
+        "title": "Supabase 프로젝트 설정 및 환경 구성",
+        "description": "Supabase 프로젝트 생성, 환경변수 설정, @supabase/supabase-js 설치",
+        "details": "1. Supabase 대시보드에서 프로젝트 생성\n2. .env.local에 NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY 추가\n3. @supabase/supabase-js, @supabase/ssr 설치\n4. lib/supabase/client.ts, lib/supabase/server.ts 생성\n5. Vercel 환경변수 설정",
+        "testStrategy": "Supabase 연결 테스트, pnpm build 통과",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T14:18:14.442Z"
+      },
+      {
+        "id": "48",
+        "title": "인증 시스템 구현 (Google OAuth + Email/Password)",
+        "description": "Supabase Auth로 로그인/회원가입 구현. Google OAuth + 이메일/비밀번호 지원",
+        "details": "1. Supabase Auth 설정 (Google OAuth provider 활성화)\n2. app/[locale]/auth/login/page.tsx 생성\n3. app/[locale]/auth/signup/page.tsx 생성\n4. components/auth-form.tsx (로그인/회원가입 폼)\n5. middleware.ts에 인증 체크 추가\n6. 로그인 상태에 따른 UI 분기 (헤더에 로그인/로그아웃 버튼)",
+        "testStrategy": "Google 로그인 테스트, 이메일 회원가입/로그인 테스트",
+        "priority": "high",
+        "dependencies": [
+          "47"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T14:48:49.156Z"
+      },
+      {
+        "id": "49",
+        "title": "데이터베이스 스키마 설계 및 생성",
+        "description": "사용자 통계, 세션 기록, 목표 설정을 위한 테이블 생성",
+        "details": "테이블 구조:\n1. profiles: id, user_id, daily_goal_minutes, created_at\n2. focus_sessions: id, user_id, duration_minutes, completed_at, session_type\n3. daily_stats: id, user_id, date, total_sessions, total_minutes, goal_achieved\n\nRLS 정책: 사용자는 자신의 데이터만 접근 가능",
+        "testStrategy": "Supabase SQL 에디터에서 테이블 생성 및 RLS 테스트",
+        "priority": "high",
+        "dependencies": [
+          "47"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T14:48:49.229Z"
+      },
+      {
+        "id": "50",
+        "title": "통계 영속화 (세션 데이터 저장/조회)",
+        "description": "Focus 세션 완료 시 Supabase에 저장, 일일/주간/월간 통계 조회",
+        "details": "1. lib/supabase/stats.ts - 통계 CRUD 함수\n2. pomodoro-timer.tsx에서 세션 완료 시 저장 호출\n3. 비로그인 사용자: 기존 로컬 상태 유지\n4. 로그인 사용자: Supabase에 저장 + 로컬 상태 동기화\n5. hooks/use-stats.ts - 통계 조회 훅",
+        "testStrategy": "세션 완료 후 Supabase 테이블 확인, 새로고침 후 통계 유지 확인",
+        "priority": "high",
+        "dependencies": [
+          "48",
+          "49"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T15:01:13.938Z"
+      },
+      {
+        "id": "51",
+        "title": "주간/월간 리포트 차트",
+        "description": "recharts로 주간/월간 집중 시간 시각화. 대시보드 페이지 생성",
+        "details": "1. recharts 설치\n2. app/[locale]/dashboard/page.tsx 생성\n3. components/stats-chart.tsx - 바 차트 (일별 집중 시간)\n4. components/weekly-summary.tsx - 주간 요약 카드\n5. components/monthly-calendar.tsx - 월간 히트맵 (선택적)",
+        "testStrategy": "대시보드 페이지에서 차트 렌더링 확인, 데이터 반영 확인",
+        "priority": "medium",
+        "dependencies": [
+          "50"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T15:07:12.054Z"
+      },
+      {
+        "id": "52",
+        "title": "목표 설정 및 달성률 표시",
+        "description": "일일 집중 시간 목표 설정, 진행률 표시, 목표 달성 시 축하 UI",
+        "details": "1. Settings에 '일일 목표' 입력 필드 추가 (기본 120분)\n2. 타이머 화면에 진행률 바 또는 원형 프로그레스 표시\n3. 목표 달성 시 confetti 애니메이션 또는 배지 표시\n4. 대시보드에 목표 달성률 통계 (주간 달성 일수 등)",
+        "testStrategy": "목표 설정 후 세션 완료 시 진행률 업데이트 확인",
+        "priority": "medium",
+        "dependencies": [
+          "50"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T15:13:35.120Z"
+      },
+      {
+        "id": "53",
+        "title": "랜딩 페이지 (AlternativeTo 재신청용)",
+        "description": "pomobox.app 메인 랜딩 페이지. 기능 소개, 스크린샷, CTA",
+        "details": "1. app/[locale]/page.tsx를 랜딩으로 변경 (또는 별도 /home)\n2. Hero 섹션: 타이틀 + CTA (Start Free)\n3. Features 섹션: 주요 기능 3-4개 소개\n4. Screenshots 섹션: 타이머/대시보드 스크린샷\n5. Footer: 링크, 저작권\n6. 기존 타이머는 /app 또는 /timer로 이동",
+        "testStrategy": "랜딩 페이지 UI 확인, 반응형 테스트",
+        "priority": "medium",
+        "dependencies": [
+          "51",
+          "52"
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": "54",
+        "title": "대시보드 Supabase 연동",
+        "description": "로그인 사용자의 대시보드 데이터를 Supabase에서 조회하도록 연동",
+        "details": "DashboardLeft/Right 컴포넌트에서 useUser로 로그인 확인 후 Supabase 함수 호출. 비로그인 시 localStorage 폴백. lib/supabase/stats.ts에 조회 함수 추가, lib/supabase/attendance.ts 신규 생성",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T21:22:02.593Z"
+      },
+      {
+        "id": "55",
+        "title": "UI/UX 개선: Hover 효과, Privacy 페이지, BGM 레이아웃",
+        "description": "전반적인 UI/UX 개선 작업. Hover 효과 추가, Privacy 페이지 리디자인, BGM 패널 레이아웃 변경, 버그 수정",
+        "details": "1. Hover 효과 추가:\n   - 설정 버튼: 회전 효과 (배경색 제거)\n   - 타이머 시간: 크기 + 색상 변경\n   - Daily Goal: 개별 텍스트 hover, 진행바 보라색 외곽선\n   - 대시보드 제목/아이콘: hover 효과\n   - BGM 패널: 노래 제목, 아이콘, 진행바\n   - Pomodoro Timer 텍스트: 크기 + 외곽선 + 그림자\n2. 브라우저 탭 제목: 'Focus' → 'Pomobox'\n3. 출석체크 깜빡임 수정: 로딩 상태(null) 추가로 새로고침 시 flicker 방지\n4. Weekly Stats 차트: hover 시 검정 막대 → 테마 색상(rgba)\n5. Privacy 페이지 UX: 그라데이션 배경, glass-card, 섹션별 아이콘, 타이포그래피 개선\n6. BGM 패널 레이아웃: 반복 버튼을 셔플 옆으로 이동, 재생 컨트롤 중앙 배치",
+        "testStrategy": "pnpm lint && pnpm build 통과. 각 hover 효과 수동 확인",
+        "status": "done",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": [],
+        "createdAt": "2025-12-26T00:00:00.000Z",
+        "updatedAt": "2025-12-26T00:30:00.000Z"
+      },
+      {
+        "id": "56",
+        "title": "모바일 반응형 UI 개선",
+        "description": "모바일 환경에서 UI 레이아웃 최적화. 작은/큰 모바일 화면별 차별화된 스타일 적용",
+        "details": "1. 모든 모바일 (max-width: 640px):\n   - Sign in 버튼: 상단 중앙 → 우측 상단으로 이동\n   - 테마 토글: 우측 하단 → 좌측 상단으로 이동\n   - BGM 패널: margin-top 12rem으로 첫 화면에서 숨김\n\n2. 작은 모바일 (max-width: 640px AND max-height: 700px):\n   - 메인 컨테이너 상단 패딩 축소 (64px → 40px)\n   - 섹션 상단 패딩 축소 (32px → 4px)\n   - 제목 폰트 크기 축소 (1.5rem → 1.25rem)\n   - 부제목 폰트 크기 축소 (0.875rem → 0.7rem)\n   - 타이머 컴포넌트 gap 축소 (32px → 8px)\n   - 버튼 영역 gap 축소 (16px → 6px)\n\n3. 기타:\n   - Daily Goal 힌트 텍스트(\"Added on session complete\") 제거\n   - 목표 달성 시에만 \"Goal reached!\" 메시지 표시\n\n변경 파일:\n- app/globals.css: 모바일 반응형 CSS 추가\n- components/goal-progress.tsx: goalHint 조건부 렌더링 제거",
+        "testStrategy": "pnpm lint && pnpm build 통과. Playwright로 360x640, 430x932 뷰포트 확인",
+        "status": "done",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": [],
+        "createdAt": "2025-12-26T12:00:00.000Z",
+        "updatedAt": "2025-12-26T12:30:00.000Z"
+      },
+      {
+        "id": "57",
+        "title": "CI/E2E 테스트 속도 최적화",
+        "description": "GitHub Actions CI에서 E2E 테스트 실행 시간 70-80% 단축을 위한 최적화",
+        "details": "문제점:\n- Playwright 브라우저 매번 다운로드 (~500MB)\n- 3개 브라우저 테스트 (chromium, firefox, webkit)\n- 워커 1개로 병렬 처리 없음\n- dev 서버 사용으로 느린 시작\n- 재시도 2회로 실패 시 시간 증가\n\n해결:\n1. .github/workflows/ci.yml:\n   - Playwright 브라우저 캐싱 추가 (pnpm-lock.yaml 기반 키)\n   - chromium만 설치 (--with-deps chromium)\n   - 캐시 히트 시 install-deps만 실행\n\n2. playwright.config.ts:\n   - CI 환경: chromium만 테스트\n   - 워커 수: 1 → 2\n   - 재시도: 2 → 1\n   - 서버: pnpm dev → pnpm start\n   - 타임아웃: 120s → 60s\n\n예상 효과: 70-80% 시간 단축",
+        "testStrategy": "GitHub Actions에서 CI 실행 시간 비교. 첫 실행 후 캐시 적용 확인",
+        "status": "done",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": [],
+        "createdAt": "2025-12-26T13:00:00.000Z",
+        "updatedAt": "2025-12-26T13:30:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-25T12:30:00.000Z",
-      "taskCount": 35,
-      "completedCount": 30,
+      "lastModified": "2025-12-26T13:30:00.000Z",
+      "taskCount": 46,
+      "completedCount": 41,
       "tags": [
         "master"
       ]

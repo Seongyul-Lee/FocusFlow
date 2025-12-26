@@ -1,0 +1,136 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": "12",
+        "title": "하이브리드 워크플로우 + Task Master 필수 정책 확립",
+        "description": "CLAUDE.md에 하이브리드 운영 가이드, task-master set-status 필수 규칙, 세션 재시작 컨텍스트 복구 절차 추가",
+        "status": "done",
+        "priority": "high",
+        "tags": [
+          "docs",
+          "workflow"
+        ],
+        "createdAt": "2025-12-25T04:30:00Z",
+        "updatedAt": "2025-12-25T04:35:00Z",
+        "dependencies": [],
+        "subtasks": []
+      },
+      {
+        "id": "13",
+        "title": "Claude-template에 하이브리드 워크플로우 적용",
+        "description": "pomobox의 하이브리드 워크플로우 정책을 Claude-template CLAUDE.md에 적용하여 템플릿 업데이트",
+        "status": "done",
+        "priority": "high",
+        "tags": [
+          "docs",
+          "template"
+        ],
+        "createdAt": "2025-12-25T04:40:00Z",
+        "updatedAt": "2025-12-25T04:50:00Z",
+        "dependencies": [],
+        "subtasks": []
+      },
+      {
+        "id": "14",
+        "title": "Notifications Sound 10개 옵션 추가",
+        "description": "Settings에서 10가지 Sound 타입 선택 가능하도록 구현. Radix UI Select 컴포넌트 추가, lib/sounds.ts 생성, settings-dialog 및 pomodoro-timer 업데이트",
+        "status": "done",
+        "priority": "medium",
+        "tags": [
+          "feature",
+          "ui"
+        ],
+        "createdAt": "2025-12-25T05:00:00Z",
+        "updatedAt": "2025-12-25T05:30:00Z",
+        "dependencies": [],
+        "subtasks": []
+      },
+      {
+        "id": "15",
+        "title": "워크플로우 강제 규칙 추가: /docs 필수 + \"다음 단계\" task-master next",
+        "description": "/plan 이후 /docs 필수 실행, \"다음 단계\" 요청 시 task-master next 자동 실행. pomobox 및 Claude-template CLAUDE.md 동시 업데이트",
+        "status": "done",
+        "priority": "high",
+        "tags": [
+          "docs",
+          "workflow"
+        ],
+        "createdAt": "2025-12-25T06:00:00Z",
+        "updatedAt": "2025-12-25T06:30:00Z",
+        "dependencies": [],
+        "subtasks": []
+      },
+      {
+        "id": "16",
+        "title": "Sound Type 버그 수정 및 UI 개선",
+        "description": "Sound Type 10개 모두 기본 사운드로 재생되던 버그 수정. Web Audio API로 각 사운드의 고유 주파수/길이/파형 생성. Notifications/Sound 문구에 Bell/Volume2 아이콘 추가",
+        "status": "done",
+        "priority": "high",
+        "tags": [
+          "bugfix",
+          "ui"
+        ],
+        "createdAt": "2025-12-25T07:00:00Z",
+        "updatedAt": "2025-12-25T07:30:00Z",
+        "dependencies": [],
+        "subtasks": []
+      },
+      {
+        "id": "17",
+        "title": "워크플로우 규칙 명확화: /plan, /docs 강제 실행",
+        "description": "모든 코드 작업 시 /plan (강제) → /docs (강제) → 구현 → set-status. 모호한 예외 조건 제거, Section 1에 절대 규칙 추가",
+        "status": "done",
+        "priority": "high",
+        "tags": [
+          "docs",
+          "workflow"
+        ],
+        "createdAt": "2025-12-25T08:00:00Z",
+        "updatedAt": "2025-12-24T17:26:25.926Z",
+        "dependencies": [],
+        "subtasks": []
+      },
+      {
+        "id": "18",
+        "title": "UI 크기 125% 확대 (태블릿/데스크톱)",
+        "description": "globals.css에 media query 추가하여 md breakpoint (768px+)에서 font-size: 125% 적용. rem 기반 UI만 확대, SVG 비율 유지",
+        "status": "done",
+        "priority": "medium",
+        "tags": [
+          "ui",
+          "responsive"
+        ],
+        "createdAt": "2025-12-25T09:00:00Z",
+        "updatedAt": "2025-12-24T17:33:26.654Z",
+        "dependencies": [],
+        "subtasks": []
+      },
+      {
+        "id": "19",
+        "title": "다크/라이트모드 토글 구현",
+        "description": "next-themes로 테마 전환 시스템 구현. ThemeProvider 추가, Sun/Moon 아이콘 토글 버튼, 기본값 dark. 화면 오른쪽 상단 배치",
+        "status": "done",
+        "priority": "medium",
+        "tags": [
+          "feature",
+          "ui",
+          "theme"
+        ],
+        "createdAt": "2025-12-25T10:00:00Z",
+        "updatedAt": "2025-12-24T17:44:56.299Z",
+        "dependencies": [],
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "version": "1.0.0",
+      "lastModified": "2025-12-24T17:44:56.299Z",
+      "taskCount": 8,
+      "completedCount": 8,
+      "tags": [
+        "master"
+      ]
+    }
+  }
+}

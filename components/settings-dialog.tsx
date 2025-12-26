@@ -16,6 +16,7 @@ import { routing } from "@/i18n/routing"
 export interface TimerSettings {
   focusDuration: number
   breakDuration: number
+  dailyGoal: number
   notificationsEnabled: boolean
   soundEnabled: boolean
   soundCategory: SoundCategory
@@ -37,13 +38,22 @@ const BREAK_OPTIONS = [
   { label: "30 min", value: 30 },
 ]
 
+const GOAL_OPTIONS = [
+  { label: "60 min", value: 60 },
+  { label: "90 min", value: 90 },
+  { label: "120 min", value: 120 },
+  { label: "180 min", value: 180 },
+  { label: "240 min", value: 240 },
+]
+
 interface SettingsDialogProps {
   settings: TimerSettings
   isRunning: boolean
   onSettingsChange: (settings: TimerSettings) => void
+  buttonClassName?: string
 }
 
-export function SettingsDialog({ settings, isRunning, onSettingsChange }: SettingsDialogProps) {
+export function SettingsDialog({ settings, isRunning, onSettingsChange, buttonClassName }: SettingsDialogProps) {
   const t = useTranslations("Settings")
   const tLanguages = useTranslations("Languages")
   const locale = useLocale()
@@ -125,7 +135,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="lg" className="absolute top-4 right-4 h-12 w-12" aria-label="Settings">
+        <Button variant="ghost" size="lg" className={`h-12 w-12 ${buttonClassName || ''}`} aria-label="Settings">
           <Settings className="h-6 w-6" />
         </Button>
       </DialogTrigger>
@@ -135,9 +145,9 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
         </DialogHeader>
         <div className="space-y-6 py-4">
           {/* Notifications */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Bell className="h-4 w-4 text-muted-foreground" />
+          <div className="flex items-center justify-between group">
+            <div className="flex items-center gap-2 hover-section-label cursor-default">
+              <Bell className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
               <div>
                 <p className="font-medium">{t("notifications")}</p>
                 <p className="text-sm text-muted-foreground">{t("notificationsDescription")}</p>
@@ -149,14 +159,15 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                 setLocalSettings({ ...localSettings, notificationsEnabled: checked })
               }
               aria-label="Toggle notifications"
+              className="hover-toggle"
             />
           </div>
 
           {/* Sound */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Volume2 className="h-4 w-4 text-muted-foreground" />
+            <div className="flex items-center justify-between group">
+              <div className="flex items-center gap-2 hover-section-label cursor-default">
+                <Volume2 className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                 <div>
                   <p className="font-medium">{t("sound")}</p>
                   <p className="text-sm text-muted-foreground">{t("soundDescription")}</p>
@@ -166,6 +177,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                 checked={localSettings.soundEnabled}
                 onCheckedChange={handleSoundToggle}
                 aria-label="Toggle sound"
+                className="hover-toggle"
               />
             </div>
 
@@ -251,9 +263,9 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
           </div>
 
           {/* Language */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Globe className="h-4 w-4 text-muted-foreground" />
+          <div className="flex items-center justify-between group">
+            <div className="flex items-center gap-2 hover-section-label cursor-default">
+              <Globe className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
               <div>
                 <p className="font-medium">{t("language")}</p>
               </div>
@@ -283,6 +295,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                   size="sm"
                   disabled={isRunning}
                   onClick={() => setLocalSettings({ ...localSettings, focusDuration: option.value })}
+                  className="hover:scale-105 transition-transform duration-150"
                 >
                   {t("min", { value: option.value })}
                 </Button>
@@ -301,6 +314,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                   size="sm"
                   disabled={isRunning}
                   onClick={() => setLocalSettings({ ...localSettings, breakDuration: option.value })}
+                  className="hover:scale-105 transition-transform duration-150"
                 >
                   {t("min", { value: option.value })}
                 </Button>
@@ -308,9 +322,28 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
             </div>
           </div>
 
+          {/* Daily Goal */}
+          <div>
+            <p className="font-medium mb-3">{t("dailyGoal")}</p>
+            <div className="grid grid-cols-5 gap-2">
+              {GOAL_OPTIONS.map((option) => (
+                <Button
+                  key={option.value}
+                  variant={localSettings.dailyGoal === option.value ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setLocalSettings({ ...localSettings, dailyGoal: option.value })}
+                  className="hover:scale-105 transition-transform duration-150"
+                >
+                  {option.value}
+                </Button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">{t("dailyGoalDescription")}</p>
+          </div>
+
           <Button
             onClick={handleSave}
-            className="w-full"
+            className="w-full hover-glow"
             disabled={isSaved || isRunning}
           >
             {isSaved ? (
