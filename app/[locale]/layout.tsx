@@ -22,6 +22,13 @@ export const metadata: Metadata = {
     default: "Pomobox - Minimal Pomodoro Timer for Focused Work",
     template: "%s | Pomobox",
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/icon.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/icon.png", sizes: "192x192", type: "image/png" }],
+  },
   description:
     "A clean, distraction-free Pomodoro timer to boost your productivity. Track focus sessions, take smart breaks, and stay in flow.",
   keywords: [
