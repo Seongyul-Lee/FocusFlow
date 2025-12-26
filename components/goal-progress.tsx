@@ -40,13 +40,9 @@ export function GoalProgress({ currentMinutes, goalMinutes }: GoalProgressProps)
           style={{ width: `${progress}%` }}
         />
       </div>
-      {isComplete ? (
+      {isComplete && (
         <p className="text-xs text-green-500 text-center mt-1 hover-hint-text">
           {t("goalReached")}
-        </p>
-      ) : (
-        <p className="text-xs text-muted-foreground/70 text-center mt-1 hover-hint-text">
-          {t("goalHint")}
         </p>
       )}
     </div>

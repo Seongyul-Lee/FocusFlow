@@ -589,13 +589,39 @@
         "priority": "high",
         "subtasks": [],
         "updatedAt": "2025-12-25T21:22:02.593Z"
+      },
+      {
+        "id": "55",
+        "title": "UI/UX 개선: Hover 효과, Privacy 페이지, BGM 레이아웃",
+        "description": "전반적인 UI/UX 개선 작업. Hover 효과 추가, Privacy 페이지 리디자인, BGM 패널 레이아웃 변경, 버그 수정",
+        "details": "1. Hover 효과 추가:\n   - 설정 버튼: 회전 효과 (배경색 제거)\n   - 타이머 시간: 크기 + 색상 변경\n   - Daily Goal: 개별 텍스트 hover, 진행바 보라색 외곽선\n   - 대시보드 제목/아이콘: hover 효과\n   - BGM 패널: 노래 제목, 아이콘, 진행바\n   - Pomodoro Timer 텍스트: 크기 + 외곽선 + 그림자\n2. 브라우저 탭 제목: 'Focus' → 'Pomobox'\n3. 출석체크 깜빡임 수정: 로딩 상태(null) 추가로 새로고침 시 flicker 방지\n4. Weekly Stats 차트: hover 시 검정 막대 → 테마 색상(rgba)\n5. Privacy 페이지 UX: 그라데이션 배경, glass-card, 섹션별 아이콘, 타이포그래피 개선\n6. BGM 패널 레이아웃: 반복 버튼을 셔플 옆으로 이동, 재생 컨트롤 중앙 배치",
+        "testStrategy": "pnpm lint && pnpm build 통과. 각 hover 효과 수동 확인",
+        "status": "done",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": [],
+        "createdAt": "2025-12-26T00:00:00.000Z",
+        "updatedAt": "2025-12-26T00:30:00.000Z"
+      },
+      {
+        "id": "56",
+        "title": "모바일 반응형 UI 개선",
+        "description": "모바일 환경에서 UI 레이아웃 최적화. 작은/큰 모바일 화면별 차별화된 스타일 적용",
+        "details": "1. 모든 모바일 (max-width: 640px):\n   - Sign in 버튼: 상단 중앙 → 우측 상단으로 이동\n   - 테마 토글: 우측 하단 → 좌측 상단으로 이동\n   - BGM 패널: margin-top 12rem으로 첫 화면에서 숨김\n\n2. 작은 모바일 (max-width: 640px AND max-height: 700px):\n   - 메인 컨테이너 상단 패딩 축소 (64px → 40px)\n   - 섹션 상단 패딩 축소 (32px → 4px)\n   - 제목 폰트 크기 축소 (1.5rem → 1.25rem)\n   - 부제목 폰트 크기 축소 (0.875rem → 0.7rem)\n   - 타이머 컴포넌트 gap 축소 (32px → 8px)\n   - 버튼 영역 gap 축소 (16px → 6px)\n\n3. 기타:\n   - Daily Goal 힌트 텍스트(\"Added on session complete\") 제거\n   - 목표 달성 시에만 \"Goal reached!\" 메시지 표시\n\n변경 파일:\n- app/globals.css: 모바일 반응형 CSS 추가\n- components/goal-progress.tsx: goalHint 조건부 렌더링 제거",
+        "testStrategy": "pnpm lint && pnpm build 통과. Playwright로 360x640, 430x932 뷰포트 확인",
+        "status": "done",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": [],
+        "createdAt": "2025-12-26T12:00:00.000Z",
+        "updatedAt": "2025-12-26T12:30:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-25T21:22:02.594Z",
-      "taskCount": 43,
-      "completedCount": 38,
+      "lastModified": "2025-12-26T12:30:00.000Z",
+      "taskCount": 45,
+      "completedCount": 40,
       "tags": [
         "master"
       ]

@@ -526,6 +526,71 @@
   --animate-collapsible-up: collapsible-up 200ms ease-out;
 }
 
+/* ===== Mobile Responsive Layout ===== */
+
+/* 모든 모바일 (너비 640px 이하): Sign in, 테마 토글 위치 */
+@media (max-width: 640px) {
+  /* Sign in 버튼: 우측 상단 */
+  main > div.absolute {
+    left: auto !important;
+    right: -33px !important;
+    transform: none !important;
+  }
+
+  /* 테마 토글: 좌측 상단 */
+  div.fixed.bottom-6.right-6,
+  main div.fixed {
+    top: 1rem !important;
+    left: 1rem !important;
+    bottom: auto !important;
+    right: auto !important;
+  }
+
+  /* BGM 패널 영역: 첫 화면에 안 보이도록 margin-top 증가 */
+  .xl\:hidden.mt-8 {
+    margin-top: 12rem !important;
+  }
+}
+
+/* 작은 모바일만 (너비 640px 이하 AND 높이 700px 이하): 컴팩트 레이아웃 */
+@media (max-width: 640px) and (max-height: 700px) {
+  /* 메인 컨테이너 상단 패딩 */
+  main > div.flex-1 {
+    padding-top: 2.5rem !important;
+  }
+
+  /* 센터 섹션 상단 패딩 */
+  main section {
+    padding-top: 0.25rem !important;
+  }
+
+  /* 제목 영역 하단 마진 */
+  main section > div.text-center:first-child {
+    margin-bottom: 0.25rem !important;
+  }
+
+  /* 제목 폰트 */
+  main section h1 {
+    font-size: 1.25rem !important;
+    margin-bottom: 0.125rem !important;
+  }
+
+  /* 부제목 */
+  main section > div.text-center:first-child > p {
+    font-size: 0.7rem !important;
+  }
+
+  /* 타이머 컴포넌트 gap */
+  main section > div:last-child {
+    gap: 0.5rem !important;
+  }
+
+  /* 버튼 영역 gap */
+  main section > div:last-child > div.flex {
+    gap: 0.375rem !important;
+  }
+}
+
 /* Reduced motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   *,
