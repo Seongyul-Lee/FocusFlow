@@ -97,7 +97,9 @@
     "checkEmail": "请查收邮件",
     "confirmationSent": "我们已向您发送确认链接。",
     "error": "错误",
-    "unknownError": "发生意外错误"
+    "unknownError": "发生意外错误",
+    "loading": "加载中",
+    "userMenu": "用户菜单"
   },
   "Dashboard": {
     "title": "仪表板",

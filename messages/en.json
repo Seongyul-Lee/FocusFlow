@@ -97,7 +97,9 @@
     "checkEmail": "Check your email",
     "confirmationSent": "We've sent you a confirmation link.",
     "error": "Error",
-    "unknownError": "An unexpected error occurred"
+    "unknownError": "An unexpected error occurred",
+    "loading": "Loading",
+    "userMenu": "User menu"
   },
   "Dashboard": {
     "title": "Dashboard",

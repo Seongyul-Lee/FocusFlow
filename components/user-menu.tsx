@@ -45,7 +45,7 @@ export function UserMenu() {
 
   if (loading) {
     return (
-      <Button variant="ghost" size="icon" disabled>
+      <Button variant="ghost" size="icon" disabled aria-label={t("loading")}>
         <Loader2 className="h-4 w-4 animate-spin" />
       </Button>
     )
@@ -65,7 +65,7 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative hover:scale-105 hover:bg-primary/10 transition-all duration-200">
+        <Button variant="ghost" size="icon" className="relative hover:scale-105 hover:bg-primary/10 transition-all duration-200" aria-label={t("userMenu")}>
           <User className="h-4 w-4" />
           <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-green-500" />
         </Button>
