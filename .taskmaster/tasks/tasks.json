@@ -2,7 +2,7 @@
   "master": {
     "tasks": [
       {
-        "id": "12",
+        "id": 12,
         "title": "하이브리드 워크플로우 + Task Master 필수 정책 확립",
         "description": "CLAUDE.md에 하이브리드 운영 가이드, task-master set-status 필수 규칙, 세션 재시작 컨텍스트 복구 절차 추가",
         "status": "done",
@@ -17,7 +17,7 @@
         "subtasks": []
       },
       {
-        "id": "13",
+        "id": 13,
         "title": "Claude-template에 하이브리드 워크플로우 적용",
         "description": "pomobox의 하이브리드 워크플로우 정책을 Claude-template CLAUDE.md에 적용하여 템플릿 업데이트",
         "status": "done",
@@ -32,7 +32,7 @@
         "subtasks": []
       },
       {
-        "id": "14",
+        "id": 14,
         "title": "Notifications Sound 10개 옵션 추가",
         "description": "Settings에서 10가지 Sound 타입 선택 가능하도록 구현. Radix UI Select 컴포넌트 추가, lib/sounds.ts 생성, settings-dialog 및 pomodoro-timer 업데이트",
         "status": "done",
@@ -47,7 +47,7 @@
         "subtasks": []
       },
       {
-        "id": "15",
+        "id": 15,
         "title": "워크플로우 강제 규칙 추가: /docs 필수 + \"다음 단계\" task-master next",
         "description": "/plan 이후 /docs 필수 실행, \"다음 단계\" 요청 시 task-master next 자동 실행. pomobox 및 Claude-template CLAUDE.md 동시 업데이트",
         "status": "done",
@@ -62,7 +62,7 @@
         "subtasks": []
       },
       {
-        "id": "16",
+        "id": 16,
         "title": "Sound Type 버그 수정 및 UI 개선",
         "description": "Sound Type 10개 모두 기본 사운드로 재생되던 버그 수정. Web Audio API로 각 사운드의 고유 주파수/길이/파형 생성. Notifications/Sound 문구에 Bell/Volume2 아이콘 추가",
         "status": "done",
@@ -77,7 +77,7 @@
         "subtasks": []
       },
       {
-        "id": "17",
+        "id": 17,
         "title": "워크플로우 규칙 명확화: /plan, /docs 강제 실행",
         "description": "모든 코드 작업 시 /plan (강제) → /docs (강제) → 구현 → set-status. 모호한 예외 조건 제거, Section 1에 절대 규칙 추가",
         "status": "done",
@@ -92,7 +92,7 @@
         "subtasks": []
       },
       {
-        "id": "18",
+        "id": 18,
         "title": "UI 크기 125% 확대 (태블릿/데스크톱)",
         "description": "globals.css에 media query 추가하여 md breakpoint (768px+)에서 font-size: 125% 적용. rem 기반 UI만 확대, SVG 비율 유지",
         "status": "done",
@@ -107,7 +107,7 @@
         "subtasks": []
       },
       {
-        "id": "19",
+        "id": 19,
         "title": "다크/라이트모드 토글 구현",
         "description": "next-themes로 테마 전환 시스템 구현. ThemeProvider 추가, Sun/Moon 아이콘 토글 버튼, 기본값 dark. 화면 오른쪽 상단 배치",
         "status": "done",
@@ -123,7 +123,7 @@
         "subtasks": []
       },
       {
-        "id": "20",
+        "id": 20,
         "title": "PRD 정책 재확인: localStorage 복구 vs Stateless 앱",
         "description": "PRD는 새로고침 복구(REHYDRATE)를 MUST 요구하지만, 2025-12-25에 localStorage를 완전 제거하여 stateless 앱으로 전환함. 두 정책 간 충돌을 해결하고 최종 방향 확정",
         "details": "현재 구현은 localStorage 제거(commits 643597c)로 새로고침 시 항상 초기 설정으로 리셋됨. 그러나 PRD Section 4(시나리오 C), Section 6(REHYDRATE 이벤트), Section 7(pomodoro-timer-state 저장)은 복구를 MUST 요구.\n\n분석:\n1. 현재 구현(stateless): 단순성, 유지보수 용이, localStorage 복잡도 제거\n2. PRD 요구(복구): 진행 중 타이머 보존, 사용자 경험 향상, 탭 닫힘 시 복구\n\n결정 필요:\nA. PRD 우선: localStorage 복구 로직 재구현 (pomodoro-timer-state 저장/복구)\nB. 현행 유지: PRD Section 13(완료 작업)에 \"localStorage 제거\"를 명시하여 Non-goal로 변경\nC. 하이브리드: 설정만 저장, 타이머 상태는 stateless\n\n권장: 옵션 B (현행 유지). 이유:\n- 최근 커밋(643597c)이 명시적으로 localStorage 제거\n- 109줄 삭제로 복잡도 대폭 감소\n- Pomodoro는 세션 기반 작업(중단 가능)\n- 통계는 어차피 세션 종료 시점에만 집계되므로 복구 불필요",
@@ -135,7 +135,7 @@
         "updatedAt": "2025-12-24T20:13:32.615Z"
       },
       {
-        "id": "21",
+        "id": 21,
         "title": "상태머신 명세를 TypeScript 타입으로 정의",
         "description": "PRD Section 6의 상태머신(States/Events/Transitions)을 명시적인 타입 시스템으로 구현하여 타입 안정성 확보",
         "details": "현재 구현은 phase: 'focus' | 'break' | 'longBreak'와 status: 'idle' | 'running' | 'paused'를 분리하여 관리. PRD는 \"FOCUS_RUNNING\", \"FOCUS_PAUSED\" 등 조합 상태를 제안.\n\n구현:\n1. lib/state-machine.ts 생성\n2. 타입 정의:\n   - Phase = 'focus' | 'break' | 'longBreak'\n   - Status = 'idle' | 'running' | 'paused'\n   - TimerState = { phase, status, timeLeft, completedSessions, ... }\n   - TimerEvent = START | PAUSE | RESUME | SKIP | RESET | TIME_UP\n3. 순수 함수로 전이 로직 분리:\n   - transition(state: TimerState, event: TimerEvent): TimerState\n   - 모든 전이 규칙을 switch/case로 명시\n   - 통계 업데이트 로직 포함\n4. 불변조건(invariants) 검증 함수:\n   - validateInvariants(state: TimerState): boolean\n   - sessions <= completedSessions\n   - totalFocusMinutes = sessions * focusDuration\n\n장점:\n- 유닛 테스트 가능 (순수 함수)\n- 전이 규칙 명시적 문서화\n- 경쟁 조건 방지 (단일 진입점)",
@@ -149,7 +149,7 @@
         "updatedAt": "2025-12-24T20:30:19.785Z"
       },
       {
-        "id": "22",
+        "id": 22,
         "title": "00:00 경계조건 중복 처리 방지 (isTransitioning 강화)",
         "description": "TIME_UP과 사용자 입력(SKIP/RESET/PAUSE)이 동시 발생 시 전이/집계가 정확히 1회만 실행되도록 보장",
         "details": "현재 구현은 isTransitioning 플래그로 중복 방지 시도하나, 여러 useEffect 간 경쟁 조건 가능.\n\n문제:\n- timeLeft === 0 && status === 'running' 체크 시점과 전이 실행 시점 사이에 다른 이벤트 발생 가능\n- Skip/Reset 핸들러가 isTransitioning 무시하고 즉시 실행\n\n해결:\n1. 전이 중 플래그 강화:\n   - isTransitioning === true일 때 모든 사용자 입력 무시\n   - handleSkip/handleReset에 가드 조건 추가: `if (isTransitioning) return`\n2. useCallback 의존성 정리:\n   - handlePause/handleResume/handleSkip/handleReset에 isTransitioning 의존성 추가\n3. TIME_UP 처리 원자성:\n   - setIsTransitioning(true) 직후 setStatus('idle')로 즉시 running 해제\n   - 다른 useEffect가 status === 'running' 조건으로 진입 불가\n\n테스트 시나리오:\n- 00:00 도달 직전 Skip 연타\n- 00:00 도달 직전 Reset\n- 00:00 도달 직전 Pause\n- 모든 경우 sessions/totalFocusMinutes 정합성 유지 확인",
@@ -163,7 +163,7 @@
         "updatedAt": "2025-12-24T20:47:38.328Z"
       },
       {
-        "id": "23",
+        "id": 23,
         "title": "통계 불변조건 유닛 테스트 작성",
         "description": "PRD Section 3의 5가지 정의 불변조건을 회귀 테스트로 고정하여 정책 변경 시 즉시 감지",
         "details": "현재 E2E 테스트는 대부분 skip됨. 유닛 테스트로 빠르게 회귀 감지 필요.\n\n테스트 파일: tests/unit/statistics-invariants.test.ts\n\n5가지 불변조건:\n1. sessions는 \"완료 Focus\" 횟수와 항상 동일\n2. totalFocusMinutes는 \"완료 Focus들의 (각 Focus duration 합)\"과 항상 동일\n3. Skip/Reset은 sessions와 totalFocusMinutes를 절대 변경하지 않음\n4. completedSessions는 \"종료된 Focus\" 횟수(완료+Skip)와 동일\n5. longBreakCount는 \"completedSessions가 4의 배수로 도달하여 Long Break가 시작된 횟수\"와 동일\n\n테스트 구조:\n```typescript\ndescribe('Statistics Invariants', () => {\n  it('invariant 1: sessions = 완료 Focus 횟수', () => {\n    let state = initialState\n    // 3회 완료 (TIME_UP), 2회 Skip\n    state = transition(state, START)\n    state = transition(state, TIME_UP) // sessions=1\n    state = transition(state, START)\n    state = transition(state, SKIP)    // sessions=1 (불변)\n    // ...\n    expect(state.sessions).toBe(3)\n    expect(state.completedSessions).toBe(5)\n  })\n  // 나머지 4개 불변조건도 동일 패턴\n})\n```",
@@ -177,7 +177,7 @@
         "updatedAt": "2025-12-25T08:13:19.486Z"
       },
       {
-        "id": "24",
+        "id": 24,
         "title": "Long Break 트리거 로직 검증 및 테스트",
         "description": "completedSessions가 4, 8, 12...일 때 Long Break가 정확히 시작되고 longBreakCount가 증가하는지 검증",
         "details": "현재 구현(pomodoro-timer.tsx:133):\n```typescript\nif (newCompleted % 4 === 0) {\n  setPhase('longBreak')\n  setLongBreakCount(prev => prev + 1)\n}\n```\n\n문제:\n- Skip 로직(line 202-211)은 completedSessions만 증가시키고 Long Break 트리거 안 함\n- PRD는 \"completedSessions가 4의 배수 도달 시\" 트리거 요구\n- 불일치: Skip 4회 시 Long Break 트리거 안 됨 (TIME_UP만 트리거)\n\n수정 필요:\n1. handleSkip에 Long Break 체크 추가:\n```typescript\nconst newCompleted = completedSessions + 1\nsetCompletedSessions(newCompleted)\n\nif (newCompleted % 4 === 0) {\n  setPhase('longBreak')\n  setTimeLeft(15 * 60)\n  setLongBreakCount(prev => prev + 1)\n} else {\n  setPhase('break')\n  setTimeLeft(settings.breakDuration * 60)\n}\n```\n\n2. E2E 테스트 활성화 (현재 skip):\n- tests/e2e/pomobox-timer.spec.ts:43 (Long Break 트리거 테스트)\n- Skip 4회 → Long Break 확인\n- TIME_UP 4회 → Long Break 확인",
@@ -192,7 +192,7 @@
         "updatedAt": "2025-12-25T08:17:40.714Z"
       },
       {
-        "id": "25",
+        "id": 25,
         "title": "Settings Dialog 접근성 강화 (포커스 트랩, ESC, restoreFocus)",
         "description": "PRD Section 8의 MUST 요구사항: Dialog 포커스 트랩, ESC 닫기, 포커스 복귀를 Radix UI Dialog로 보장",
         "details": "현재 Radix UI Dialog는 기본적으로 접근성 기능 제공하나, 명시적 검증 필요.\n\nRadix UI Dialog 기본 제공:\n- role=\"dialog\", aria-modal=\"true\"\n- 포커스 트랩 (Tab 순환)\n- ESC 닫기\n- 포커스 복귀 (onOpenChange)\n\n검증 필요:\n1. 포커스 트랩: Dialog 내부 첫 요소로 포커스 이동 → Tab으로 내부만 순환\n2. ESC 닫기: ESC 누르면 Dialog 닫힘 → 포커스가 Settings 버튼으로 복귀\n3. 전역 단축키 차단: Dialog 열림 중 Space/R 키가 타이머에 영향 없음\n\n현재 구현 확인:\n- pomodoro-timer.tsx:164-194 (키보드 단축키)\n- line 170: `target.closest('[role=\"dialog\"]')` 체크로 Dialog 내부 입력 무시 ✅\n\n추가 개선:\n1. DialogContent에 초기 포커스 명시:\n```typescript\n<DialogContent onOpenAutoFocus={(e) => {\n  // 첫 인터랙티브 요소(Switch)로 포커스\n  e.preventDefault()\n  const firstFocusable = e.currentTarget.querySelector('button, [role=\"switch\"]')\n  firstFocusable?.focus()\n}}>\n```\n\n2. aria-label 검증:\n- Settings 버튼: ✅ line 97\n- Reset 버튼: ✅ line 314\n- Switch들: aria-label 추가 필요 (line 115, 135)",
@@ -204,7 +204,7 @@
         "updatedAt": "2025-12-25T08:19:26.951Z"
       },
       {
-        "id": "26",
+        "id": 26,
         "title": "Settings Dialog A11y E2E 테스트 작성",
         "description": "PRD Section 9의 A11y E2E 필수 시나리오를 Playwright로 구현하여 수용 기준 자동 검증",
         "details": "테스트 파일: tests/e2e/settings-dialog-a11y.spec.ts\n\n필수 시나리오:\n1. 키보드로 Settings 열기 (Tab → Enter)\n2. 포커스가 Dialog 내부 첫 요소로 이동 확인\n3. Tab/Shift+Tab으로 내부만 순환 (배경으로 포커스 안 나감)\n4. ESC로 닫기 + Settings 버튼으로 포커스 복귀\n5. Dialog 열림 중 Space/R 키가 타이머에 영향 없음\n\n구현:\n```typescript\nimport { test, expect } from '@playwright/test'\nimport AxeBuilder from '@axe-core/playwright'\n\ntest.describe('Settings Dialog Accessibility', () => {\n  test('should open with Enter and trap focus', async ({ page }) => {\n    await page.goto('/')\n    \n    // Tab으로 Settings 버튼까지 이동\n    await page.keyboard.press('Tab')\n    const settingsBtn = page.getByRole('button', { name: /settings/i })\n    await expect(settingsBtn).toBeFocused()\n    \n    // Enter로 Dialog 열기\n    await page.keyboard.press('Enter')\n    await expect(page.getByRole('dialog')).toBeVisible()\n    \n    // 포커스가 Dialog 내부로 이동\n    const firstFocusable = page.locator('[role=\"dialog\"] button, [role=\"dialog\"] [role=\"switch\"]').first()\n    await expect(firstFocusable).toBeFocused()\n    \n    // Tab 순환 확인 (배경으로 안 나감)\n    const dialogElements = await page.locator('[role=\"dialog\"] button, [role=\"dialog\"] [role=\"switch\"]').count()\n    for (let i = 0; i < dialogElements + 1; i++) {\n      await page.keyboard.press('Tab')\n      // 마지막 요소 이후 Tab → 첫 요소로 순환\n    }\n    await expect(firstFocusable).toBeFocused()\n  })\n  \n  test('should close with ESC and restore focus', async ({ page }) => {\n    // Dialog 열기\n    await page.goto('/')\n    await page.getByRole('button', { name: /settings/i }).click()\n    await expect(page.getByRole('dialog')).toBeVisible()\n    \n    // ESC로 닫기\n    await page.keyboard.press('Escape')\n    await expect(page.getByRole('dialog')).not.toBeVisible()\n    \n    // 포커스가 Settings 버튼으로 복귀\n    const settingsBtn = page.getByRole('button', { name: /settings/i })\n    await expect(settingsBtn).toBeFocused()\n  })\n  \n  test('should block global shortcuts when dialog is open', async ({ page }) => {\n    // 타이머 시작\n    await page.goto('/')\n    await page.getByRole('button', { name: /start/i }).click()\n    await expect(page.getByRole('button', { name: /pause/i })).toBeVisible()\n    \n    // Dialog 열기\n    await page.getByRole('button', { name: /settings/i }).click()\n    await expect(page.getByRole('dialog')).toBeVisible()\n    \n    // Space 눌러도 타이머 상태 변화 없음\n    await page.keyboard.press('Space')\n    await expect(page.getByRole('button', { name: /pause/i })).toBeVisible()\n    \n    // R 눌러도 리셋 안 됨\n    await page.keyboard.press('R')\n    await expect(page.getByRole('button', { name: /pause/i })).toBeVisible()\n  })\n  \n  test('should pass axe accessibility audit', async ({ page }) => {\n    await page.goto('/')\n    await page.getByRole('button', { name: /settings/i }).click()\n    \n    const results = await new AxeBuilder({ page })\n      .include('[role=\"dialog\"]')\n      .analyze()\n    \n    expect(results.violations).toEqual([])\n  })\n})\n```",
@@ -218,7 +218,7 @@
         "updatedAt": "2025-12-25T08:29:26.773Z"
       },
       {
-        "id": "27",
+        "id": 27,
         "title": "타이머 정확도 검증 (timestamp delta 기반)",
         "description": "PRD Section 6 \"타이머 루프 정확도 규정\"에 따라 현재 timestamp 기반 구현이 드리프트 없이 동작하는지 검증",
         "details": "현재 구현(pomodoro-timer.tsx:74-95):\n- targetEndAtMs 기반으로 remainingSeconds 재계산 ✅\n- setInterval 1초마다 updateTimeLeft() 호출\n- visibilitychange 이벤트로 탭 활성화 시 보정 ✅\n\n검증 필요:\n1. 장시간 실행 시 드리프트 테스트 (60초 타이머 → 실제 60초 ±1초 이내)\n2. 탭 비활성화 → 5분 대기 → 활성화 시 정확한 시간 보정\n3. 시스템 시간 변경 대응 (edge case)\n\n개선 가능:\n- setInterval 대신 requestAnimationFrame 고려 (더 정확한 타이밍)\n- 단, 탭 비활성 시 RAF 정지되므로 visibilitychange 보정 필수 유지\n\n현재 구현으로 충분하다고 판단되면 테스트만 추가.\n\n테스트:\n```typescript\ntest('timer accuracy over 60 seconds', async ({ page }) => {\n  await page.goto('/')\n  \n  // 설정에서 Focus를 1분으로 변경\n  await page.getByRole('button', { name: /settings/i }).click()\n  await page.getByRole('button', { name: '60 min' }).click() // Custom duration 필요\n  await page.getByRole('button', { name: /save/i }).click()\n  \n  // 타이머 시작\n  const startTime = Date.now()\n  await page.getByRole('button', { name: /start/i }).click()\n  \n  // 60초 대기\n  await page.waitForTimeout(60000)\n  const elapsedTime = Date.now() - startTime\n  \n  // 오차 ±2초 이내\n  expect(Math.abs(elapsedTime - 60000)).toBeLessThan(2000)\n})\n```",
@@ -230,7 +230,7 @@
         "updatedAt": "2025-12-25T08:51:53.464Z"
       },
       {
-        "id": "28",
+        "id": 28,
         "title": "Pause/Resume 상태 UI 개선 (명확한 시각적 피드백)",
         "description": "Paused 상태를 사용자가 명확히 인지할 수 있도록 시각적 피드백 강화 (현재 amber 색상만 있음)",
         "details": "현재 구현(pomodoro-timer.tsx:253-262):\n- Paused 상태 시 작은 amber 배지 표시 ✅\n- 타이머 원 색상도 amber로 변경 ✅\n\n개선 가능:\n1. Paused 애니메이션 추가 (깜빡임 또는 펄스)\n2. Resume 버튼 강조 (더 큰 크기, 색상)\n3. 음성 안내 (스크린리더용): \"Timer paused. Press Resume to continue.\"\n\n현재로 충분하다고 판단되면 개선 생략 가능.\n\n선택적 개선:\n```typescript\n{status === 'paused' && (\n  <div className=\"animate-pulse bg-amber-100 dark:bg-amber-900/30 ...\">\n    <Pause className=\"h-3 w-3\" />\n    <span aria-live=\"polite\">Paused</span>\n  </div>\n)}\n```",
@@ -242,7 +242,7 @@
         "updatedAt": "2025-12-25T13:41:11.314Z"
       },
       {
-        "id": "29",
+        "id": 29,
         "title": "통계 표시 개선 (Long Break 카운트 추가)",
         "description": "현재 UI는 sessions와 totalFocusMinutes만 표시. longBreakCount도 사용자에게 보여줄지 결정",
         "details": "현재 표시(pomodoro-timer.tsx:325-327):\n```typescript\nToday: {sessions} sessions ({totalFocusMinutes} min)\n```\n\nPRD Section 3:\n- longBreakCount는 \"표시/저장 여부는 제품 결정\"으로 남김\n\n선택지:\nA. 현행 유지 (sessions + totalFocusMinutes만)\nB. Long Break 추가: \"Today: 3 sessions (75 min) · 1 long break\"\nC. completedSessions도 추가 (개발자용): \"3/5 sessions\"\n\n권장: 옵션 A (현행 유지). 이유:\n- 사용자에게 중요한 지표는 \"완료된 집중 세션\"과 \"총 집중 시간\"\n- Long Break는 자동 트리거되므로 별도 표시 불필요\n- UI 복잡도 증가 방지\n\n만약 표시한다면:\n```typescript\n<div className=\"text-muted-foreground text-sm font-medium\">\n  Today: <span className=\"text-foreground\">{sessions} sessions ({totalFocusMinutes} min)</span>\n  {longBreakCount > 0 && (\n    <span className=\"text-xs ml-2\">· {longBreakCount} long break{longBreakCount > 1 ? 's' : ''}</span>\n  )}\n</div>\n```",
@@ -253,7 +253,7 @@
         "subtasks": []
       },
       {
-        "id": "30",
+        "id": 30,
         "title": "품질 게이트 CI 설정 (lint + build + e2e)",
         "description": "PRD Section 9의 품질 게이트(pnpm lint, pnpm build, pnpm e2e)를 GitHub Actions CI에 포함하여 PR 자동 검증",
         "details": "현재 package.json scripts:\n- pnpm lint: tsc --noEmit (타입 체크)\n- pnpm build: next build\n- pnpm e2e: playwright test\n\nCI 구성(.github/workflows/ci.yml):\n```yaml\nname: CI\non:\n  pull_request:\n  push:\n    branches: [main, preview]\n\njobs:\n  quality-gate:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: pnpm/action-setup@v2\n        with:\n          version: 8\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n          cache: 'pnpm'\n      \n      - name: Install dependencies\n        run: pnpm install\n      \n      - name: Lint (Type Check)\n        run: pnpm lint\n      \n      - name: Build\n        run: pnpm build\n      \n      - name: Install Playwright Browsers\n        run: pnpm exec playwright install --with-deps\n      \n      - name: E2E Tests\n        run: pnpm e2e\n      \n      - name: Upload Playwright Report\n        if: always()\n        uses: actions/upload-artifact@v4\n        with:\n          name: playwright-report\n          path: playwright-report/\n          retention-days: 7\n```\n\nPR 보호 규칙:\n- main/preview 브랜치는 CI 통과 필수",
@@ -267,7 +267,7 @@
         "updatedAt": "2025-12-25T08:32:15.319Z"
       },
       {
-        "id": "31",
+        "id": 31,
         "title": "문서 업데이트 (README + PRD)",
         "description": "구현 완료 후 README와 PRD Section 13(완료 작업)에 변경사항 반영",
         "details": "업데이트 필요 문서:\n\n1. README.md:\n- Features 섹션에 Pause/Resume 명시\n- 접근성 기능 추가 (키보드 단축키, 포커스 트랩)\n- 통계 정책 설명 (완료 세션 vs Skip)\n- 테스트 실행 방법 (pnpm lint, pnpm build, pnpm e2e)\n\n2. .taskmaster/docs/prd.txt Section 13:\n- Task 20-31 완료 항목 추가\n- localStorage 정책 최종 결정 반영 (stateless 유지 시 명시)\n- 상태머신 구현 방식 기록\n- 접근성 수용 기준 달성 여부\n\n3. docs/context7-baseline.json:\n- 새로 조회한 라이브러리 문서 추가 (Playwright, Radix UI Dialog 등)\n\n예시 README:\n```markdown\n## Features\n- ⏱️ Pomodoro timer with Focus/Break/Long Break\n- ⏸️ Pause/Resume with accurate time tracking\n- 📊 Daily statistics (completed sessions, total focus time)\n- ⌨️ Keyboard shortcuts (Space: Start/Pause, R: Reset, ESC: Pause)\n- ♿ Full keyboard accessibility (WCAG 2.1 AA)\n- 🎨 Dark/Light theme\n- 🔔 Notifications and sound alerts\n\n## Development\n```bash\npnpm dev        # Start dev server\npnpm lint       # Type check\npnpm build      # Production build\npnpm e2e        # E2E tests\npnpm e2e:ui     # Playwright UI mode\n```\n\n## Statistics Policy\n- **Sessions**: Completed Focus sessions (TIME_UP only)\n- **Total Minutes**: Sum of completed Focus durations\n- **Skip/Reset**: Does NOT affect statistics\n- **Long Break**: Triggered every 4 completed Focus sessions\n```",
@@ -287,7 +287,7 @@
         "subtasks": []
       },
       {
-        "id": "32",
+        "id": 32,
         "title": "롤백 계획 수립 및 피처 플래그 고려",
         "description": "PRD Section 11 리스크/롤백 전략에 따라 안전한 배포 계획 수립",
         "details": "리스크:\n1. 상태머신 복잡도 증가 → 전이 누락/중복 처리\n2. 접근성 회귀 → 키보드 사용성 악화\n3. 통계 정책 변경 → 기존 사용자 데이터 불일치\n\n롤백 전략:\nA. Git 기반 롤백:\n- 문제 발견 시 이전 안정 커밋으로 revert\n- 현재 stateless 앱이므로 localStorage 호환성 문제 없음 ✅\n\nB. 피처 플래그 (선택적):\n- 새 상태머신 로직을 플래그로 제어\n- 환경변수: NEXT_PUBLIC_ENABLE_NEW_STATE_MACHINE=true\n- 문제 시 플래그 false로 즉시 롤백\n\n구현 (선택적):\n```typescript\n// lib/feature-flags.ts\nexport const FEATURES = {\n  newStateMachine: process.env.NEXT_PUBLIC_ENABLE_NEW_STATE_MACHINE === 'true',\n} as const\n\n// pomodoro-timer.tsx\nimport { FEATURES } from '@/lib/feature-flags'\n\nif (FEATURES.newStateMachine) {\n  // 새 transition 함수 사용\n  const newState = transition(state, event)\n} else {\n  // 기존 로직\n}\n```\n\n권장: 피처 플래그 생략. 이유:\n- 테스트 커버리지 충분하면 롤백 위험 낮음\n- 피처 플래그는 코드 복잡도 증가\n- Git revert로 충분\n\n모니터링:\n- Vercel Analytics로 에러율 추적\n- 배포 후 24시간 모니터링",
@@ -300,7 +300,7 @@
         "subtasks": []
       },
       {
-        "id": "33",
+        "id": 33,
         "title": "Vercel pnpm 빌드 스크립트 승인 설정",
         "description": "pnpm 9.x 보안 기능으로 인한 빌드 경고 해결. esbuild, sharp, unrs-resolver의 postinstall 스크립트 승인",
         "details": "package.json에 pnpm.onlyBuiltDependencies 설정 추가",
@@ -311,7 +311,7 @@
         "subtasks": []
       },
       {
-        "id": "34",
+        "id": 34,
         "title": "SEO 최적화 및 검색 엔진 등록",
         "description": "sitemap, robots, 메타데이터, JSON-LD 추가 및 Google/Bing/Naver/Daum 검색 엔진 등록 완료",
         "details": "기술적 SEO: sitemap.ts, robots.ts, OG/Twitter 메타태그, JSON-LD WebApplication 스키마.\n\n검색엔진 등록 및 승인 현황:\n- Google Search Console: ✅ 승인 완료\n- Bing Webmaster Tools: ✅ 승인 완료\n- Naver Search Advisor: ✅ 승인 완료\n- Daum 검색등록: ✅ 승인 완료 (2025-12-27)",
@@ -322,7 +322,7 @@
         "subtasks": []
       },
       {
-        "id": "35",
+        "id": 35,
         "title": "Google AdSense 계정 신청 및 승인",
         "description": "Google AdSense 계정 생성, pomobox.app 사이트 등록 및 승인 대기",
         "details": "1. https://adsense.google.com 접속\n2. Google 계정으로 로그인\n3. 사이트 URL 입력: https://pomobox.app\n4. 결제 정보 입력\n5. 승인 대기 (1-14일 소요)",
@@ -336,7 +336,7 @@
         "updatedAt": "2025-12-24T23:58:49.369Z"
       },
       {
-        "id": "36",
+        "id": 36,
         "title": "ads.txt 파일 생성",
         "description": "AdSense 승인 후 public/ads.txt 파일 생성하여 광고 인증",
         "details": "public/ads.txt 파일 생성\n내용: google.com, pub-XXXXXXXXXX, DIRECT, f08c47fec0942fa0\n(pub-ID는 AdSense 대시보드에서 확인)",
@@ -350,7 +350,7 @@
         "updatedAt": "2025-12-24T23:58:49.373Z"
       },
       {
-        "id": "37",
+        "id": 37,
         "title": "AdSense 스크립트 추가 (layout.tsx)",
         "description": "Next.js App Router에 AdSense 스크립트 추가",
         "details": "app/layout.tsx의 metadata에 추가:\n- verification.google 또는 meta 태그\n- Script 컴포넌트로 adsbygoogle.js 로드\n\n환경변수 사용 권장: NEXT_PUBLIC_ADSENSE_ID",
@@ -364,7 +364,7 @@
         "updatedAt": "2025-12-24T23:58:49.375Z"
       },
       {
-        "id": "38",
+        "id": 38,
         "title": "개인정보처리방침 페이지 추가",
         "description": "AdSense 필수 요구사항: 개인정보처리방침 및 쿠키 정책 페이지 생성",
         "details": "app/privacy/page.tsx 생성\n- 수집 정보 (쿠키, 분석)\n- Google AdSense/Analytics 사용 고지\n- 사용자 권리 (GDPR 준수)\n\nfooter에 링크 추가",
@@ -378,7 +378,7 @@
         "updatedAt": "2025-12-25T00:07:54.195Z"
       },
       {
-        "id": "39",
+        "id": 39,
         "title": "광고 컴포넌트 생성 및 배치",
         "description": "재사용 가능한 AdBanner 컴포넌트 생성 및 적절한 위치에 배치",
         "details": "components/ad-banner.tsx 생성\n- 자동 광고 또는 수동 광고 단위\n- 반응형 광고 크기\n- 클라이언트 컴포넌트 ('use client')\n\n배치 위치: 타이머 하단 또는 사이드",
@@ -392,7 +392,7 @@
         "updatedAt": "2025-12-25T08:37:21.991Z"
       },
       {
-        "id": "40",
+        "id": 40,
         "title": "AdSense 정책 준수 검토",
         "description": "광고 배치 및 콘텐츠가 AdSense 정책을 준수하는지 최종 검토",
         "details": "- 광고 과다 배치 금지\n- 클릭 유도 금지\n- 콘텐츠와 광고 구분\n- 모바일 UX 확인\n- 개인정보처리방침 링크 확인",
@@ -407,7 +407,7 @@
         "updatedAt": "2025-12-25T08:42:55.911Z"
       },
       {
-        "id": "41",
+        "id": 41,
         "title": "AlternativeTo 등록",
         "description": "AlternativeTo.net에 pomobox 앱 등록하여 타 포모도로 앱 대안으로 노출",
         "details": "프로필 생성, 앱 정보 입력 (Full Description, Tags, Features, Platform Notes), 스크린샷 업로드 완료. 승인 대기 중 (1-3일)",
@@ -419,7 +419,7 @@
         "updatedAt": "2025-12-25T01:30:00.000Z"
       },
       {
-        "id": "42",
+        "id": 42,
         "title": "Paused 상태 색상 대비 수정 (WCAG 2 AA)",
         "description": "axe-core 접근성 테스트에서 Paused 상태의 색상 대비가 WCAG 2 AA 기준(4.5:1) 미달. Tailwind v4 oklch 색상과 테스트 환경 간 호환성 문제 해결 필요",
         "details": "현재 문제:\n- Paused 배지: amber-500 bg + white text → axe가 다른 색상으로 계산\n- Resume 버튼: primary 색상 대비 부족\n\n해결 방향:\n1. oklch 색상 대신 hex/rgb 직접 지정 검토\n2. 테스트 환경에서 색상 스키마 명시적 설정\n3. 또는 테스트에서 색상 대비 검사 제외\n\n관련 파일:\n- components/pomodoro-timer.tsx (line 266-275)\n- app/globals.css (primary 색상 정의)\n- tests/e2e/pomobox-a11y.spec.ts (현재 skip 처리됨)",
@@ -430,7 +430,7 @@
         "subtasks": []
       },
       {
-        "id": "43",
+        "id": 43,
         "title": "Sound 시스템 개선 및 실시간 볼륨 조절",
         "description": "Ambient 사운드 8개 교체, 실시간 볼륨 조절 구현, AudioContext 에러 수정, AdBanner 임시 숨김",
         "details": "1. Ambient 사운드 8개 교체 (Warm Pad, Zen Bowl 유지)\n   - 삭제: Deep Gong, Thunder, Ocean, Tibetan, Bass Pulse, Cathedral, Drone Hum, Sub Impact\n   - 추가: Soft Bell, Piano Chord, Cello Bow, Synth Pad, Wind Sweep, Rain Drop, Forest Breath, Meditation Bell\n2. 실시간 Volume 조절: 전역 masterGain을 통해 재생 중 볼륨 변경 가능\n3. AudioContext 에러 수정: InvalidStateError 방지 (try-catch + state 체크 제거)\n4. AdBanner 임시 숨김: AdSense 승인 전까지 주석 처리",
@@ -443,7 +443,7 @@
         "updatedAt": "2025-12-25T10:30:00Z"
       },
       {
-        "id": "44",
+        "id": 44,
         "title": "Skip to Break 버튼 UI 개선",
         "description": "Skip to Break/Back to Focus 버튼 스타일 및 UX 개선",
         "details": "1. 외관선 추가: border border-muted-foreground/30\n2. 아이콘 그림자: drop-shadow-md\n3. 호버 효과: hover:bg-muted/50, hover:scale-105, transition-all\n4. 둥근 모서리: rounded-xl\n5. 호버 텍스트 투명도: hover:text-foreground/60\n6. 아이콘 애니메이션: group-hover:translate-x-0.5\n7. 텍스트 변경: 'Skip Break' → 'Back to Focus' (명확한 구분)",
@@ -456,7 +456,7 @@
         "updatedAt": "2025-12-25T11:30:00Z"
       },
       {
-        "id": "45",
+        "id": 45,
         "title": "앱 아이콘 제작 및 적용",
         "description": "박스 + 타이머 컨셉의 pomobox 앱 아이콘 제작 및 적용",
         "details": "Figma AI로 아이콘 디자인 생성 후 각 플랫폼별 사이즈로 변환 적용:\n- favicon.ico (32x32): 브라우저 탭\n- icon.png (192x192): PWA, 알림\n- icon-512.png (512x512): PWA 스플래시\n- apple-icon.png (180x180): iOS 홈 화면\n- icon.svg: 원본 벡터\n\n디자인: 파란색-보라색 그라데이션 배경 + 흰색 시계 아이콘",
@@ -469,7 +469,7 @@
         "updatedAt": "2025-12-25T12:30:00Z"
       },
       {
-        "id": "46",
+        "id": 46,
         "title": "Phase 1 다국어 지원 (en, ko, ja, zh-CN)",
         "description": "next-intl로 4개 언어 URL 기반 라우팅 구현. 설정 다이얼로그에서 언어 변경 가능",
         "details": "구현 완료:\n1. next-intl 설치 및 설정 (i18n/routing.ts, i18n/request.ts)\n2. proxy.ts 미들웨어 (Next.js 16 convention)\n3. app/[locale]/ 동적 라우팅\n4. messages/*.json 번역 파일 4개\n5. Settings Dialog에 Language 선택기 추가\n6. 언어 변경은 Save Changes 버튼 클릭 시에만 적용\n7. CJK 시스템 폰트 적용 (성능 최적화)\n8. Sound 이름은 언어 무관하게 영어로 표시",
@@ -482,7 +482,7 @@
         "updatedAt": "2025-12-25T14:00:00Z"
       },
       {
-        "id": "47",
+        "id": 47,
         "title": "Supabase 프로젝트 설정 및 환경 구성",
         "description": "Supabase 프로젝트 생성, 환경변수 설정, @supabase/supabase-js 설치",
         "details": "1. Supabase 대시보드에서 프로젝트 생성\n2. .env.local에 NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY 추가\n3. @supabase/supabase-js, @supabase/ssr 설치\n4. lib/supabase/client.ts, lib/supabase/server.ts 생성\n5. Vercel 환경변수 설정",
@@ -494,7 +494,7 @@
         "updatedAt": "2025-12-25T14:18:14.442Z"
       },
       {
-        "id": "48",
+        "id": 48,
         "title": "인증 시스템 구현 (Google OAuth + Email/Password)",
         "description": "Supabase Auth로 로그인/회원가입 구현. Google OAuth + 이메일/비밀번호 지원",
         "details": "1. Supabase Auth 설정 (Google OAuth provider 활성화)\n2. app/[locale]/auth/login/page.tsx 생성\n3. app/[locale]/auth/signup/page.tsx 생성\n4. components/auth-form.tsx (로그인/회원가입 폼)\n5. middleware.ts에 인증 체크 추가\n6. 로그인 상태에 따른 UI 분기 (헤더에 로그인/로그아웃 버튼)",
@@ -508,7 +508,7 @@
         "updatedAt": "2025-12-25T14:48:49.156Z"
       },
       {
-        "id": "49",
+        "id": 49,
         "title": "데이터베이스 스키마 설계 및 생성",
         "description": "사용자 통계, 세션 기록, 목표 설정을 위한 테이블 생성",
         "details": "테이블 구조:\n1. profiles: id, user_id, daily_goal_minutes, created_at\n2. focus_sessions: id, user_id, duration_minutes, completed_at, session_type\n3. daily_stats: id, user_id, date, total_sessions, total_minutes, goal_achieved\n\nRLS 정책: 사용자는 자신의 데이터만 접근 가능",
@@ -522,7 +522,7 @@
         "updatedAt": "2025-12-25T14:48:49.229Z"
       },
       {
-        "id": "50",
+        "id": 50,
         "title": "통계 영속화 (세션 데이터 저장/조회)",
         "description": "Focus 세션 완료 시 Supabase에 저장, 일일/주간/월간 통계 조회",
         "details": "1. lib/supabase/stats.ts - 통계 CRUD 함수\n2. pomodoro-timer.tsx에서 세션 완료 시 저장 호출\n3. 비로그인 사용자: 기존 로컬 상태 유지\n4. 로그인 사용자: Supabase에 저장 + 로컬 상태 동기화\n5. hooks/use-stats.ts - 통계 조회 훅",
@@ -537,7 +537,7 @@
         "updatedAt": "2025-12-25T15:01:13.938Z"
       },
       {
-        "id": "51",
+        "id": 51,
         "title": "주간/월간 리포트 차트",
         "description": "recharts로 주간/월간 집중 시간 시각화. 대시보드 페이지 생성",
         "details": "1. recharts 설치\n2. app/[locale]/dashboard/page.tsx 생성\n3. components/stats-chart.tsx - 바 차트 (일별 집중 시간)\n4. components/weekly-summary.tsx - 주간 요약 카드\n5. components/monthly-calendar.tsx - 월간 히트맵 (선택적)",
@@ -551,7 +551,7 @@
         "updatedAt": "2025-12-25T15:07:12.054Z"
       },
       {
-        "id": "52",
+        "id": 52,
         "title": "목표 설정 및 달성률 표시",
         "description": "일일 집중 시간 목표 설정, 진행률 표시, 목표 달성 시 축하 UI",
         "details": "1. Settings에 '일일 목표' 입력 필드 추가 (기본 120분)\n2. 타이머 화면에 진행률 바 또는 원형 프로그레스 표시\n3. 목표 달성 시 confetti 애니메이션 또는 배지 표시\n4. 대시보드에 목표 달성률 통계 (주간 달성 일수 등)",
@@ -565,7 +565,7 @@
         "updatedAt": "2025-12-25T15:13:35.120Z"
       },
       {
-        "id": "53",
+        "id": 53,
         "title": "랜딩 페이지 (AlternativeTo 재신청용)",
         "description": "pomobox.app 메인 랜딩 페이지. 기능 소개, 스크린샷, CTA",
         "details": "1. app/[locale]/page.tsx를 랜딩으로 변경 (또는 별도 /home)\n2. Hero 섹션: 타이틀 + CTA (Start Free)\n3. Features 섹션: 주요 기능 3-4개 소개\n4. Screenshots 섹션: 타이머/대시보드 스크린샷\n5. Footer: 링크, 저작권\n6. 기존 타이머는 /app 또는 /timer로 이동",
@@ -579,7 +579,7 @@
         "subtasks": []
       },
       {
-        "id": "54",
+        "id": 54,
         "title": "대시보드 Supabase 연동",
         "description": "로그인 사용자의 대시보드 데이터를 Supabase에서 조회하도록 연동",
         "details": "DashboardLeft/Right 컴포넌트에서 useUser로 로그인 확인 후 Supabase 함수 호출. 비로그인 시 localStorage 폴백. lib/supabase/stats.ts에 조회 함수 추가, lib/supabase/attendance.ts 신규 생성",
@@ -591,7 +591,7 @@
         "updatedAt": "2025-12-25T21:22:02.593Z"
       },
       {
-        "id": "55",
+        "id": 55,
         "title": "UI/UX 개선: Hover 효과, Privacy 페이지, BGM 레이아웃",
         "description": "전반적인 UI/UX 개선 작업. Hover 효과 추가, Privacy 페이지 리디자인, BGM 패널 레이아웃 변경, 버그 수정",
         "details": "1. Hover 효과 추가:\n   - 설정 버튼: 회전 효과 (배경색 제거)\n   - 타이머 시간: 크기 + 색상 변경\n   - Daily Goal: 개별 텍스트 hover, 진행바 보라색 외곽선\n   - 대시보드 제목/아이콘: hover 효과\n   - BGM 패널: 노래 제목, 아이콘, 진행바\n   - Pomodoro Timer 텍스트: 크기 + 외곽선 + 그림자\n2. 브라우저 탭 제목: 'Focus' → 'Pomobox'\n3. 출석체크 깜빡임 수정: 로딩 상태(null) 추가로 새로고침 시 flicker 방지\n4. Weekly Stats 차트: hover 시 검정 막대 → 테마 색상(rgba)\n5. Privacy 페이지 UX: 그라데이션 배경, glass-card, 섹션별 아이콘, 타이포그래피 개선\n6. BGM 패널 레이아웃: 반복 버튼을 셔플 옆으로 이동, 재생 컨트롤 중앙 배치",
@@ -604,7 +604,7 @@
         "updatedAt": "2025-12-26T00:30:00.000Z"
       },
       {
-        "id": "56",
+        "id": 56,
         "title": "모바일 반응형 UI 개선",
         "description": "모바일 환경에서 UI 레이아웃 최적화. 작은/큰 모바일 화면별 차별화된 스타일 적용",
         "details": "1. 모든 모바일 (max-width: 640px):\n   - Sign in 버튼: 상단 중앙 → 우측 상단으로 이동\n   - 테마 토글: 우측 하단 → 좌측 상단으로 이동\n   - BGM 패널: margin-top 12rem으로 첫 화면에서 숨김\n\n2. 작은 모바일 (max-width: 640px AND max-height: 700px):\n   - 메인 컨테이너 상단 패딩 축소 (64px → 40px)\n   - 섹션 상단 패딩 축소 (32px → 4px)\n   - 제목 폰트 크기 축소 (1.5rem → 1.25rem)\n   - 부제목 폰트 크기 축소 (0.875rem → 0.7rem)\n   - 타이머 컴포넌트 gap 축소 (32px → 8px)\n   - 버튼 영역 gap 축소 (16px → 6px)\n\n3. 기타:\n   - Daily Goal 힌트 텍스트(\"Added on session complete\") 제거\n   - 목표 달성 시에만 \"Goal reached!\" 메시지 표시\n\n변경 파일:\n- app/globals.css: 모바일 반응형 CSS 추가\n- components/goal-progress.tsx: goalHint 조건부 렌더링 제거",
@@ -617,7 +617,7 @@
         "updatedAt": "2025-12-26T12:30:00.000Z"
       },
       {
-        "id": "57",
+        "id": 57,
         "title": "CI/E2E 테스트 속도 최적화",
         "description": "GitHub Actions CI에서 E2E 테스트 실행 시간 70-80% 단축을 위한 최적화",
         "details": "문제점:\n- Playwright 브라우저 매번 다운로드 (~500MB)\n- 3개 브라우저 테스트 (chromium, firefox, webkit)\n- 워커 1개로 병렬 처리 없음\n- dev 서버 사용으로 느린 시작\n- 재시도 2회로 실패 시 시간 증가\n\n해결:\n1. .github/workflows/ci.yml:\n   - Playwright 브라우저 캐싱 추가 (pnpm-lock.yaml 기반 키)\n   - chromium만 설치 (--with-deps chromium)\n   - 캐시 히트 시 install-deps만 실행\n\n2. playwright.config.ts:\n   - CI 환경: chromium만 테스트\n   - 워커 수: 1 → 2\n   - 재시도: 2 → 1\n   - 서버: pnpm dev → pnpm start\n   - 타임아웃: 120s → 60s\n\n예상 효과: 70-80% 시간 단축",
@@ -630,7 +630,7 @@
         "updatedAt": "2025-12-26T13:30:00.000Z"
       },
       {
-        "id": "58",
+        "id": 58,
         "title": "middleware.ts를 proxy.ts로 마이그레이션 (Next.js 16 deprecation 경고 해결)",
         "description": "Next.js 16에서 middleware.ts가 proxy.ts로 변경됨에 따라 기존 middleware.ts 파일을 proxy.ts로 마이그레이션하여 deprecation 경고를 해결하고 향후 호환성을 확보",
         "details": "## 배경\n- Next.js 16에서 middleware.ts → proxy.ts로 네이밍 변경\n- 현재 코드베이스는 이미 proxy.ts:8에 `export async function proxy(request: NextRequest)` 구현됨\n- lib/supabase/middleware.ts:4의 `updateSession` 함수를 사용하여 Supabase 세션 갱신\n- next-intl 라우팅과 Supabase 인증을 함께 처리\n\n## 현재 구현 상태 (proxy.ts)\n```typescript\n// proxy.ts\nimport { type NextRequest } from \"next/server\"\nimport createMiddleware from \"next-intl/middleware\"\nimport { routing } from \"./i18n/routing\"\nimport { updateSession } from \"./lib/supabase/middleware\"\n\nconst handleI18nRouting = createMiddleware(routing)\n\nexport async function proxy(request: NextRequest) {\n  // 1. next-intl 로케일 라우팅\n  const response = handleI18nRouting(request)\n  // 2. Supabase 세션 갱신 (쿠키를 response에 설정)\n  return await updateSession(request, response)\n}\n\nexport const config = {\n  matcher: \"/((?!api|trpc|_next|_vercel|.*\\\\..*).*)\",\n}\n```\n\n## 이전 리버트 이력\n- commit 455f0e5: 최초 마이그레이션\n- commit 75878ac: Revert (이유 불명)\n- commit 6ce70ae: Reapply (현재 상태)\n\n## 작업 범위\n1. **파일 검증**:\n   - proxy.ts 존재 및 정상 동작 확인\n   - middleware.ts 삭제 여부 확인\n   - lib/supabase/middleware.ts의 updateSession 함수 호환성 확인\n\n2. **빌드 검증**:\n   - `pnpm build` 실행 시 \"ƒ Proxy (Middleware)\" 출력 확인\n   - deprecation 경고 미발생 확인\n   - next-intl 라우팅 정상 동작\n   - Supabase 세션 갱신 정상 동작\n\n3. **config matcher 검증**:\n   - API/trpc/_next/_vercel/정적 파일 제외 패턴 유지\n   - 로케일 라우팅 적용 범위 확인\n\n4. **의존성 확인**:\n   - next-intl@^4.6.1 호환성\n   - @supabase/ssr@^0.8.0 호환성\n   - next@16.0.10 공식 문서 확인\n\n## 주의사항\n- lib/supabase/middleware.ts의 updateSession은 유지 (Supabase SSR 공식 패턴)\n- matcher 패턴 변경 금지 (기존 동작 유지)\n- 로케일 라우팅 순서 유지 (i18n → Supabase)\n- response 객체 체이닝 유지 (쿠키 설정 보장)",
@@ -642,7 +642,7 @@
         "updatedAt": "2025-12-26T04:30:07.120Z"
       },
       {
-        "id": "59",
+        "id": 59,
         "title": "프로덕션 인증 시스템 버그 수정 (Google OAuth + Email SMTP)",
         "description": "프로덕션 환경(pomobox.app)에서 발생한 Google OAuth 리다이렉트 및 이메일 회원가입 문제 해결",
         "details": "## 문제 1: Google OAuth localhost 리다이렉트\n- 증상: 프로덕션에서 Google 로그인 시 localhost:3000으로 리다이렉트됨\n- 원인: Supabase 대시보드의 Site URL이 localhost로 설정되어 있었음\n- 해결: Supabase Authentication > URL Configuration에서 Site URL을 https://pomobox.app으로 변경\n\n## 문제 2: 이메일 확인 메일 미수신\n- 증상: Sign up 후 확인 이메일이 도착하지 않음\n- 원인: Supabase 기본 이메일 발신자가 Naver 등 국내 메일에서 스팸 처리됨\n- 해결: Resend SMTP 커스텀 설정\n\n## Resend SMTP 설정 과정\n1. Resend 계정 생성 및 API Key 발급\n2. Cloudflare DNS에 레코드 추가:\n   - TXT: resend._domainkey → DKIM 키\n   - TXT: send → v=spf1 include:amazonses.com ~all\n   - MX: send → feedback-smtp.ap-northeast-1.amazonses.com (Priority 10)\n3. Supabase SMTP Settings 구성:\n   - Host: smtp.resend.com\n   - Port: 465\n   - Username: resend\n   - Password: Resend API Key\n   - Sender email: noreply@pomobox.app\n   - Sender name: Pomobox\n\n## 트러블슈팅 히스토리\n1. Resend 도메인 오타 (poobox.app → pomobox.app 수정)\n2. send.pomobox.app 서브도메인 403 에러 → 루트 도메인 noreply@pomobox.app으로 해결\n3. DNS 전파 대기 및 Resend 도메인 재등록\n\n## 최종 설정\n- Google OAuth: ✅ 정상\n- Email 회원가입: ✅ 정상 (Resend SMTP)\n- 로그인: ✅ 정상",
@@ -650,20 +650,65 @@
         "status": "done",
         "dependencies": [],
         "priority": "high",
-        "tags": ["bugfix", "auth", "production"],
+        "tags": [
+          "bugfix",
+          "auth",
+          "production"
+        ],
         "subtasks": [],
         "createdAt": "2025-12-27T00:00:00.000Z",
         "updatedAt": "2025-12-27T02:30:00.000Z"
+      },
+      {
+        "id": 60,
+        "title": "반응형 UI 개선 (QHD/FHD 해상도 지원)",
+        "description": "QHD(2560x1440) 기준으로 UI를 개발하고, FHD(1920x1080) 환경에 맞게 미디어 쿼리로 조정. QHD에서 사이드 광고 표시 및 대시보드 패널 570px, FHD에서 사이드 광고 숨김 및 패널 380px로 축소.",
+        "details": "## 배경\n현재 코드베이스는 이미 QHD/FHD 반응형 스타일링이 일부 구현되어 있으나, CLAUDE.md의 가이드(섹션 12)와 완전히 일치하지 않음. 이 작업은 기존 구현을 프로젝트 가이드라인에 맞춰 정리하고 보완하는 작업.\n\n## 현재 구현 상태 (분석 결과)\n### app/globals.css (126-154행)\n```css\n/* 기본 스타일 = QHD (2560x1440) 기준 */\n:root { font-size: 125%; }\n.content-area {\n  padding-left: 176px;  /* 160px 광고 + 16px 간격 */\n  padding-right: 176px;\n}\n\n@media (max-width: 1920px) {\n  :root { font-size: 90%; }\n  .content-area {\n    padding-left: 1rem;\n    padding-right: 1rem;\n  }\n  .dashboard-grid {\n    grid-template-columns: 380px minmax(360px, 1fr) 380px !important;\n    max-width: 1350px !important;\n  }\n  .side-ad { display: none !important; }\n}\n```\n\n### app/[locale]/page.tsx\n- 23-34행: `SideAd` 컴포넌트 (160x600 사이즈)\n- 52행, 86행: 좌우 사이드 광고 배치\n- 55행: `.dashboard-grid` 클래스 + `xl:grid-cols-[570px_minmax(400px,1fr)_570px]`\n\n## 문제점\n1. **인라인 그리드 정의 중복**: page.tsx의 `xl:grid-cols-[570px...]`와 globals.css의 미디어 쿼리가 충돌 가능\n2. **max-width 누락**: QHD 기준 max-width 1800px 설정 필요\n3. **미디어 쿼리 브레이크포인트 불일치**: `@media (max-width: 1920px)`는 FHD를 포함하므로 정확한 브레이크포인트 조정 필요\n\n## 구현 계획\n\n### 1. app/globals.css 수정\n```css\n/* 기본 스타일 = QHD (2560x1440) 기준 */\n:root {\n  font-size: 125%;\n}\n.main-layout {\n  gap: 1rem;\n}\n.content-area {\n  padding-left: 176px;  /* 160px 광고 + 16px 간격 */\n  padding-right: 176px;\n}\n.dashboard-grid {\n  grid-template-columns: 570px minmax(400px, 1fr) 570px;\n  max-width: 1800px;\n}\n.side-ad {\n  display: flex;\n}\n\n/* FHD (1920x1080) 이하: 축소 조정 */\n@media (max-width: 1920px) {\n  :root {\n    font-size: 90%;\n  }\n  .content-area {\n    padding-left: 1rem;\n    padding-right: 1rem;\n  }\n  .dashboard-grid {\n    grid-template-columns: 380px minmax(360px, 1fr) 380px;\n    max-width: 1350px;\n  }\n  .side-ad {\n    display: none;\n  }\n}\n```\n\n### 2. app/[locale]/page.tsx 수정\n- 55행: 인라인 그리드 정의 제거, CSS 클래스에 위임\n```tsx\n// Before\n<div className=\"dashboard-grid w-full grid grid-cols-1 xl:grid-cols-[570px_minmax(400px,1fr)_570px] gap-6 xl:gap-6 xl:items-stretch\">\n\n// After\n<div className=\"dashboard-grid w-full grid grid-cols-1 xl:grid-cols-3 gap-6 xl:gap-6 xl:items-stretch\">\n```\n- 그리드 컬럼 정의는 globals.css에서 관리 (데스크탑 xl 브레이크포인트 이상에서만 3컬럼 활성화)\n\n### 3. 테스트 체크리스트\n| 해상도 | font-size | 사이드 광고 | 패널 너비 | max-width |\n|--------|-----------|------------|----------|-----------|\n| QHD (2560x1440) | 125% | 표시 (160x600) | 570px | 1800px |\n| FHD (1920x1080) | 90% | 숨김 | 380px | 1350px |\n\n## 주의사항\n- `!important` 사용 최소화 (필요한 경우만)\n- Tailwind 유틸리티와 커스텀 CSS 충돌 방지\n- 모바일 반응형 스타일(`@media (max-width: 640px)`)은 유지\n- 접근성: `aria-label` 유지, 광고 숨김 시 스크린 리더 고려",
+        "testStrategy": "1. **빌드 검증**:\n   - `pnpm lint` 통과 (타입 에러 없음)\n   - `pnpm build` 성공\n\n2. **QHD (2560x1440) 해상도 테스트**:\n   - Playwright MCP 사용: `browser_resize(2560, 1440)` → `browser_navigate(\"http://localhost:3000\")` → `browser_take_screenshot`\n   - 확인 항목:\n     - 루트 폰트 사이즈 125% 적용 (브라우저 개발자도구 Computed Styles 확인)\n     - 좌우 사이드 광고 표시 (160x600, fixed position)\n     - 대시보드 패널 너비 570px\n     - 전체 그리드 max-width 1800px\n\n3. **FHD (1920x1080) 해상도 테스트**:\n   - Playwright MCP 사용: `browser_resize(1920, 1080)` → `browser_navigate(\"http://localhost:3000\")` → `browser_take_screenshot`\n   - 확인 항목:\n     - 루트 폰트 사이즈 90% 적용\n     - 사이드 광고 숨김 (display: none)\n     - 대시보드 패널 너비 380px\n     - 전체 그리드 max-width 1350px\n\n4. **모바일 반응형 유지 확인**:\n   - `browser_resize(430, 932)` (작은 모바일)\n   - 기존 모바일 레이아웃 정상 동작 확인 (Sign in 버튼, 테마 토글 위치 등)\n\n5. **수동 테스트**:\n   - 브라우저 창 크기를 2560x1440 → 1920x1080으로 변경하며 미디어 쿼리 전환 확인\n   - 대시보드 패널 크기 변화 애니메이션 부드러움 확인",
+        "status": "done",
+        "dependencies": [
+          "56"
+        ],
+        "priority": "high",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "QHD 기준 UI 스타일 완성 및 검증",
+            "description": "QHD(2560x1440) 해상도에서 기본 스타일 정의 완료. globals.css에 QHD 기준 스타일 확정 (폰트 125%, 사이드 광고 표시, 대시보드 패널 570px, max-width 1800px), page.tsx의 인라인 그리드 정의를 CSS 클래스로 위임하여 중복 제거",
+            "dependencies": [],
+            "details": "## 구현 내용\n\n### 1. app/globals.css 수정 (126-154행)\n- **QHD 기본 스타일 유지**:\n  - `:root { font-size: 125%; }` (현재 그대로)\n  - `.content-area { padding-left: 176px; padding-right: 176px; }` (160px 광고 + 16px 간격)\n  - `.dashboard-grid` 클래스에 QHD 기본 그리드 정의 추가:\n    ```css\n    .dashboard-grid {\n      grid-template-columns: 570px minmax(400px, 1fr) 570px;\n      max-width: 1800px;\n    }\n    ```\n  - `.side-ad { display: flex; }` (기본 표시)\n\n### 2. app/[locale]/page.tsx 수정 (55행)\n- **인라인 그리드 정의 제거**:\n  ```tsx\n  // Before\n  <div className=\"dashboard-grid w-full grid grid-cols-1 xl:grid-cols-[570px_minmax(400px,1fr)_570px] gap-6 xl:gap-6 xl:items-stretch\">\n  \n  // After\n  <div className=\"dashboard-grid w-full grid grid-cols-1 xl:grid-cols-3 gap-6 xl:gap-6 xl:items-stretch\">\n  ```\n- 그리드 컬럼 정의는 globals.css의 `.dashboard-grid` 클래스가 담당\n- xl 브레이크포인트(1280px+)에서 `grid-cols-3` 활성화, 실제 너비는 CSS에서 관리\n\n### 3. 스타일 충돌 해결\n- Tailwind 유틸리티(`xl:grid-cols-[570px...]`)와 CSS 클래스(`.dashboard-grid`) 중복 제거\n- CSS에서 일관된 레이아웃 관리, HTML은 구조만 정의\n\n## 검증 항목\n- `pnpm lint` 통과\n- `pnpm build` 성공\n- QHD(2560x1440) 환경에서 브라우저 개발자도구로 확인:\n  - `:root` font-size = 125%\n  - `.dashboard-grid` grid-template-columns = 570px minmax(400px, 1fr) 570px\n  - `.side-ad` display = flex (광고 표시)\n  - max-width = 1800px 적용",
+            "status": "done",
+            "testStrategy": "1. 빌드 검증: `pnpm lint && pnpm build`\n2. QHD 환경 테스트:\n   - Playwright MCP: `browser_resize(2560, 1440)` → `browser_navigate(\"http://localhost:3000\")` → `browser_take_screenshot(\"qhd-ui-complete.png\")`\n   - 브라우저 개발자도구 Computed Styles 확인: font-size 125%, grid-template-columns, side-ad display",
+            "updatedAt": "2025-12-27T14:36:52.844Z",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "FHD 미디어 쿼리 조정 및 검증",
+            "description": "FHD(1920x1080) 해상도용 미디어 쿼리 정확성 검증 및 보완. @media (max-width: 1920px) 브레이크포인트에서 폰트 90%, 사이드 광고 숨김, 대시보드 패널 380px, max-width 1350px 적용. !important 사용 최소화 및 반응형 동작 확인",
+            "dependencies": [
+              1
+            ],
+            "details": "## 구현 내용\n\n### 1. app/globals.css 미디어 쿼리 검토 (139-154행)\n- **FHD 스타일 확인 및 보완**:\n  ```css\n  @media (max-width: 1920px) {\n    :root {\n      font-size: 90%;  /* QHD 125% → FHD 90% */\n    }\n    .content-area {\n      padding-left: 1rem;  /* 광고 숨김으로 패딩 축소 */\n      padding-right: 1rem;\n    }\n    .dashboard-grid {\n      grid-template-columns: 380px minmax(360px, 1fr) 380px;  /* 570px → 380px */\n      max-width: 1350px;  /* 1800px → 1350px */\n    }\n    .side-ad {\n      display: none;  /* QHD flex → FHD none */\n    }\n  }\n  ```\n\n### 2. !important 제거 시도\n- 현재 코드: `grid-template-columns: 380px ... !important;`, `display: none !important;`\n- Tailwind 유틸리티와 충돌하지 않으면 !important 제거\n- 충돌 시 CSS 특이성 조정 또는 최소한의 !important만 유지\n\n### 3. 브레이크포인트 정확성 확인\n- `@media (max-width: 1920px)`: 1920px 이하 모든 환경에 적용\n- FHD(1920x1080)는 경계값이므로 정확히 포함됨\n- 필요 시 `@media (max-width: 1919px)` 또는 `@media (max-width: 2559px)` 조정 검토\n\n## 검증 항목\n- FHD(1920x1080) 환경에서 브라우저 개발자도구로 확인:\n  - `:root` font-size = 90%\n  - `.dashboard-grid` grid-template-columns = 380px minmax(360px, 1fr) 380px\n  - `.side-ad` display = none (광고 숨김)\n  - max-width = 1350px 적용\n- 모바일 반응형(`@media (max-width: 640px)`) 영향 없음 확인\n- 접근성: 광고 숨김 시 aria-label 유지, 스크린 리더 동작 정상\n<info added on 2025-12-27T15:26:06.462Z>\n추가 FHD UI 개선 작업 완료 (2025-12-28):\n\n### 4. FHD/QHD 시각적 비율 통일 (75%)\n- **폰트 크기 조정**: 90% → 94% (QHD 125% × 0.75)\n  - app/globals.css @media (max-width: 1920px) 내 :root { font-size: 94%; }\n- **대시보드 패널 너비 확대**: 380px → 428px (570px × 0.75)\n  - .dashboard-grid grid-template-columns: 428px minmax(360px, 1fr) 428px\n- **사이드 광고 FHD 표시**:\n  - .side-ad display: none 제거 → display: flex 유지\n  - 광고 크기: 120×450, 160×600 (QHD 160×600 × 0.75)\n  - 광고 위치: top 200px (QHD 270px × 0.75)\n- **content-area padding 조정**:\n  - padding-left/right: 136px (광고 120px + 간격 16px)\n\n### 5. Settings 다이얼로그 스크롤 기능 추가\n- **components/settings-dialog.tsx 수정**:\n  - DialogContent에 max-h-[85vh] overflow-y-auto 클래스 추가\n  - 스크롤바 우측 끝 배치: -mr-[23px] pr-[23px]\n  - 커스텀 스크롤바 클래스 적용: settings-scrollbar\n- **app/globals.css 커스텀 스크롤바 스타일 추가**:\n  ```css\n  .settings-scrollbar::-webkit-scrollbar {\n    width: 6px;\n  }\n  .settings-scrollbar::-webkit-scrollbar-track {\n    background: transparent;\n  }\n  .settings-scrollbar::-webkit-scrollbar-thumb {\n    background: hsl(var(--muted-foreground) / 0.3);\n    border-radius: 3px;\n  }\n  .settings-scrollbar::-webkit-scrollbar-thumb:hover {\n    background: hsl(var(--primary) / 0.6);\n  }\n  ```\n\n수정 파일:\n- app/globals.css (FHD 미디어 쿼리, settings-scrollbar 클래스)\n- components/settings-dialog.tsx (스크롤 기능 및 스타일)\n\n검증 항목:\n- FHD 환경에서 폰트 크기 94%, 패널 너비 428px, 광고 표시 확인\n- Settings 다이얼로그 세로 스크롤 동작 및 커스텀 스크롤바 스타일 확인\n- QHD/모바일 반응형 영향 없음 확인\n</info added on 2025-12-27T15:26:06.462Z>",
+            "status": "done",
+            "testStrategy": "1. 빌드 검증: `pnpm lint && pnpm build`\n2. FHD 환경 테스트:\n   - Playwright MCP: `browser_resize(1920, 1080)` → `browser_navigate(\"http://localhost:3000\")` → `browser_take_screenshot(\"fhd-ui-complete.png\")`\n   - 브라우저 개발자도구 Computed Styles 확인: font-size 90%, grid-template-columns, side-ad display none\n3. 접근성 검증: 스크린 리더로 광고 숨김 시 레이아웃 읽기 확인",
+            "parentId": "undefined",
+            "updatedAt": "2025-12-27T14:52:24.904Z"
+          }
+        ],
+        "updatedAt": "2025-12-27T14:52:24.904Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-27T02:30:00.000Z",
-      "taskCount": 48,
-      "completedCount": 43,
+      "lastModified": "2025-12-27T14:52:24.905Z",
+      "taskCount": 49,
+      "completedCount": 44,
       "tags": [
         "master"
-      ]
+      ],
+      "created": "2025-12-27T15:25:39.976Z",
+      "description": "Tasks for master context"
     }
   }
 }

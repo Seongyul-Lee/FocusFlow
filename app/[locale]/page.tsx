@@ -20,6 +20,19 @@ function TimerFallback() {
   )
 }
 
+function SideAd({ position }: { position: "left" | "right" }) {
+  const positionClass = position === "left" ? "left-0" : "right-0"
+  return (
+    <div
+      className={`side-ad fixed top-[270px] ${positionClass} w-[160px] h-[600px] bg-muted/30 rounded-lg flex flex-col items-center justify-center border border-dashed border-muted-foreground/20 z-10`}
+      aria-label={`${position} advertisement`}
+    >
+      <span className="text-xs text-muted-foreground writing-vertical">Ad</span>
+      <span className="ad-size-label text-xs text-muted-foreground mt-1">160 x 600</span>
+    </div>
+  )
+}
+
 export default function Home() {
   const t = useTranslations("Home")
 
@@ -32,36 +45,45 @@ export default function Home() {
           <UserMenu />
         </div>
 
-        {/* 3-Column Layout: Left Dashboard - Timer (center) - Right (BGM/Calendar) */}
-        <div className="flex-1 pt-16 pb-6 px-4 xl:px-8">
-          <div className="max-w-[1800px] mx-auto grid grid-cols-1 xl:grid-cols-[570px_minmax(400px,1fr)_570px] gap-6 xl:gap-6 xl:items-stretch">
-            {/* Left: Dashboard (오늘 요약, 주간, 월간) */}
-            <aside className="hidden xl:flex xl:flex-col gap-4" aria-label="Statistics Dashboard">
-              <Suspense fallback={null}>
-                <DashboardLeft />
-              </Suspense>
-            </aside>
+        {/* Main Layout with Side Ads (QHD) */}
+        <div className="flex-1 pt-16 pb-6 content-area">
+          <div className="main-layout flex justify-center items-start gap-4">
+            {/* Left Side Ad (QHD only) */}
+            <SideAd position="left" />
 
-            {/* Center: Timer */}
-            <section className="flex flex-col items-center justify-start pt-8 xl:pt-12">
-              <div className="text-center mb-4 md:mb-8 px-4">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 hover-title-outline inline-block">
-                  {t("title")}
-                </h1>
-                <p className="text-slate-500 dark:text-slate-400 hover-phase-label">{t("description")}</p>
-              </div>
-              <Suspense fallback={<TimerFallback />}>
-                <PomodoroTimer />
-              </Suspense>
-            </section>
+            {/* 3-Column Content Grid */}
+            <div className="dashboard-grid w-full grid grid-cols-1 xl:grid-cols-[570px_minmax(400px,1fr)_570px] gap-6 xl:gap-6 xl:items-stretch">
+              {/* Left: Dashboard (오늘 요약, 주간, 월간) */}
+              <aside className="hidden xl:flex xl:flex-col gap-4" aria-label="Statistics Dashboard">
+                <Suspense fallback={null}>
+                  <DashboardLeft />
+                </Suspense>
+              </aside>
 
-            {/* Right: BGM + Activity Calendar */}
-            <aside className="hidden xl:flex xl:flex-col gap-4" aria-label="Music and Calendar">
-              <BgmPanel />
-              <Suspense fallback={null}>
-                <DashboardRight />
-              </Suspense>
-            </aside>
+              {/* Center: Timer */}
+              <section className="flex flex-col items-center justify-start pt-8 xl:pt-12">
+                <div className="text-center mb-4 md:mb-8 px-4">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 hover-title-outline inline-block">
+                    {t("title")}
+                  </h1>
+                  <p className="text-slate-500 dark:text-slate-400 hover-phase-label">{t("description")}</p>
+                </div>
+                <Suspense fallback={<TimerFallback />}>
+                  <PomodoroTimer />
+                </Suspense>
+              </section>
+
+              {/* Right: BGM + Activity Calendar */}
+              <aside className="hidden xl:flex xl:flex-col gap-4" aria-label="Music and Calendar">
+                <BgmPanel />
+                <Suspense fallback={null}>
+                  <DashboardRight />
+                </Suspense>
+              </aside>
+            </div>
+
+            {/* Right Side Ad (QHD only) */}
+            <SideAd position="right" />
           </div>
 
           {/* Mobile: Stacked panels below timer */}

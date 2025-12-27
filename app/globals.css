@@ -123,12 +123,55 @@
     @apply bg-background text-foreground;
   }
 
-  /* 125% scale for tablet/desktop (md breakpoint: 768px+) */
-  @media (min-width: 768px) {
+  /* 기본 스타일 = QHD (2560x1440) 기준 */
+  :root {
+    font-size: 125%;
+  }
+  .main-layout {
+    gap: 1rem;
+  }
+  .content-area {
+    padding-left: 176px;  /* 160px 광고 + 16px 간격 */
+    padding-right: 176px;
+  }
+
+  /* FHD (1920x1080) 이하: 축소 조정 */
+  @media (max-width: 1920px) {
     :root {
-      font-size: 125%;
+      font-size: 94%;  /* QHD 대비 동일 시각적 비율 유지 (125% × 0.75) */
+    }
+    .content-area {
+      padding-left: 136px;  /* 120px 광고 + 16px 간격 */
+      padding-right: 136px;
+    }
+    .dashboard-grid {
+      grid-template-columns: 428px minmax(300px, 1fr) 428px !important;  /* 570px × 0.75 */
+      max-width: none !important;
+      width: 100% !important;
+    }
+    .side-ad {
+      width: 120px !important;  /* 160 * 0.75 */
+      height: 450px !important;  /* 600 * 0.75 */
+      top: 200px !important;  /* 270 * 0.75 ≈ 200px */
+    }
+    .ad-size-label {
+      visibility: hidden;
+      position: relative;
+    }
+    .ad-size-label::after {
+      content: "120 x 450";
+      visibility: visible;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
     }
   }
+}
+
+/* Writing mode for vertical text */
+.writing-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
 }
 
 /* Dark mode gradient background with glow effects */
@@ -589,6 +632,46 @@
   main section > div:last-child > div.flex {
     gap: 0.375rem !important;
   }
+}
+
+/* ===== Custom Scrollbar Styles ===== */
+
+/* Settings dialog scrollbar - thin and subtle */
+.settings-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(148 163 184 / 30%) transparent;
+}
+
+.settings-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.settings-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+}
+
+.settings-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(148 163 184 / 30%);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.settings-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgb(148 163 184 / 50%);
+}
+
+/* Dark mode scrollbar */
+.dark .settings-scrollbar {
+  scrollbar-color: rgb(148 163 184 / 20%) transparent;
+}
+
+.dark .settings-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(148 163 184 / 20%);
+}
+
+.dark .settings-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgb(167 139 250 / 40%);
 }
 
 /* Reduced motion for accessibility */

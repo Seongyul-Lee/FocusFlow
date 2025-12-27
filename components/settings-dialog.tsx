@@ -139,11 +139,11 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange, buttonCl
           <Settings className="h-6 w-6" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[85vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{t("title")}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-6 py-4">
+        <div className="space-y-6 py-4 overflow-y-auto flex-1 -mr-[23px] pr-[23px] settings-scrollbar">
           {/* Notifications */}
           <div className="flex items-center justify-between group">
             <div className="flex items-center gap-2 hover-section-label cursor-default">
